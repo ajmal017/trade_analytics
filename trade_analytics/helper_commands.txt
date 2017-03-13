@@ -1,0 +1,2 @@
+- find . -type f -name "*.sqlite3" -exec rm -f {} \;
+- find . -type f -name "0001*" -exec rm -f {} \;

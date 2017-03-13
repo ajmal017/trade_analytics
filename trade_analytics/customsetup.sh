@@ -7,3 +7,5 @@ sudo apt-get install libblas-dev checkinstall
 sudo apt-get install libblas-doc checkinstall
 sudo apt-get install liblapacke-dev checkinstall
 sudo apt-get install liblapack-doc checkinstall
+
+
