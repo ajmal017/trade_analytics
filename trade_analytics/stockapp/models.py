@@ -3,23 +3,96 @@ from __future__ import unicode_literals,division
 from django.db import models
 import datetime
 import pandas as pd
+import logging
 from home import models as hmd
 from multiselectfield import MultiSelectField
+from django.db import connection,reset_queries
 
 
 
-# Create your models here.
+# Get an instance of a logger
+logger = logging.getLogger(__name__)
 
+"""
+logger.error('Something went wrong!')
+logger.debug()
+logger.info()
+logger.warning()
+logger.error()
+logger.critical()
 
+"""
+
+class StockMetaQuerySet(models.QuerySet):
+    def authors(self):
+        return self.filter(role='A')
+
+    def editors(self):
+        return self.filter(role='E')
+
+class StockMetaManager(models.Manager):
+    def with_counts(self):
+    	reset_queries()
+    	
+        with connection.cursor() as cursor:
+            cursor.execute("""
+                SELECT p.id, p.question, p.poll_date, COUNT(*)
+                FROM polls_opinionpoll p, polls_response r
+                WHERE p.id = r.poll_id
+                GROUP BY p.id, p.question, p.poll_date
+                ORDER BY p.poll_date DESC""")
+            result_list = []
+            for row in cursor.fetchall():
+                p = self.model(id=row[0], question=row[1], poll_date=row[2])
+                p.num_responses = row[3]
+                result_list.append(p)
+
+        connection.queries
+
+        return result_list
+
+    # def get_queryset(self):
+    #     return super(StockMetaManager, self).get_queryset().filter(author='Roald Dahl')
+
+    def get_queryset(self):
+        return StockMetaQuerySet(self.model, using=self._db)
 
 """
 okokokokoko
 """
 class Stockmeta(models.Model):
-	"""
-	Model that contains all meta information
+	"""Fetches rows from a Bigtable.
 
-	"""
+    Retrieves rows pertaining to the given keys from the Table instance
+    represented by big_table.  Silly things may happen if
+    other_silly_variable is not None.
+
+    Args:
+        big_table: An open Bigtable Table instance.
+        keys: A sequence of strings representing the key of each table row
+            to fetch.
+        other_silly_variable: Another optional variable, that has a much
+            longer name than the other args, and which does nothing.
+
+    Returns:
+        A dict mapping keys to the corresponding table row data
+        fetched. Each row is represented as a tuple of strings. For
+        example:
+
+        {'Serak': ('Rigel VII', 'Preparer'),
+         'Zim': ('Irk', 'Invader'),
+         'Lrrr': ('Omicron Persei 8', 'Emperor')}
+
+        If a key from the keys argument is missing from the dictionary,
+        then that row was not found in the table.
+
+    Raises:
+        IOError: An error occurred accessing the bigtable.Table object.
+    """
+
+	objects = models.Manager() # The default manager.
+	# stockmeta_objects = StockMetaManager()
+
 	Company=models.CharField(max_length=100,null=True,blank=True)
 	Marketcap=models. DecimalField(max_digits=9,decimal_places=2,null=True,blank=True)
 	Competitors=models.CharField(max_length=1100,null=True,blank=True)

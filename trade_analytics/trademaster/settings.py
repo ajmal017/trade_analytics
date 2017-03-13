@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 
 import os
 from . import db_routers
-
+import datetime
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -162,3 +162,48 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/1.10/howto/static-files/
 ## ---------------------------------------------------------------------------------------------##
 STATIC_URL = '/static/'
+
+
+
+
+## --------------------- LOGGING ---------------------------------------------------------------##
+# Log to console and to file
+## ---------------------------------------------------------------------------------------------##
+
+LOGGING = {
+    'version': 1,
+    
+    'disable_existing_loggers': False,
+    
+    'formatters': {
+        'verbose': {
+            'format': '%(levelname)s, %(asctime)s, %(module)s, %(filename)s, %(funcName)s, %(lineno)d, %(process)d, %(thread)d, %(message)s'
+        },
+        'simple': {
+            'format': '%(levelname)s %(message)s'
+        },
+    },
+
+
+    'handlers': {
+        'console': {
+            'level': 'DEBUG',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose'
+        },
+        'file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join('logs','debug_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
+            'formatter': 'verbose',
+        },
+    },
+    
+    'loggers': {
+        'django': {
+            'handlers': ['console','file'],
+            'propagate': True,
+        },
+    }
+
+}

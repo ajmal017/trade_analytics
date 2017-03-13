@@ -1,0 +1,10 @@
+*.pyc
+*.h5
+djangolog
+celerylog
+*.pid
+dbconf.json
+*.out
+*.csv
+*.json
+logs
