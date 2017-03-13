@@ -36,6 +36,6 @@ scipy==0.18.1
 sklearn==0.0
 django-extensions
 Sphinx
-
+pytz
 
 #git clone git://repo.or.cz/docutils.git

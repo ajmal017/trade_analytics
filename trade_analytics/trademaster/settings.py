@@ -13,6 +13,8 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 import os
 from . import db_routers
 import datetime
+from celery.schedules import crontab
+from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -149,7 +151,7 @@ AUTH_PASSWORD_VALIDATORS = [
 ## ---------------------------------------------------------------------------------------------##
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'US/Eastern'
 
 USE_I18N = True
 
@@ -207,3 +209,20 @@ LOGGING = {
     }
 
 }
+
+
+# --------------------------------------------------------------------#
+# CELERY SETTINGS
+# --------------------------------------------------------------------#
+
+BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
+CELERY_TIMEZONE='US/Eastern'
+CELERY_ENABLE_UTC=True,
+CELERYD_MAX_TASKS_PER_CHILD=20
+
+CELERYBEAT_SCHEDULE = {}
