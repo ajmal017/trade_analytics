@@ -43,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'django.contrib.admindocs',
-
+    'django_celery_results',
     
     'home',
     'datascience',
@@ -219,10 +219,26 @@ BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 CELERY_ACCEPT_CONTENT = ['json']
 CELERY_TASK_SERIALIZER = 'json'
 CELERY_RESULT_SERIALIZER = 'json'
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-CELERY_RESULT_BACKEND='djcelery.backends.database:DatabaseBackend'
+CELERY_RESULT_BACKEND = 'django-db'
 CELERY_TIMEZONE='US/Eastern'
 CELERY_ENABLE_UTC=True,
 CELERYD_MAX_TASKS_PER_CHILD=20
 
 CELERYBEAT_SCHEDULE = {}
+
+
+# --------------------------------------------------------------------#
+# JUPYTER NOTEBOOK SETTINGS
+# --------------------------------------------------------------------#
+
+# IPYTHON_ARGUMENTS = [
+#     '--ext', 'django_extensions.management.notebook_extension',
+# ]
+
+NOTEBOOK_ARGUMENTS = [
+    '--ip', '0.0.0.0',
+    '--port', '1234',
+    # '--ext', 'django_extensions.management.notebook_extension',
+    # '--notebook-dir' , 'notebooks' ,
+    '--debug',
+]
