@@ -18,9 +18,9 @@ django-extensions
 Sphinx
 pytz
 django-celery-results
-
-
-
+djangorestframework
+markdown
+django-filter
 
 
 

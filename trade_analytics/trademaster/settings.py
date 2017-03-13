@@ -44,7 +44,9 @@ INSTALLED_APPS = [
     'django_extensions',
     'django.contrib.admindocs',
     'django_celery_results',
-    
+    'rest_framework',
+
+
     'home',
     'datascience',
     'charts',
@@ -242,3 +244,17 @@ NOTEBOOK_ARGUMENTS = [
     # '--notebook-dir' , 'notebooks' ,
     '--debug',
 ]
+
+
+
+# --------------------------------------------------------------------#
+# REST API SETTINGS
+# --------------------------------------------------------------------#
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ]
+}
