@@ -1,0 +1,1 @@
+Search.setIndex({docnames:["index"],envversion:50,filenames:["index.rst"],objects:{"":{stockapp:[0,0,0,"-"]}},objnames:{"0":["py","module","Python module"]},objtypes:{"0":"py:module"},terms:{index:0,member:[],modul:0,page:0,search:0},titles:["Welcome to CTA&#8217;s documentation!"],titleterms:{cta:0,document:0,indic:0,tabl:0,welcom:0}})

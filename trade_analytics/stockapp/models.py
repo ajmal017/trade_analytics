@@ -12,7 +12,9 @@ from multiselectfield import MultiSelectField
 
 
 
-
+"""
+okokokokoko
+"""
 class Stockmeta(models.Model):
 	"""
 	Model that contains all meta information
