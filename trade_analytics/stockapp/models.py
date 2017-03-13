@@ -93,17 +93,17 @@ class Stockmeta(models.Model):
 	objects = models.Manager() # The default manager.
 	# stockmeta_objects = StockMetaManager()
 
-	Company=models.CharField(max_length=100,null=True,blank=True)
-	Marketcap=models. DecimalField(max_digits=9,decimal_places=2,null=True,blank=True)
-	Competitors=models.CharField(max_length=1100,null=True,blank=True)
-	Symbol = models.CharField(max_length=6,null=True,blank=True)
-	Sector = models.CharField(max_length=100,null=True,blank=True)
-	Industry = models.CharField(max_length=100,null=True,blank=True)
+	Company=models.CharField(max_length=100,null=True,blank=True,help_text="Company name")
+	Marketcap=models. DecimalField(max_digits=9,decimal_places=2,null=True,blank=True,help_text="Market Capitalization")
+	Competitors=models.CharField(max_length=1100,null=True,blank=True,help_text="List of Competitors")
+	Symbol = models.CharField(max_length=6,null=False,blank=True,db_index=True,help_text="Stock Symbol")
+	Sector = models.CharField(max_length=100,null=True,blank=True,db_index=True,help_text="Stock Sector")
+	Industry = models.CharField(max_length=100,null=True,blank=True,db_index=True,help_text="Stock Industry")
 	
 	status_choices=(('Active','Active'),('Inactive','Inactive'))
-	Status=models.CharField(max_length=25,choices=status_choices,null=True,blank=True)
+	Status=models.CharField(max_length=25,choices=status_choices,null=True,blank=True,db_index=True,help_text="Active or not")
 	
-	LastPriceUpdate= models.DateField(null=True)
+	LastPriceUpdate= models.DateField(null=True,db_index=True)
 
 	label_choices=( 
 					('ETF','ETF'),
