@@ -57,9 +57,6 @@ class StockMetaManager(models.Manager):
     def get_queryset(self):
         return StockMetaQuerySet(self.model, using=self._db)
 
-"""
-okokokokoko
-"""
 class Stockmeta(models.Model):
 	"""Fetches rows from a Bigtable.
 
@@ -96,7 +93,7 @@ class Stockmeta(models.Model):
 	Company=models.CharField(max_length=100,null=True,blank=True,help_text="Company name")
 	Marketcap=models. DecimalField(max_digits=9,decimal_places=2,null=True,blank=True,help_text="Market Capitalization")
 	Competitors=models.CharField(max_length=1100,null=True,blank=True,help_text="List of Competitors")
-	Symbol = models.CharField(max_length=6,null=False,blank=True,db_index=True,help_text="Stock Symbol")
+	Symbol = models.CharField(max_length=6,null=False,blank=True,db_index=True,help_text="Stock Symbol",default='SYMBOL')
 	Sector = models.CharField(max_length=100,null=True,blank=True,db_index=True,help_text="Stock Sector")
 	Industry = models.CharField(max_length=100,null=True,blank=True,db_index=True,help_text="Stock Industry")
 	

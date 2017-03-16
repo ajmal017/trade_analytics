@@ -5,11 +5,11 @@ import os
 from celery import Celery
 
 # set the default Django settings module for the 'celery' program.
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'trademaster.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'trade_analytics.settings')
 
 # from django.conf import settings  # noqa
 
-app = Celery('trademaster')
+app = Celery('trade_analytics')
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
 

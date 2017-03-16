@@ -8,3 +8,5 @@ dbconf.json
 *.csv
 *.json
 logs
+StockData.h5
+stockpricedata.sqlite3
