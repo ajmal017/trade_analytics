@@ -47,9 +47,31 @@
 
     <!-- Custom Fonts -->
     <!-- <link href="../vendor/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
-    <link href="{% static "home/boostsb_theme/vendor/font-awesome/css/font-awesome.min.css" %}" rel="stylesheet">
+    <link href="{% static "home/boostsb_theme/vendor/font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
 
+
+    <!-- DataTables CSS -->
+    <link href="{% static "home/boostsb_theme/vendor/datatables-plugins/dataTables.bootstrap.css" %}" rel="stylesheet" type="text/css">
+
+    <!-- DataTables Responsive CSS -->
+    <link href="{% static "home/boostsb_theme/vendor/datatables-responsive/dataTables.responsive.css" %}" rel="stylesheet" type="text/css">
+
+
+    <!-- Custom Fonts -->
+    <link href="{% static "home/boostsb_theme/vendor/font-awesome/css/font-awesome.min.css" %}" rel="stylesheet" type="text/css">
+
+
+    <!-- DataTables CSS -->
+    <!-- <script src="http://cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css" rel="stylesheet"> </script> -->
+    <!-- <link rel="stylesheet" type="text/css" href="http://cdn.datatables.net/1.10.13/css/jquery.dataTables.css"> -->
+  
+
+    <!-- DataTables Responsive js -->
+    <!-- <script src="http://cdn.datatables.net/1.10.13/js/jquery.dataTables.min.js" rel="stylesheet"> </script> -->
+    <!-- <script type="text/javascript" charset="utf8" src="http://cdn.datatables.net/1.10.13/js/jquery.dataTables.js"></script>   -->
     
+
+
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -80,7 +102,7 @@
 
         <nav class="navbar navbar-default navbar-static-top" role="navigation" style="margin-bottom: 0">
         {% block navbar %}
-
+            {% include "home/boostsb_theme/navbar_generic.html" %}
 		{% endblock %}
         </nav>
 
@@ -91,39 +113,58 @@
             <!-- *******************   MESSAGES ******************************** -->
             {% if messages %}
                 <br><br>
-                <div class="container">
-                    {% for message in messages %}
-                        {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                            <div class="alert alert-danger">
-                                <strong>Error!</strong> {{ message }}
-                            </div> 
-                        {% endif %}
+                <div class="row">
+                    <div class="col-lg-6">
+                                {% for message in messages %}
+                                    {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                                        <div class="alert alert-danger alert-dismissible " role="alert">
+                                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                          </button>
+                                          <strong>Error</strong> {{message}}
+                                        </div> 
+                                    {% endif %}
 
-                        {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-                            <div class="alert alert-warning">
-                                <strong>Warning!</strong> {{ message }}
-                            </div> 
-                        {% endif %}
-                        
-                        {% if message.level == DEFAULT_MESSAGE_LEVELS.DEBUG %}
-                            <div class="alert alert-info">
-                                <strong>Debug!</strong> {{ message }}
-                            </div> 
-                        {% endif %}
+                                    {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                                        <div class="alert alert-warning alert-dismissible" role="alert">
+                                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                          </button>
+                                          <strong>Warning!</strong> {{ message }}
+                                        </div>
+                                    {% endif %}
+                                    
+                                    {% if message.level == DEFAULT_MESSAGE_LEVELS.DEBUG %}
+                                         <div class="alert alert-info alert-dismissible" role="alert">
+                                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                          </button>
+                                           <strong>Debug!</strong> {{ message }}
+                                        </div>
+                                    {% endif %}
 
-                        {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
-                            <div class="alert alert-info">
-                                <strong>Info!</strong> {{ message }}
-                            </div> 
-                        {% endif %}
+                                    {% if message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                                        <div class="alert alert-info alert-dismissible" role="alert">
+                                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                          </button>
+                                            <strong>Info!</strong> {{ message }}
+                                        </div>
 
-                        {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                            <div class="alert alert-success">
-                                <strong>Success!</strong> {{ message }}
-                            </div> 
-                        {% endif %}
+                                    {% endif %}
 
-                    {% endfor %}
+                                    {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                                        <div class="alert alert-success alert-dismissible" role="alert">
+                                          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                            <span aria-hidden="true">&times;</span>
+                                          </button>
+                                            <strong>Success!</strong> {{ message }}
+                                        </div>
+                                    {% endif %}
+
+                                {% endfor %}
+              
+                    </div>
                 </div>
             {% endif %}
             <!-- ******************* END END  MESSAGES ******************************** -->
@@ -170,6 +211,14 @@
     <!-- Custom Theme JavaScript -->
     <!-- <script src="../dist/js/sb-admin-2.js"></script> -->
     <script src="{% static "home/boostsb_theme/dist/js/sb-admin-2.js" %}"></script>
+
+
+
+    <!-- DataTables JavaScript -->
+    <script src="{% static "home/boostsb_theme/vendor/datatables/js/jquery.dataTables.min.js" %} "></script>
+    <script src="{% static "home/boostsb_theme/vendor/datatables-plugins/dataTables.bootstrap.min.js" %}"></script>
+    <script src="{% static "home/boostsb_theme/vendor/datatables-responsive/dataTables.responsive.js" %}"></script>
+
 
     {% endblock %}
 

@@ -21,6 +21,9 @@ django-celery-results
 djangorestframework
 markdown
 django-filter
+jinja2
+pymongo
+
 
 
 

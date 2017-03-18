@@ -1,0 +1,27 @@
+
+{% if context.layout_template %}
+{% extends context.layout_template  %}
+{% endif %}
+
+
+ {% block BODY %}
+		<div id="bar" style="width: 500px;"></div>
+
+		<script type="text/javascript">
+		bar= Morris.Bar({
+			  element: 'bar',
+			  data: [  ],
+			  xkey: 'y',
+			  ykeys: ['a', 'b'],
+			  labels: ['Series A', 'Series B']
+
+		});
+
+		{% if data.embeddata %}
+			dataset={{ data.embeddata|to_pretty_json }};
+			bar.setData(dataset);
+		{% endif %}
+		
+		</script>
+
+{% endblock %}

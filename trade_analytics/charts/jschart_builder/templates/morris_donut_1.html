@@ -1,0 +1,19 @@
+
+{% if context.layout_template %}
+{% extends context.layout_template  %}
+{% endif %}
+
+
+ {% block BODY %}
+		<div id="donut" style="height: {{context.height}};"></div>
+
+		<script type="text/javascript">
+		chart= new Morris.Donut({
+		  element: 'donut',
+		  resize: true,
+		  data: {{ data.embeddata|to_pretty_json }}, 
+		});
+
+		</script>
+
+{% endblock %}

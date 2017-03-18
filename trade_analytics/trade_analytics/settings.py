@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'charts',
     'cta',
     'stockapp',
+    'queryapp',
     'dataapp',
     'computeapp',
 ]

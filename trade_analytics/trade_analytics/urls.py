@@ -26,12 +26,13 @@ urlpatterns = [
 	url(r'^admin/doc/', include('django.contrib.admindocs.urls')) ,
     url(r'^admin/', admin.site.urls),
 
-    # rest api
-    url(r'^stockapp/', include('stockapp.urls')),
 
     # Add sitemap to your webpage for search engine optimizat
     url(r'^sitemap\.xml$', sitemap, {'sitemap': sitemap},     name='django.contrib.sitemaps.views.sitemap'),
 
     # app urls
-    url(r'^home/',include('home.urls')),
+    url(r'^home/',include('home.urls',namespace='home')),
+    url(r'^stockapp/', include('stockapp.urls',namespace='stockapp')),
+    url(r'^queryapp/', include('queryapp.urls',namespace='queryapp')),
+
 ]

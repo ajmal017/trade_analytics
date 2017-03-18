@@ -264,8 +264,42 @@
                         <!-- ******** Dashboard ********** -->
 
                         <li>
-                            <a href="index.html"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
+                            <a href="{% url 'home:dashboard' %}"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a>
                         </li>
+
+                        <!-- ******** Watchlists  ********** -->
+
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>   Watchlist  <span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'stockapp:create_watchlist' %}">Create Watchlist</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'stockapp:view_watchlist' %}">View Watchlist</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+
+                        <!-- ******** Query  ********** -->
+
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>   Query/Filter  <span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'queryapp:querybuildergui' %}">Create Query</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'queryapp:mongoquery' %}">Custom Query</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'queryapp:pythonquery' %}">Python Query</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
+
 
                         <!-- ******** CHARTS  ********** -->
 
