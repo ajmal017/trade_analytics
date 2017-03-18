@@ -288,18 +288,60 @@
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>   Query/Filter  <span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
                                 <li>
-                                    <a href="{% url 'queryapp:querybuildergui' %}">Create Query</a>
+                                    <a href="{% url 'queryapp:querybuildergui' %}">Search </a>
                                 </li>
+
                                 <li>
-                                    <a href="{% url 'queryapp:mongoquery' %}">Custom Query</a>
+                                <a href="#">Build Query <span class="fa arrow"></span></a>
+                                    <ul class="nav nav-third-level">
+                                        <li>
+                                            <a href="{% url 'queryapp:querybuildergui' %}">- Validate Query Models </a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'queryapp:querybuildergui' %}">- Create Query Model</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'queryapp:mongoquery' %}">- Custom Query Model</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'queryapp:pythonquery' %}">- Python Query Model</a>
+                                        </li>
+                                    </ul>
                                 </li>
+
                                 <li>
-                                    <a href="{% url 'queryapp:pythonquery' %}">Python Query</a>
+                                <a href="#">Features <span class="fa arrow"></span></a>
+                                    <ul class="nav nav-third-level">
+                                        <li>
+                                           <a href="{% url 'queryapp:createfeature' %}">- View Features</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'queryapp:createfeature' %}">- Create Feature</a>
+                                        </li>
+                                        <li>
+                                           <a href="{% url 'queryapp:createfeature' %}">- Modify Feature</a>
+                                        </li>
+                                    </ul>
                                 </li>
+
                             </ul>
                             <!-- /.nav-second-level -->
                         </li>
 
+                        <!-- ******** Data Science  ********** -->
+
+                        <li>
+                            <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>   Data Science  <span class="fa arrow"></span></a>
+                            <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'queryapp:querybuildergui' %}">Build ML Model</a>
+                                </li>
+                                <li>
+                                    <a href="{% url 'queryapp:querybuildergui' %}">Validate ML Models</a>
+                                </li>
+                            </ul>
+                            <!-- /.nav-second-level -->
+                        </li>
 
                         <!-- ******** CHARTS  ********** -->
 

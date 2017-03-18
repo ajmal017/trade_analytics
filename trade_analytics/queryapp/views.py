@@ -27,3 +27,11 @@ class CustomPythonQuery(View):
     def get(self, request, *args, **kwargs):
 		context={}
 		return render(request,'queryapp/pythonquery.html',context)
+
+
+class Createfeature(View):
+
+    def get(self, request, *args, **kwargs):
+		context={}
+		return render(request,'queryapp/createfeature.html',context)
+
