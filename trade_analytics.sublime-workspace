@@ -1,0 +1,870 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"data",
+				"datathere\tstatement"
+			],
+			[
+				"Com",
+				"CombinesFeaturesEntry\tclass"
+			],
+			[
+				"Plots",
+				"PLOTS_PATH\tstatement"
+			],
+			[
+				"StandardActivit",
+				"StandardizeActivityName\tfunction"
+			],
+			[
+				"Http",
+				"HttpResponse\timport"
+			],
+			[
+				"Stan",
+				"StandardizeActivityName\tfunction"
+			],
+			[
+				"base",
+				"base_models\tstatement"
+			],
+			[
+				"device",
+				"device_locations\tstatement"
+			],
+			[
+				"learne",
+				"learned_already\tstatement"
+			],
+			[
+				"RepLog",
+				"RepLog\tstatement"
+			],
+			[
+				"San",
+				"SanitizeNamesinStr\tfunction"
+			],
+			[
+				"Rep",
+				"RepLog\tstatement"
+			],
+			[
+				"sta",
+				"status"
+			],
+			[
+				"co",
+				"contents"
+			],
+			[
+				"in",
+				"index"
+			],
+			[
+				"set",
+				"set_trace\tfunction"
+			],
+			[
+				"se",
+				"set_trace\tfunction"
+			],
+			[
+				"pd",
+				"pdb\tmodule"
+			],
+			[
+				"Ac",
+				"ActivityLabels\tstatement"
+			],
+			[
+				"Machine_",
+				"Machine_-_Elliptical,_Reverse_Direction"
+			],
+			[
+				"pa",
+				"path\tmodule"
+			],
+			[
+				"Activity",
+				"Activity"
+			],
+			[
+				"sa",
+				"sa\tstatement"
+			],
+			[
+				"file_",
+				"file_operations\tmodule"
+			],
+			[
+				"Re",
+				"Report"
+			],
+			[
+				"dev",
+				"device_location\tforstmt"
+			],
+			[
+				"na",
+				"nan"
+			],
+			[
+				"Data",
+				"DataFrame"
+			]
+		]
+	},
+	"buffers":
+	[
+	],
+	"build_system": "",
+	"build_system_choices":
+	[
+		[
+			[
+				[
+					"Anaconda Python Builder",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					""
+				],
+				[
+					"Packages/Python/Python.sublime-build",
+					"Syntax Check"
+				],
+				[
+					"Packages/SublimeREPL/sublimerepl_build_system_hack.sublime-build",
+					""
+				]
+			],
+			[
+				"Anaconda Python Builder",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					""
+				],
+				[
+					"Packages/C++/C++ Single File.sublime-build",
+					"Run"
+				],
+				[
+					"Packages/SublimeREPL/sublimerepl_build_system_hack.sublime-build",
+					""
+				]
+			],
+			[
+				"Packages/C++/C++ Single File.sublime-build",
+				"Run"
+			]
+		],
+		[
+			[
+				[
+					"Packages/C++11/C++11.sublime-build",
+					""
+				],
+				[
+					"Packages/C++11/C++11.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"Packages/C++11/C++11.sublime-build",
+				"Run"
+			]
+		],
+		[
+			[
+				[
+					"Packages/LaTeXing/LaTeX.sublime-build",
+					""
+				],
+				[
+					"Packages/LaTeXing/LaTeX.sublime-build",
+					"Clean up Files"
+				]
+			],
+			[
+				"Packages/LaTeXing/LaTeX.sublime-build",
+				""
+			]
+		],
+		[
+			[
+				[
+					"Packages/User/untitled.sublime-build",
+					""
+				],
+				[
+					"Packages/User/untitled.sublime-build",
+					"Run"
+				]
+			],
+			[
+				"Packages/User/untitled.sublime-build",
+				""
+			]
+		]
+	],
+	"build_varint": "",
+	"command_palette":
+	{
+		"height": 392.0,
+		"last_filter": "ins",
+		"selected_items":
+		[
+			[
+				"ins",
+				"Package Control: Install Package"
+			],
+			[
+				"markdown",
+				"MarkdownEditing: New Reference"
+			],
+			[
+				"in",
+				"Markdown Preview: Export HTML in Sublime Text"
+			],
+			[
+				"PackageResourceviewer",
+				"PackageResourceViewer: Open Resource"
+			],
+			[
+				"open res",
+				"PackageResourceViewer: Open Resource"
+			],
+			[
+				"remov",
+				"Package Control: Remove Package"
+			],
+			[
+				"",
+				"BracketHighlighter: Match Brackets (ignore threshold)"
+			],
+			[
+				"rep",
+				"SublimeREPL: Python"
+			],
+			[
+				"gl",
+				"Glue - Launch"
+			],
+			[
+				"Ym",
+				"Ycmd: Create HMAC keys"
+			],
+			[
+				"Pa",
+				"Package Control: Install Package"
+			],
+			[
+				"Bra",
+				"BracketHighlighter: Match Brackets (ignore threshold)"
+			],
+			[
+				"isnt",
+				"Package Control: Install Package"
+			],
+			[
+				"anaconda",
+				"Anaconda: Enable linting on this file"
+			],
+			[
+				"install",
+				"Package Control: Install Package"
+			],
+			[
+				"insta",
+				"Package Control: Install Package"
+			],
+			[
+				"packa",
+				"Preferences: Browse Packages"
+			]
+		],
+		"width": 593.0
+	},
+	"console":
+	{
+		"height": 139.0,
+		"history":
+		[
+			"import urllib.request,os,hashlib; h = '2915d1851351e5ee549c20394736b442' + '8bc59f460fa1548d1514676163dafc88'; pf = 'Package Control.sublime-package'; ipp = sublime.installed_packages_path(); urllib.request.install_opener( urllib.request.build_opener( urllib.request.ProxyHandler()) ); by = urllib.request.urlopen( 'http://packagecontrol.io/' + pf.replace(' ', '%20')).read(); dh = hashlib.sha256(by).hexdigest(); print('Error validating download (got %s instead of %s), please try manual install' % (dh, h)) if dh != h else open(os.path.join( ipp, pf), 'wb' ).write(by) "
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"expanded_folders":
+	[
+		"/home/venkat/Documents/trade_analytics"
+	],
+	"file_history":
+	[
+		"/home/venkat/Documents/DataFrame/msgpack-c/example/cpp11/CMakeLists.txt",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/templates/classtemplate.cpp",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/algos/testinherit.cpp",
+		"/home/venkat/Documents/data_analytics/data_password.txt/data_password.txt",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/iterators/iterator_1.cpp",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/iterators/iterator_traits.cpp",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/misc/BuildaVector.cpp",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/templates/template_traits_1.cpp",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/templates/templates_1.cpp",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/misc/enums.cpp",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/exceptions/exceptions.cpp",
+		"/home/venkat/Downloads/QUT_fish_data/QUT_fish_data/readme.txt",
+		"/home/venkat/Downloads/QUT_fish_data/QUT_fish_data/annotations/anampses_elegans_1.pts",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/outfile.html",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/gendoc.py",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/misc/namespace_1.cpp",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/memory_management/memory_basics.cpp",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/memory_management",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/templates/template_traits.cpp",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/templates/template_basic.cpp",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/oop/strings.cpp",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/H/strings.cpp",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/H/h2.cpp",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/threading/Makefile",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/pointers/Makefile",
+		"/home/venkat/Documents/DataFrame/DataFrame.sublime-project",
+		"/home/venkat/Documents/DataFrame/untitled.sublime-project",
+		"/home/venkat/Documents/DataFrame/Eigen/src/Core/Array.h",
+		"/home/venkat/Documents/DataFrame/Eigen/src/Core/CoreEvaluators.h",
+		"/home/venkat/Documents/DataFrame/profile-data.txt",
+		"/home/venkat/Documents/DataFrame/Eigen/src/Core/util/Macros.h",
+		"/home/venkat/Documents/DataFrame/Eigen/src/Core/PlainObjectBase.h",
+		"/home/venkat/Documents/DataFrame/Eigen/src/Core/Map.h",
+		"/home/venkat/Documents/DataFrame/Eigen/src/Core/VectorBlock.h",
+		"/home/venkat/Documents/DataFrame/Eigen/src/Core/ArrayBase.h",
+		"/home/venkat/Documents/DataFrame/Eigen/src/Core/AssignEvaluator.h",
+		"/home/venkat/Documents/DataFrame/Eigen/src/Core/util/Memory.h",
+		"/home/venkat/Documents/DataFrame/Eigen/src/Core/util/Constants.h",
+		"/home/venkat/Documents/DataFrame/Eigen/src/Core/util/XprHelper.h",
+		"/home/venkat/Documents/DataFrame/Eigen/src/Core/EigenBase.h",
+		"/home/venkat/Documents/DataFrame/Eigen/src/Core/DenseCoeffsBase.h",
+		"/home/venkat/.config/sublime-text-3/Packages/User/untitled.sublime-build",
+		"/home/venkat/.config/sublime-text-3/Packages/User/Preferences.sublime-settings",
+		"/home/venkat/.config/sublime-text-3/Packages/User/Package Control.user-ca-bundle",
+		"/home/venkat/.config/sublime-text-3/Packages/User/Package Control.sublime-settings",
+		"/home/venkat/.config/sublime-text-3/Packages/User/Package Control.merged-ca-bundle",
+		"/home/venkat/.config/sublime-text-3/Packages/User/Package Control.last-run",
+		"/home/venkat/.config/sublime-text-3/Packages/User/Default (Linux).sublime-keymap",
+		"/home/venkat/.config/sublime-text-3/Packages/User/C++YouCompleteMe.sublime-settings",
+		"/home/venkat/.config/sublime-text-3/Packages/User/YcmdCompletion.sublime-settings",
+		"/home/venkat/Documents/DataFrame/main",
+		"/home/venkat/Documents/eigen-eigen-67e894c6cd8f/test/adjoint.cpp",
+		"/home/venkat/Documents/DataFrame/Eigen/Core",
+		"/home/venkat/Documents/DataFrame/Eigen/Eigen",
+		"/home/venkat/Documents/DataFrame/Eigen/src/Core/functors/AssignmentFunctors.h",
+		"/home/venkat/Documents/eigen-eigen-67e894c6cd8f/Eigen/src/Geometry/Rotation2D.h",
+		"/home/venkat/Documents/eigen-eigen-67e894c6cd8f/Eigen/src/Geometry/Transform.h",
+		"/home/venkat/Documents/eigen-eigen-67e894c6cd8f/demos/opengl/camera.cpp",
+		"/home/venkat/Documents/eigen-eigen-67e894c6cd8f/INSTALL",
+		"/home/venkat/Documents/eigen-eigen-67e894c6cd8f/Eigen/Cholesky",
+		"/home/venkat/Documents/eigen-eigen-67e894c6cd8f/README.md",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/designingcpp.txt",
+		"/home/venkat/n.adurthi@gmail.com/big_data/user.txt",
+		"/home/venkat/n.adurthi@gmail.com/big_data/page_view.txt",
+		"/home/venkat/n.adurthi@gmail.com/big_data/mapper.py",
+		"/home/venkat/n.adurthi@gmail.com/big_data/reducer.py",
+		"/home/venkat/Downloads/Untitled7.html",
+		"/home/venkat/Documents/trademaster/trademaster/research/views.py",
+		"/home/venkat/Documents/trademaster/trademaster/research/models.py",
+		"/home/venkat/Desktop/hack.py",
+		"/home/venkat/Documents/trademaster/trademaster/trademaster/settings.py",
+		"/home/venkat/Downloads/clingg/cpt.py",
+		"/home/venkat/Documents/Uncertainty_Quantification/Moments/tens_prod_vec.m",
+		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/algos/linkedlist.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/misc/vector.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/learning_const.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/oop.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/overloading_operator.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/oop_concept1.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/H/strings.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/STL/AllSTLS.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/move_semantics.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/STL/maps.cpp",
+		"/home/venkat/Documents/trademaster/trademaster/temp",
+		"/home/venkat/Dropbox/UT updtd  02-21-2012 latest/lorentz equation/lorentz_prop.m",
+		"/home/venkat/Documents/Uncertainty_Quantification/Moments/tensor_product.m",
+		"/home/venkat/Dropbox/UT updtd  02-21-2012 latest/ukf paper eg simulations/rangeAndBearing.m",
+		"/home/venkat/Dropbox/UT updtd  02-21-2012 latest/ukf paper eg simulations/lorenz_filtering_eg.m",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/misc/movesemantics.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/Allaboutclasses",
+		"/home/venkat/QuadControl-cpp/joystick_test/src/joystick.cpp",
+		"/home/venkat/QuadControl-cpp/joystick_test/src/joystick.h",
+		"/home/venkat/QuadControl-cpp/opencv_on_BBB/src/opencv_on_BBB.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/pointers/test3.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/pointers/test4.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/pointers/casting.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/move_semantics2.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/misc/own_smartptr.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/Uncopiyable.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/algos/linkedlist.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/misc/functions.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/map.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/misc/enums.cpp",
+		"/home/venkat/.config/sublime-text-3/Packages/C++11/C++11.sublime-build",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/quicksort.cpp",
+		"/home/venkat/Documents/trademaster_production/research/views.py",
+		"/home/venkat/Documents/trademaster_production/research/forms.py",
+		"/home/venkat/Documents/trademaster_production/research/models.py",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/Allaboutclasses.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/pointers.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/threading/threading.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/threading/conditonvariables.cpp",
+		"/home/venkat/Downloads/rippleshot-fraud-detection/rippleshot-fraud-detection.md",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/const.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/virtualinconstructor.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/threading/test6.cpp",
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/threading/test3.cpp",
+		"/home/venkat/Documents/trademaster_production/homepage/templates/homepage/base.html",
+		"/home/venkat/Documents/cpp_examples/H/test1.cpp",
+		"/home/venkat/Documents/cpp_examples/pointers/test4.cpp",
+		"/home/venkat/Documents/cpp_examples/pointers/test3.cpp",
+		"/home/venkat/Documents/cpp_examples/pointers/test.cpp",
+		"/home/venkat/Documents/cpp_examples/oop/Allaboutclasses.cpp",
+		"/home/venkat/Documents/cpp_examples/pointers/test2.cpp",
+		"/var/www/test.html",
+		"/var/www/cl/test.html",
+		"/home/venkat/Documents/trademaster_production/research/libs.py",
+		"/home/venkat/Desktop/untitled.html"
+	],
+	"find":
+	{
+		"height": 23.0
+	},
+	"find_in_files":
+	{
+		"height": 93.0,
+		"where_history":
+		[
+			"<folders>",
+			"/home/venkat/rithmio-concurrent/reporting/",
+			"/home/venkat/rithmio-concurrent/reporting",
+			"/home/venkat/das",
+			"das",
+			"<folders>",
+			"<open folders>",
+			"",
+			"libc"
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"inner_base",
+			"type_info",
+			"myiter_array",
+			"<int>",
+			"<T>",
+			"fname",
+			"matrix",
+			"Matrix2d",
+			"Matrix",
+			"Matrix2d",
+			"MatrixXd",
+			"PlainObjectBase",
+			"dense_xpr_base",
+			"EIGEN_DEVICE_FUNC",
+			"internal",
+			"Matrix",
+			"new",
+			"img",
+			"print",
+			"ram",
+			"memory",
+			"multiprocessing",
+			"BASE_DIR",
+			"base",
+			"rithmioapicoach",
+			"cin",
+			"cout",
+			"map",
+			"icon",
+			"container",
+			"tableofcharts",
+			"container",
+			"https://getbootstrap.com/examples/navbar/",
+			"../",
+			".left",
+			"allow",
+			"allowe",
+			"allowed",
+			"allow",
+			"mut",
+			"select",
+			"friend",
+			" 00:00:00",
+			"00:00:00",
+			"int",
+			"data4",
+			"std::",
+			"func1",
+			"i",
+			"300px",
+			"500",
+			"compare_rithms",
+			"px  <",
+			"img",
+			"\">",
+			"<",
+			"<img",
+			"pep8",
+			"return",
+			"self",
+			"self.ReturnCleanedStockName()",
+			"\\n",
+			"pd.DataFrame",
+			"AC=pd.DataFrame",
+			"AC=pd.DataFrame( list(dlm.ModelBasedClassifier.objects.exclude(Grpname='basic').values('Grpname','model') ))",
+			"pageno",
+			"user",
+			"per20",
+			"width=\"300px\",height=\"200px\"",
+			"GeneralFile",
+			"settings",
+			"pep8",
+			"SavedQueriesView",
+			"Paginator",
+			"\\cline{2-3}",
+			"\\noalign{skip}",
+			"4000",
+			"pep8",
+			"set_trace",
+			"per20",
+			"F",
+			"ClassORvec",
+			"percentile20",
+			"per20",
+			"GFV",
+			"QueryGeneralFeature",
+			"Status_log",
+			"pdb",
+			"TTstr",
+			"DLin",
+			"profile",
+			"SQLqry",
+			"QCMF",
+			"SQ",
+			"dfgf",
+			"GenLinTrendsCustomFeats_chunks",
+			"static",
+			"slope_21",
+			"        ('",
+			"(",
+			"slope_12",
+			"        ('",
+			"compare_rithms",
+			"classifiers_json",
+			"librithmio_path",
+			"28961edb-4ef7-4c11-9ac5-5be74ee0d26e",
+			"LRAutolabelRithms",
+			"decrypt_rithm",
+			"learning_setup",
+			"compareRithms",
+			"align_rithms",
+			"autolabel_rithm",
+			"AndroidWear",
+			"LOCATION_CHOICES",
+			"RepM_DF_MC2C_set",
+			"oreintvec",
+			"ax",
+			"[0][0]",
+			"pdb.set_trace()",
+			"listofClassreports",
+			"legend",
+			"pep8",
+			"10000",
+			"dfclass_repM",
+			"Not enough data received..... may be the symbol changed recently",
+			"csrf_exempt",
+			"dfclass",
+			"DumpFeatureCodes2file"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": false,
+		"replace_history":
+		[
+			"myiter",
+			"",
+			"{% static 'homepage/",
+			"",
+			"600px",
+			"1000",
+			"px\"  <",
+			"<img",
+			"  </td></tr>",
+			"<tr><td>",
+			"\n<img",
+			"symb",
+			"",
+			"\\r",
+			"width=\"500px\",height=\"300px\"",
+			"SQVIEW",
+			"",
+			"10000",
+			"",
+			"mark_safe(mpld3.fig_to_html(fig))",
+			"",
+			"#Symbol#",
+			"#pk#",
+			"chartname",
+			"md",
+			"tf",
+			"int(window)",
+			"Interval",
+			"stk",
+			" ",
+			"metadata",
+			"ClassForm",
+			"dfsets",
+			"rpts",
+			"class_report_html_dict",
+			"settings.DATABASES['StockDataH5']['NAME']",
+			"class_report_html_dict",
+			"settings.StockDatah5path",
+			"fr.Geturl",
+			"plt.close(fig)\n\tgc.collect()",
+			"\n\t\tgc.collect()",
+			"\ngc.collect()",
+			"\\\\n gc.collect()",
+			"\\n gc.collect()",
+			"plt.close(fig) gc.collect()",
+			"NMG",
+			"",
+			"PastMNRtQt",
+			"IndustryPastMN",
+			"IndustryPastMX",
+			"SectorPastMN",
+			"SectorPastMX",
+			"",
+			"(0.5, 1.1)",
+			"fontsize=22",
+			"ax[i][j].set_xticks(np.arange(-1,1+0.2,0.2))",
+			"2,2",
+			"**",
+			"df",
+			"charttype=figname.replace('.png','')",
+			"",
+			"gy",
+			"gz",
+			"gy",
+			"gx",
+			"df",
+			"",
+			"percentile80",
+			"percentile20",
+			"'^'",
+			"5000",
+			"rmd.FeatureUnit.objects.get(units='%' )",
+			"'#'+features",
+			"\\r\\n\\t",
+			"\\r\\n",
+			"",
+			"DF_rlhat_freq_1",
+			"",
+			"''",
+			"",
+			"integer",
+			"(0.5, 1.3)",
+			"ax.legend(loc='upper center',borderaxespad=0., bbox_to_anchor=(0.5, 1.1),ncol=2, fancybox=True, shadow=True,fontsize=10)",
+			"ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.1),ncol=2, fancybox=True, shadow=True,fontsize=10)",
+			"ax.tick_params(axis='y', which='major', labelsize=10)",
+			"ax.legend(loc='upper center', bbox_to_anchor=(0.5, 1.05),ncol=2, fancybox=True, shadow=True,fontsize=10)",
+			"fontsize=8",
+			"rotation=90",
+			"",
+			"QHST",
+			"",
+			"HST",
+			"self.SQLqry",
+			"__lte",
+			"__gte",
+			"MN",
+			"mn",
+			"FutMXRtAn",
+			"QCDF_mxan",
+			"QCDF_mxhf",
+			"FutMXRtHf",
+			"qp",
+			"None",
+			"dfback",
+			"tf",
+			"dfsp",
+			"dfhhatf[",
+			"dfhhatf['t']",
+			"dfsp[",
+			"dfsp['t']",
+			"'FP_nocompare_SimilarityMatrix_'+tagname+'.json'",
+			"'Prog_Durations_'+tagname+'.json'",
+			"dfpact",
+			"DF_rlhat_freq",
+			"#HTMLsumm",
+			"SMA: Return",
+			"SM-STD: Volume",
+			"EMA: Volume",
+			"SMA: Volume",
+			"EM-STD: Close",
+			"SM-STD: Close",
+			"EMA: Close",
+			"SMA",
+			"ddagg",
+			"DFsumm",
+			"green",
+			"yellow",
+			"DF"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"sheets":
+			[
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 23.0
+	},
+	"input":
+	{
+		"height": 48.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.CppYCM.2":
+	{
+		"height": 0.0
+	},
+	"output.CppYCM.3":
+	{
+		"height": 0.0
+	},
+	"output.CppYCM.4":
+	{
+		"height": 0.0
+	},
+	"output.CppYCM.5":
+	{
+		"height": 0.0
+	},
+	"output.exec":
+	{
+		"height": 223.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.sftp":
+	{
+		"height": 92.0
+	},
+	"output.unsaved_changes":
+	{
+		"height": 130.0
+	},
+	"pinned_build_system": "Packages/User/C++_includedir.sublime-build",
+	"project": "trade_analytics.sublime-project",
+	"replace":
+	{
+		"height": 42.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"common",
+				"das/das/settings/common.py"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"last_filter": "",
+		"selected_items":
+		[
+			[
+				"",
+				"~/Documents/trademaster/trademaster.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 383.0,
+		"last_filter": "",
+		"selected_items":
+		[
+		],
+		"width": 737.0
+	},
+	"selected_group": 0,
+	"settings":
+	{
+	},
+	"show_minimap": false,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 266.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

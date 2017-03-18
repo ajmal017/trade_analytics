@@ -1,3 +1,16 @@
 - find . -type f -name "*.sqlite3" -exec rm -f {} \;
 - find . -type f -name "0001*" -exec rm -f {} \;
 - celery -A proj worker -l info
+
+
+
+
+
+
+
+
+
+
+# POSTGRESQL helper
+1. CREATE DATABASE IF NOT EXISTS DBName;
+2. CREATE TABLE IF NOT EXISTS DBName;
