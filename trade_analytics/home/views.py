@@ -12,7 +12,7 @@ Message level: DEBUG INFO SUCCESS  WARNING ERROR
 """
 
 
-class Index(View):
+class Dashboard(View):
 
     def get(self, request, *args, **kwargs):
 		context={}
@@ -23,3 +23,10 @@ class Index(View):
 		messages.error(request, 'Document deleted.')
 		messages.debug(request, 'variable set')
 		return render(request,os.path.join('home',theme_folder,'index.html'),context)
+
+
+class Home(View):
+
+    def get(self, request, *args, **kwargs):
+		context={}
+		return render(request,os.path.join('home',theme_folder,'home.html'),context)

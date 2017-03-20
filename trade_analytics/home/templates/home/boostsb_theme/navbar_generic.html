@@ -261,6 +261,12 @@
                             <!-- /input-group -->
                         </li>
 
+                        <!-- ******** Home ********** -->
+
+                        <li>
+                            <a href="{% url 'home:home' %}"><i class="fa fa-home fa-fw"></i> Home</a>
+                        </li>
+
                         <!-- ******** Dashboard ********** -->
 
                         <li>
@@ -316,12 +322,25 @@
                                            <a href="{% url 'queryapp:createfeature' %}">- View Features</a>
                                         </li>
                                         <li>
-                                            <a href="{% url 'queryapp:createfeature' %}">- Create Feature</a>
-                                        </li>
-                                        <li>
-                                           <a href="{% url 'queryapp:createfeature' %}">- Modify Feature</a>
+                                            <a href="{% url 'queryapp:createfeature' %}">- Create/Modify Feature</a>
                                         </li>
                                     </ul>
+                                </li>
+
+                                <li>
+                                <a href="#">Unsupervised Labels <span class="fa arrow"></span></a>
+                                    <ul class="nav nav-third-level">
+                                        <li>
+                                           <a href="{% url 'queryapp:createfeature' %}">- View Labels</a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'queryapp:createfeature' %}">- Create/Modify Labels</a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+                                 <li>
+                                    <a href="{% url 'queryapp:querybuildergui' %}">Supervised Labels </a>
                                 </li>
 
                             </ul>
@@ -333,6 +352,9 @@
                         <li>
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>   Data Science  <span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+                                <li>
+                                    <a href="{% url 'queryapp:querybuildergui' %}">Build Datasets</a>
+                                </li>
                                 <li>
                                     <a href="{% url 'queryapp:querybuildergui' %}">Build ML Model</a>
                                 </li>
@@ -348,9 +370,33 @@
                         <li>
                             <a href="#"><i class="fa fa-bar-chart-o fa-fw"></i>   Charts  <span class="fa arrow"></span></a>
                             <ul class="nav nav-second-level">
+
+                                <li>
+                                    <a href="#"> Stock Charts </a>
+                                </li>
+
+                                <li>
+                                <a href="#">Analytic Charts <span class="fa arrow"></span></a>
+                                    <ul class="nav nav-third-level">
+                                        <!-- browse all the suggested charts and even edit or customize them -->
+                                        <li>
+                                           <a href="{% url 'queryapp:createfeature' %}">- Browse </a>
+                                        </li>
+                                        <li>
+                                            <!-- library of completed and customized charts -->
+                                            <a href="{% url 'queryapp:createfeature' %}">- Library </a>
+                                        </li>
+                                        <li>
+                                            <a href="{% url 'queryapp:createfeature' %}">- Custom Charts</a>
+                                        </li>
+                                    </ul>
+                                </li>
+
+
                                 <li>
                                     <a href="flot.html">Flot Charts</a>
                                 </li>
+
                                 <li>
                                     <a href="morris.html">Morris.js Charts</a>
                                 </li>

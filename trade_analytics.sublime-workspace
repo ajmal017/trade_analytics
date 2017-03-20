@@ -119,6 +119,31 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "trade_analytics/queryapp/views.py",
+			"settings":
+			{
+				"buffer_size": 820,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/datascience/urls.py",
+			"settings":
+			{
+				"buffer_size": 77,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/stockapp/models.py",
+			"settings":
+			{
+				"buffer_size": 4369,
+				"line_ending": "Unix"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -313,10 +338,74 @@
 	},
 	"expanded_folders":
 	[
-		"/home/venkat/Documents/trade_analytics"
+		"/home/venkat/Documents/trade_analytics",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/computeapp",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/datascience",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/datascience/templates",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/datascience/templates/datascience",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home/boostsb_theme",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/trade_analytics"
 	],
 	"file_history":
 	[
+		"/home/venkat/Documents/trade_analytics/trade_analytics/trade_analytics/settings.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/computeapp/tests.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp/querybuilderGUI.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp/templates/stockapp/create_watchlist.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp/createfeature.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/urls.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home/boostsb_theme/navbar_generic.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp/pythonquery.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp/createmongoquery.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/datascience/views.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/datascience/templates/datascience/createfeature.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home/boostsb_theme/index.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp/bower_components/awesome-bootstrap-checkbox/README.md",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp/dist/js/query-builder.js",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp/dist/js/query-builder.standalone.js",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp/dist/js/query-builder.standalone.min.js",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp/dist/js/query-builder.min.js",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home/boostsb_theme/base_generic.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp/templates/stockapp/view_watchlist.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp/urls.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/trade_analytics/urls.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/home/views.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp/views.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/requirements.txt",
+		"/home/venkat/Documents/querybuilder/test/test.html",
+		"/home/venkat/Documents/querybuilder/jQuery-QueryBuilder-2.4.1/examples/index.html",
+		"/home/venkat/Documents/querybuilder/node_modules/jQuery-QueryBuilder/examples/index.html",
+		"/home/venkat/Downloads/jQuery-QueryBuilder-2.4.1/examples/index.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/home/urls.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/jschart_builder.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp/models.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/dataapp/models.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/cta/libs.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/output/donut.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/templates/bases/base_page.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/templates/morris_bar_1.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/templates/morris_donut_1.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home/boostsb_theme/page_generic.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/templates/bases/morris_donut.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/output/chart.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/templates/d3_linearchart_1.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/templates/bases/base_empty.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/output/test.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/templates/base_page.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/templates/d3linerchart_1.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/templates/temp.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/__init__.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/templates/test.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/templates/__init__.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/templates/data/data_1.tsv",
 		"/home/venkat/Documents/DataFrame/msgpack-c/example/cpp11/CMakeLists.txt",
 		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/templates/classtemplate.cpp",
 		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/algos/testinherit.cpp",
@@ -394,61 +483,11 @@
 		"/home/venkat/Dropbox/c++ and prep/cpp_examples/misc/vector.cpp",
 		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/learning_const.cpp",
 		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/oop.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/overloading_operator.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/oop_concept1.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/H/strings.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/STL/AllSTLS.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/move_semantics.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/STL/maps.cpp",
-		"/home/venkat/Documents/trademaster/trademaster/temp",
-		"/home/venkat/Dropbox/UT updtd  02-21-2012 latest/lorentz equation/lorentz_prop.m",
-		"/home/venkat/Documents/Uncertainty_Quantification/Moments/tensor_product.m",
-		"/home/venkat/Dropbox/UT updtd  02-21-2012 latest/ukf paper eg simulations/rangeAndBearing.m",
-		"/home/venkat/Dropbox/UT updtd  02-21-2012 latest/ukf paper eg simulations/lorenz_filtering_eg.m",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/misc/movesemantics.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/Allaboutclasses",
-		"/home/venkat/QuadControl-cpp/joystick_test/src/joystick.cpp",
-		"/home/venkat/QuadControl-cpp/joystick_test/src/joystick.h",
-		"/home/venkat/QuadControl-cpp/opencv_on_BBB/src/opencv_on_BBB.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/pointers/test3.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/pointers/test4.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/pointers/casting.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/move_semantics2.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/misc/own_smartptr.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/Uncopiyable.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/algos/linkedlist.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/misc/functions.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/map.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/misc/enums.cpp",
-		"/home/venkat/.config/sublime-text-3/Packages/C++11/C++11.sublime-build",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/quicksort.cpp",
-		"/home/venkat/Documents/trademaster_production/research/views.py",
-		"/home/venkat/Documents/trademaster_production/research/forms.py",
-		"/home/venkat/Documents/trademaster_production/research/models.py",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/Allaboutclasses.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/pointers.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/threading/threading.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/threading/conditonvariables.cpp",
-		"/home/venkat/Downloads/rippleshot-fraud-detection/rippleshot-fraud-detection.md",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/const.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/virtualinconstructor.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/threading/test6.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/threading/test3.cpp",
-		"/home/venkat/Documents/trademaster_production/homepage/templates/homepage/base.html",
-		"/home/venkat/Documents/cpp_examples/H/test1.cpp",
-		"/home/venkat/Documents/cpp_examples/pointers/test4.cpp",
-		"/home/venkat/Documents/cpp_examples/pointers/test3.cpp",
-		"/home/venkat/Documents/cpp_examples/pointers/test.cpp",
-		"/home/venkat/Documents/cpp_examples/oop/Allaboutclasses.cpp",
-		"/home/venkat/Documents/cpp_examples/pointers/test2.cpp",
-		"/var/www/test.html",
-		"/var/www/cl/test.html",
-		"/home/venkat/Documents/trademaster_production/research/libs.py",
-		"/home/venkat/Desktop/untitled.html"
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/overloading_operator.cpp"
 	],
 	"find":
 	{
-		"height": 23.0
+		"height": 34.0
 	},
 	"find_in_files":
 	{
@@ -471,6 +510,17 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			" input[type=checkbox]:checked + label:after ",
+			".checkbox",
+			".check",
+			"price",
+			"sql",
+			"set-sql",
+			"\n                                    ",
+			"b",
+			"a",
+			"y",
+			"data",
 			"inner_base",
 			"type_info",
 			"myiter_array",
@@ -587,18 +637,7 @@
 			"LOCATION_CHOICES",
 			"RepM_DF_MC2C_set",
 			"oreintvec",
-			"ax",
-			"[0][0]",
-			"pdb.set_trace()",
-			"listofClassreports",
-			"legend",
-			"pep8",
-			"10000",
-			"dfclass_repM",
-			"Not enough data received..... may be the symbol changed recently",
-			"csrf_exempt",
-			"dfclass",
-			"DumpFeatureCodes2file"
+			"ax"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -606,6 +645,9 @@
 		"regex": false,
 		"replace_history":
 		[
+			"'b'",
+			"'a'",
+			"'y'",
 			"myiter",
 			"",
 			"{% static 'homepage/",
@@ -730,10 +772,7 @@
 			"EMA: Close",
 			"SMA",
 			"ddagg",
-			"DFsumm",
-			"green",
-			"yellow",
-			"DF"
+			"DFsumm"
 		],
 		"reverse": false,
 		"show_context": true,
@@ -744,8 +783,342 @@
 	"groups":
 	[
 		{
+			"selected": 2,
 			"sheets":
 			[
+				{
+					"buffer": 0,
+					"file": "trade_analytics/queryapp/views.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 820,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								820,
+								820
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
+							],
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "trade_analytics/datascience/urls.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 77,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								70,
+								70
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										73,
+										74
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/square_bracket.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										67,
+										68
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
+							],
+							"incomplete_sync": null,
+							"open_with_edit": true,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "trade_analytics/stockapp/models.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4369,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3935,
+								3935
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
+							],
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1260.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				}
 			]
 		}
 	],
@@ -816,7 +1189,7 @@
 	"project": "trade_analytics.sublime-project",
 	"replace":
 	{
-		"height": 42.0
+		"height": 62.0
 	},
 	"save_all_on_build": true,
 	"select_file":
@@ -862,7 +1235,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 266.0,
+	"side_bar_width": 225.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

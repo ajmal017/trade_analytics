@@ -21,3 +21,7 @@ class Stockprice(models.Model):
 
 	class Meta:
 		ordering = ["Date"]
+
+
+# TODO: Pymongo model
+# TODO: save features in mongodb
