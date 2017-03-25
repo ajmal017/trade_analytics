@@ -1,0 +1,28 @@
+{% if context.includes %}
+    
+
+    {% for key,value in context.includes.items() %}
+      <!-- {{ key }} -->
+      {% for link in value %}
+        {{ link }}
+      {% endfor %}      
+    {% endfor %}
+
+  {% endif %}  
+
+
+<div id="donut" style="height: {{context.height}};"></div>
+
+<script type="text/javascript">
+chart= new Morris.Donut({
+  element: 'donut',
+  resize: true,
+	{% if data.data_format == 'embed' %}
+	data:{%- for row in data.data_embed -%}
+		{{ row|to_pretty_json }}
+	{%- endfor -%}
+{% endif %}
+});
+
+</script>
+

@@ -129,6 +129,24 @@
 			}
 		},
 		{
+			"file": "trade_analytics/queryapp/templates/queryapp/createfeature.html",
+			"settings":
+			{
+				"buffer_size": 2003,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/queryapp/templates/queryapp/querybuilderGUI.html",
+			"settings":
+			{
+				"buffer_size": 21287,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "trade_analytics/datascience/urls.py",
 			"settings":
 			{
@@ -141,6 +159,51 @@
 			"settings":
 			{
 				"buffer_size": 4369,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/home/templates/home/boostsb_theme/home.html",
+			"settings":
+			{
+				"buffer_size": 4485,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/home/templates/home/boostsb_theme/base_generic.html",
+			"settings":
+			{
+				"buffer_size": 9799,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/home/views.py",
+			"settings":
+			{
+				"buffer_size": 905,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/home/urls.py",
+			"settings":
+			{
+				"buffer_size": 232,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/designdoc.md",
+			"settings":
+			{
+				"buffer_size": 2206,
+				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		}
@@ -339,35 +402,32 @@
 	"expanded_folders":
 	[
 		"/home/venkat/Documents/trade_analytics",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/computeapp",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/datascience",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/datascience/templates",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/datascience/templates/datascience",
+		"/home/venkat/Documents/trade_analytics/trade_analytics",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home/boostsb_theme",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/trade_analytics"
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp"
 	],
 	"file_history":
 	[
+		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home/boostsb_theme/navbar_generic.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp/querybuilderGUI.html",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/home/views.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/home/urls.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/computeapp/models.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/dataapp/models.py",
+		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home/boostsb_theme/index.html",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/trade_analytics/settings.py",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/computeapp/tests.py",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp/querybuilderGUI.html",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp/templates/stockapp/create_watchlist.html",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp/createfeature.html",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/urls.py",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home/boostsb_theme/navbar_generic.html",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp/pythonquery.html",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp/createmongoquery.html",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/datascience/views.py",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/datascience/templates/datascience/createfeature.html",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home/boostsb_theme/index.html",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp/bower_components/awesome-bootstrap-checkbox/README.md",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp/dist/js/query-builder.js",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp/dist/js/query-builder.standalone.js",
@@ -377,17 +437,14 @@
 		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp/templates/stockapp/view_watchlist.html",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp/urls.py",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/trade_analytics/urls.py",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/home/views.py",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp/views.py",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/requirements.txt",
 		"/home/venkat/Documents/querybuilder/test/test.html",
 		"/home/venkat/Documents/querybuilder/jQuery-QueryBuilder-2.4.1/examples/index.html",
 		"/home/venkat/Documents/querybuilder/node_modules/jQuery-QueryBuilder/examples/index.html",
 		"/home/venkat/Downloads/jQuery-QueryBuilder-2.4.1/examples/index.html",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/home/urls.py",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/jschart_builder.py",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp/models.py",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/dataapp/models.py",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/cta/libs.py",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/output/donut.html",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/templates/bases/base_page.html",
@@ -482,8 +539,7 @@
 		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/algos/linkedlist.cpp",
 		"/home/venkat/Dropbox/c++ and prep/cpp_examples/misc/vector.cpp",
 		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/learning_const.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/oop.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/overloading_operator.cpp"
+		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/oop.cpp"
 	],
 	"find":
 	{
@@ -783,7 +839,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 5,
 			"sheets":
 			[
 				{
@@ -888,11 +944,255 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
+					"file": "trade_analytics/queryapp/templates/queryapp/createfeature.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2003,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								568,
+								568
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										568,
+										569
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/double_quote.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										552,
+										553
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
+							],
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 180.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "trade_analytics/queryapp/templates/queryapp/querybuilderGUI.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 21287,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3761,
+								3761
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										3761,
+										3762
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/double_quote.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										3745,
+										3746
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
+							],
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1125.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
 					"file": "trade_analytics/datascience/urls.py",
 					"semi_transient": false,
 					"settings":
@@ -1009,11 +1309,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
-					"buffer": 2,
+					"buffer": 4,
 					"file": "trade_analytics/stockapp/models.py",
 					"semi_transient": false,
 					"settings":
@@ -1116,7 +1416,571 @@
 						"translation.y": 1260.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "trade_analytics/home/templates/home/boostsb_theme/home.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4485,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								886,
+								886
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
+							],
+							"incomplete_sync": null,
+							"open_with_edit": true,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/HTML/HTML.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 548.0,
+						"zoom_level": 1.0
+					},
 					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "trade_analytics/home/templates/home/boostsb_theme/base_generic.html",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9799,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3394,
+								3394
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+									"1":
+									[
+										3389,
+										3393
+									]
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
+							],
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/HTML/HTML.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 990.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "trade_analytics/home/views.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 905,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								889,
+								889
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										894,
+										895
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/single_quote.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										884,
+										885
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
+							],
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Python/Python.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "trade_analytics/home/urls.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 232,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								126,
+								126
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										128,
+										129
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/single_quote.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										120,
+										121
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
+							],
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/Python/Python.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "trade_analytics/designdoc.md",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2206,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								2063,
+								2063
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content"
+							],
+							"incomplete_sync": null,
+							"remote_loading": false,
+							"synced": false,
+							"syntax": "Packages/MarkdownLight/MarkdownLight.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
 					"type": "text"
 				}
 			]
