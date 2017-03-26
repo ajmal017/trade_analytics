@@ -1,27 +1,33 @@
 
-{% if context.layout_template %}
-{% extends context.layout_template  %}
+{% if context.includes %}
+    
+
+    {% for key,value in context.includes.items() %}
+      <!-- {{ key }} -->
+      {% for link in value %}
+        {{ link }}
+      {% endfor %}      
+    {% endfor %}
+
+{% endif %}
+
+<div id="{{context.chart_id}}" style="width: 500px;"></div>
+
+<script type="text/javascript">
+bar= Morris.Bar({
+	  element: "{{context.chart_id}}",
+	  data: {{ data.data_embed.plotdata |to_pretty_json }},
+	  xkey: {{data.data_embed.xkey|to_pretty_json}},
+	  ykeys:  {{data.data_embed.ykeys|to_pretty_json}},
+	  labels: {{data.data_embed.labels|to_pretty_json}}
+
+});
+
+{% if data.data_format == 'embed' %}
+	dataset={{ data.data_embed.plotdata|to_pretty_json }};
+	bar.setData(dataset);
 {% endif %}
 
 
- {% block BODY %}
-		<div id="bar" style="width: 500px;"></div>
+</script>
 
-		<script type="text/javascript">
-		bar= Morris.Bar({
-			  element: 'bar',
-			  data: [  ],
-			  xkey: 'y',
-			  ykeys: ['a', 'b'],
-			  labels: ['Series A', 'Series B']
-
-		});
-
-		{% if data.embeddata %}
-			dataset={{ data.embeddata|to_pretty_json }};
-			bar.setData(dataset);
-		{% endif %}
-		
-		</script>
-
-{% endblock %}

@@ -11,17 +11,15 @@
   {% endif %}  
 
 
-<div id="donut" style="height: {{context.height}};"></div>
+<div id="{{context.chart_id}}" style="height: {{context.height}};"></div>
 
 <script type="text/javascript">
 chart= new Morris.Donut({
-  element: 'donut',
+  element: "{{context.chart_id}}",
   resize: true,
 	{% if data.data_format == 'embed' %}
-	data:{%- for row in data.data_embed -%}
-		{{ row|to_pretty_json }}
-	{%- endfor -%}
-{% endif %}
+	data:	{{ data.data_embed.plotdata|to_pretty_json }},
+	{% endif %}
 });
 
 </script>

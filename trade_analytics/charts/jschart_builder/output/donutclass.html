@@ -20,14 +20,14 @@
     
 
 
-<div id="donut" style="height: 300;"></div>
+<div id="myDonut" style="height: 300;"></div>
 
 <script type="text/javascript">
 chart= new Morris.Donut({
-  element: 'donut',
+  element: "myDonut",
   resize: true,
 	
-	data:[
+	data:	[
     {
         "label": "Download Sales",
         "value": 12
@@ -40,7 +40,8 @@ chart= new Morris.Donut({
         "label": "Mail-Order Sales",
         "value": 20
     }
-]
+],
+	
 });
 
 </script>

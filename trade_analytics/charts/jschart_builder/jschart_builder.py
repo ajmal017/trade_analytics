@@ -110,20 +110,9 @@ class Chart(object):
 		# ideally read __dict__ into options 
 		# may be later
 
-		self.options={}
+		self.options={'data':{},'context':{}, 'type': None, 'name': None, 'description': None,
+						'charthandler': None, 'template_dir': None, 'template': None, 'plotdata': None , 'urldata': None}
 		
-		self.options['data']={}
-		self.options['context']={}
-		
-		self.options['type']=None
-		self.options['name']=None
-		self.options['description']=None
-		self.options['charthandler']=None
-		self.options['template_dir']=None
-		self.options['template']=None
-		self.options['plotdata']=None;
-		self.options['urldata']=None;
-
 
 	def chart_json(self,filename=None):
 		"""
@@ -150,16 +139,6 @@ class Chart(object):
 		check to see if jinja is there or else just use string based 
 		"""
 		pass
-	
-
-	def set_options(self,option,value):
-		"""
-		set options like:
-			update from url every 30 sec etc
-			width,height
-			include cdn,css and js
-		"""
-		self.options[option]=value
 
 	def __setitem__(self,attr,val):
 		self.options[attr]=val
@@ -169,36 +148,20 @@ class Chart(object):
 			return self.options[attr]
 		else:
 			raise "No option available"
-	
 
 	def set_data(self):
 		"""
 		set sample data for testing
 		"""
-		self.embeddata=None;
-		self.urldata=None;
-
-	def get_data(self,data=None,url=None):
-		"""
-		embed data or get dynamic data from url 
-		verify url before u set it 
-		"""
 		pass
-
-
-	def get_context(self):
+	def set_context(self):
 		pass
-
 
 	def update(self):
 		"""
 		set the charthandler before you call view or to_html
 		"""
-		context=self.get_context()
-		data=self.get_data()
-		
-		self.Charthandler=Charthandler(engine='jinja',template_id=self.options['template_id'],context=context,data=data)
-
+		self.Charthandler=Charthandler(engine='jinja',template_id=self.options['template_id'],context=self.options['context'],data=self.options['data'])
 
 	def view(self):
 		"""
@@ -228,31 +191,23 @@ class D3plot(Chart):
 		self.options['template_id']=template_id
 		self.options['chart_id']=chart_id
 
-	def get_context(self):
+	def set_context(self):
 		self.options['context']={	
 						'chart_id' : self.options['chart_id'], 
 						'includes':INCLUDES['d3'],
 						'width':self.options['width'],
 						'height':self.options['height'],
 					 }
-		return self.options['context']
 
-	def get_data(self,data=None,url=None):
-		self.options['data_format']='embed'
-		self.options['data_file']='/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/output/data/data_1.tsv'
-		self.options['data_embed']=True
-		self.options['data_url']=None
-		self.options['data_refresh']=None
 
-		data=open(self.options['data_file']).read()
-		
+	def set_data(self,data_format=None,data_file=None,data_plot=None,data_url=None,data_refresh=None):
 		self.options['data'] =	{	
-						"data_format":self.options['data_format'],
-						"data_file":self.options['data_file'],
-						"data_embed": [data] ,
+						"data_format":data_format,
+						"data_file":data_file,
+						'data_url':data_url,
+						'data_refresh':data_refresh,
+						"data_plot": data_plot ,
 					}
-
-		return self.options['data']
 
 		
 class Morris(Chart):
@@ -262,75 +217,25 @@ class Morris(Chart):
 		self.options['template_id']=template_id
 		self.options['chart_id']=chart_id
 
-	def get_context(self):
+	def set_context(self):
 		self.options['context']={	
 						'chart_id' : self.options['chart_id'], 
 						'includes':INCLUDES['morris'],
 						'width':self.options['width'],
 						'height':self.options['height'],
 					 }
-		return self.options['context']
 
-	def get_data(self,data=None,url=None):
-		self.options['data_format']='embed'
-		self.options['data_file']=None
-		self.options['data_embed']=True
-		self.options['data_url']=None
-		self.options['data_refresh']=None
+	def set_data(self,data_format='embed',data_file=None,data_plot=None,data_url=None,data_refresh=None):
 
-		data=[
-			    {'label': "Download Sales", 'value': 12},
-			    {'label': "In-Store Sales", 'value': 30},
-			    {'label': "Mail-Order Sales", 'value': 20}
-			  ]
-		
 		self.options['data'] =	{	
-						"data_format":self.options['data_format'],
-						"data_file":self.options['data_file'],
-						"data_embed": [data] ,
+						"data_format":data_format,
+						"data_file":data_file,
+						'data_url':data_url,
+						'data_refresh':data_refresh,
+						"data_plot": data_plot ,
 					}
 
-		return self.options['data']
 
-# def getmorrisdonutchart():
-# 	plotdata=[
-# 		    {'label': "Download Sales", 'value': 12},
-# 		    {'label': "In-Store Sales", 'value': 30},
-# 		    {'label': "Mail-Order Sales", 'value': 20}
-# 		  ]
-
-# 	template = env.get_template('morris_donut_1.html')
-# 	template_str=template.render(context={	'use_morris_httplink':True,
-# 											'width':960,'height':"500px",
-# 											'layout_template':'bases/base_page.html'
-# 										 },
-# 									data={	'embeddata': plotdata } 
-# 								)
-
-# 	with open('output/donut.html','w') as outfile:
-# 		outfile.write(template_str)
-
-
-# def getmorrisbarchart():
-# 	plotdata=[
-# 			    { 'y': '2006', 'a': 100, 'b': 90 },
-# 			    { 'y': '2007', 'a': 75,  'b': 65 },
-# 			    { 'y': '2008', 'a': 50,  'b': 40 },
-# 			    { 'y': '2009', 'a': 75,  'b': 65 },
-# 			    { 'y': '2010', 'a': 50,  'b': 40 },
-# 			    { 'y': '2011', 'a': 75,  'b': 65 },
-# 			    { 'y': '2012', 'a': 100, 'b': 90 }
-# 		    ];
-# 	template = env.get_template('morris_bar_1.html')
-# 	template_str=template.render(context={	'use_morris_httplink':True,
-# 											'width':960,'height':'500px',
-# 											'layout_template':'bases/base_page.html'
-# 										 },
-# 									data={ 'embeddata': plotdata	} 
-# 								)
-
-# 	with open('output/bar.html','w') as outfile:
-# 		outfile.write(template_str)
 
 
 
@@ -340,15 +245,46 @@ if __name__=='__main__':
 	chart=D3plot('d3-linearchart-0001','myd3lin')
 	chart.options['width']=900
 	chart.options['height']=500
+	chart.set_context()
+	chart.set_data(data_file='/home/venkat/Documents/trade_analytics/trade_analytics/charts/jschart_builder/output/data/data_1.tsv',
+					data_format='tsv' )
 	chart.update()
-	chart.to_html(filename='output/testingclass.html')
+	chart.to_html(filename='output/D3linearclass.html')
 
 	print "donut"
 
 	chart=Morris('morris-donut-0001','myDonut')
 	chart.options['width']=500
 	chart.options['height']=300
+	chart.set_context()
+	data_plot=[
+			    {'label': "Download Sales", 'value': 12},
+			    {'label': "In-Store Sales", 'value': 30},
+			    {'label': "Mail-Order Sales", 'value': 20}
+			  ]
+	chart.set_data(data_plot={'data_plot':data_plot})
+
 	chart.update()
 	chart.to_html(filename='output/donutclass.html')
+
+	print "bar"
+
+
+	chart=Morris('morris-bar-0001','myDonut')
+	chart.options['width']=500
+	chart.options['height']=300
+	chart.set_context()
+	data_plot=[
+			    { 'y': '2006', 'a': 100, 'b': 90 },
+			    { 'y': '2007', 'a': 75,  'b': 65 },
+			    { 'y': '2008', 'a': 50,  'b': 40 },
+			    { 'y': '2009', 'a': 75,  'b': 65 },
+			    { 'y': '2010', 'a': 50,  'b': 40 },
+			    { 'y': '2011', 'a': 75,  'b': 65 },
+			    { 'y': '2012', 'a': 100, 'b': 90 }
+		    ]
+	chart.set_data(data_plot={'data_plot':data_plot,'xkey':'y','ykeys': ['a', 'b'],'labels': ['Series A', 'Series B']})
+	chart.update()
+	chart.to_html(filename='output/barclass.html')
 
 	
