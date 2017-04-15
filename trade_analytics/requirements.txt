@@ -1,19 +1,19 @@
-bokeh==0.12.1
-celery==3.1.24
-cvxopt==1.1.8
-cvxpy==0.4.4
-Django==1.10.6
-memory-profiler==0.41
-mpld3==0.2
-numpy==1.12.0
-pandas==0.19.2
-pandas-datareader==0.2.1
+bokeh
+celery
+cvxopt
+cvxpy
+Django
+memory-profiler
+mpld3
+numpy
+pandas
+pandas-datareader
 matplotlib
 numpy
-pathlib2==2.1.0
-scikit-learn==0.18
-scipy==0.18.1
-sklearn==0.0
+pathlib2
+scikit-learn
+scipy
+sklearn
 django-extensions
 Sphinx
 pytz
@@ -23,7 +23,7 @@ markdown
 django-filter
 jinja2
 pymongo
-
+django-multiselectfield
 
 
 
