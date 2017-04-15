@@ -172,6 +172,24 @@
 			}
 		},
 		{
+			"file": "trade_analytics/requirements.txt",
+			"settings":
+			{
+				"buffer_size": 317,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/trade_analytics/settings.py",
+			"settings":
+			{
+				"buffer_size": 8302,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
 			"file": "trade_analytics/home/templates/home/boostsb_theme/base_generic.html",
 			"settings":
 			{
@@ -401,14 +419,9 @@
 	},
 	"expanded_folders":
 	[
-		"/home/venkat/Documents/trade_analytics",
-		"/home/venkat/Documents/trade_analytics/trade_analytics",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home/boostsb_theme",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp"
+		"/home/venkat/Documents/repos/trade_analytics",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/trade_analytics"
 	],
 	"file_history":
 	[
@@ -839,7 +852,7 @@
 	"groups":
 	[
 		{
-			"selected": 5,
+			"selected": 6,
 			"sheets":
 			[
 				{
@@ -944,7 +957,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 6,
+					"stack_index": 8,
 					"type": "text"
 				},
 				{
@@ -1066,7 +1079,7 @@
 						"translation.y": 180.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 2,
+					"stack_index": 4,
 					"type": "text"
 				},
 				{
@@ -1188,7 +1201,7 @@
 						"translation.y": 1125.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 3,
 					"type": "text"
 				},
 				{
@@ -1309,7 +1322,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 9,
+					"stack_index": 11,
 					"type": "text"
 				},
 				{
@@ -1416,7 +1429,7 @@
 						"translation.y": 1260.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 8,
+					"stack_index": 10,
 					"type": "text"
 				},
 				{
@@ -1519,14 +1532,83 @@
 							"syntax": "Packages/HTML/HTML.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 548.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "trade_analytics/requirements.txt",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 317,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								67,
+								67
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/requirementstxt/requirementstxt.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 0,
 					"type": "text"
 				},
 				{
-					"buffer": 6,
+					"buffer": 7,
+					"file": "trade_analytics/trade_analytics/settings.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 8302,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								6011,
+								6011
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 2475.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
 					"file": "trade_analytics/home/templates/home/boostsb_theme/base_generic.html",
 					"semi_transient": false,
 					"settings":
@@ -1634,11 +1716,11 @@
 						"translation.y": 990.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 5,
 					"type": "text"
 				},
 				{
-					"buffer": 7,
+					"buffer": 9,
 					"file": "trade_analytics/home/views.py",
 					"semi_transient": false,
 					"settings":
@@ -1755,11 +1837,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 4,
+					"stack_index": 6,
 					"type": "text"
 				},
 				{
-					"buffer": 8,
+					"buffer": 10,
 					"file": "trade_analytics/home/urls.py",
 					"semi_transient": false,
 					"settings":
@@ -1875,11 +1957,11 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 7,
+					"stack_index": 9,
 					"type": "text"
 				},
 				{
-					"buffer": 9,
+					"buffer": 11,
 					"file": "trade_analytics/designdoc.md",
 					"semi_transient": false,
 					"settings":
@@ -1980,7 +2062,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 5,
+					"stack_index": 7,
 					"type": "text"
 				}
 			]
