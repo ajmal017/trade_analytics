@@ -425,6 +425,10 @@
 	],
 	"file_history":
 	[
+		"/home/venkat/Desktop/untitled.py",
+		"/home/venkat/Desktop/test.py",
+		"/home/venkat/Desktop/viw.html",
+		"/home/venkat/Desktop/tornadomjpeg.py",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home/boostsb_theme/navbar_generic.html",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp/querybuilderGUI.html",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/home/views.py",
@@ -548,11 +552,7 @@
 		"/home/venkat/Desktop/hack.py",
 		"/home/venkat/Documents/trademaster/trademaster/trademaster/settings.py",
 		"/home/venkat/Downloads/clingg/cpt.py",
-		"/home/venkat/Documents/Uncertainty_Quantification/Moments/tens_prod_vec.m",
-		"/home/venkat/Dropbox/c++_python_prep/cpp_examples/algos/linkedlist.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/misc/vector.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/learning_const.cpp",
-		"/home/venkat/Dropbox/c++ and prep/cpp_examples/oop/oop.cpp"
+		"/home/venkat/Documents/Uncertainty_Quantification/Moments/tens_prod_vec.m"
 	],
 	"find":
 	{
@@ -1551,8 +1551,8 @@
 						"selection":
 						[
 							[
-								67,
-								67
+								272,
+								272
 							]
 						],
 						"settings":
@@ -1973,8 +1973,8 @@
 						"selection":
 						[
 							[
-								2063,
-								2063
+								0,
+								0
 							]
 						],
 						"settings":
