@@ -1,5 +1,6 @@
 import multiprocessing as mp
 import time
+import pdb
 
 def get_celery_worker_status():
     ERROR_KEY = "ERROR"
@@ -26,6 +27,11 @@ class ParallelCompute(object):
     - Provision to look at success/fails
     - Provision to block/nonblock
     - Provisions to chunk list
+    - Provision for queue -> producer/consuer
+    - Provision for locks,queues
+    - Provision for exception free
+    - Provisions for dynamic and static arguments to functions
+     
 
     """
     def __init__(self,paralist,func):
@@ -45,12 +51,20 @@ class ParallelCompute(object):
                 self.func.delay(*compute_list)
         else:
             P=[]
+            lock=mp.Lock()
             for compute_list in self.paralist:
-                P.append( mp.Process(target=self.func,args=compute_list ) )
+                # print "compute_list = ", tuple(compute_list)
+                # if type(compute_list)==tuple:
+
+                P.append( mp.Process(target=self.func,args=compute_list,kwargs={'lock':lock}) ) 
 
             for p in P:
                 p.start()
+                time.sleep(1)
                 # time.sleep(1)
 
             for p in P:
-                p.start()
+                p.join()
+                time.sleep(1)
+
+        print "Submitted / Done jobs"

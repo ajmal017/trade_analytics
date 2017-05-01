@@ -70,7 +70,7 @@ class Stockmeta(models.Model):
 	LastPriceUpdate= models.DateField(null=True,db_index=True)
 	Startdate=models.DateField(null=True)
 	Lastdate=models.DateField(null=True)
-
+	
 	DownloadData=models.BooleanField(help_text='Download data for this Symbol',default=True)
 
 	label_choices=( 
