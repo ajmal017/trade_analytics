@@ -24,36 +24,23 @@ logger.critical()
 """
 
 class StockMetaQuerySet(models.QuerySet):
-	def authors(self):
-		return self.filter(role='A')
+	def IDchunks(self,N,limit=None):
+		if limit is None:
+			L=self.count()
+		else:
+			L=limit
+			
+		IDS=list(self.values_list('id',flat=True))
+		for i in range(0,L,N):
+			yield IDS[i:i+N]
 
-	def editors(self):
-		return self.filter(role='E')
+	def IDs(self):
+		# L=self.count()
+		IDS=list(self.values_list('id',flat=True))
+		return IDS
 
 class StockMetaManager(models.Manager):
-	def with_counts(self):
-		reset_queries()
-		
-		with connection.cursor() as cursor:
-			cursor.execute("""
-				SELECT p.id, p.question, p.poll_date, COUNT(*)
-				FROM polls_opinionpoll p, polls_response r
-				WHERE p.id = r.poll_id
-				GROUP BY p.id, p.question, p.poll_date
-				ORDER BY p.poll_date DESC""")
-			result_list = []
-			for row in cursor.fetchall():
-				p = self.model(id=row[0], question=row[1], poll_date=row[2])
-				p.num_responses = row[3]
-				result_list.append(p)
-
-		connection.queries
-
-		return result_list
-
-	# def get_queryset(self):
-	#     return super(StockMetaManager, self).get_queryset().filter(author='Roald Dahl')
-
+	
 	def get_queryset(self):
 		return StockMetaQuerySet(self.model, using=self._db)
 
@@ -67,8 +54,8 @@ class Stockmeta(models.Model):
 		IOError: An error occurred accessing the bigtable.Table object.
 	"""
 
-	objects = models.Manager() # The default manager.
-	# stockmeta_objects = StockMetaManager()
+	# objects = models.Manager() # The default manager.
+	objects = StockMetaManager()
 
 	Company=models.CharField(max_length=100,null=True,blank=True,help_text="Company name")
 	Marketcap=models. DecimalField(max_digits=9,decimal_places=2,null=True,blank=True,help_text="Market Capitalization")

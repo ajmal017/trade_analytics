@@ -3,6 +3,12 @@
 - celery -A proj worker -l info
 
 
+- to migrate the various databases
+    python manage.py makemigrations
+    python manage.py migrate
+    python manage.py migrate  --database=stockpricedata
+    python manage.py migrate  --database=datascience
+
 
 
 

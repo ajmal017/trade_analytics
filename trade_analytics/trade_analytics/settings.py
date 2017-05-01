@@ -129,7 +129,13 @@ DATABASES = {
 }
 
 DATABASE_ROUTERS = ['trade_analytics.db_routers.StockPriceRouter', ]
+# dont forget to run
+# python manage.py makemigrations
+# python manage.py migrate
+# python manage.py migrate  --database=stockpricedata
+# python manage.py migrate  --database=datascience
 
+    
 ## --------------------- PASSWORD ---------------------------------------------------------------##
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators

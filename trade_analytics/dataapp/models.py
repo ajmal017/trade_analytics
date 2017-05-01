@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
-
+from __future__ import division
 from django.db import models
+
 
 # Create your models here.
 
@@ -15,6 +16,7 @@ class Stockprice(models.Model):
 	Date = models.DateField(db_index=True,null=False)
 
 	Symbol=models.CharField(db_index=True,max_length=10,null=True,blank=True)
+	Symbol_id=models.IntegerField(null=True,db_index=True)
 
 	def __str__(self):
 		return str(self.Symbol)+' '+str(self.Date)+' '+str(self.Close)

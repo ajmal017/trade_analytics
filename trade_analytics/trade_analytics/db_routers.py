@@ -41,6 +41,9 @@ class StockPriceRouter(object):
         Make sure the auth app only appears in the 'auth_db'
         database.
         """
+
+
+
         if db=='stockpricedata':
             if app_label == 'dataapp':
                 return True
