@@ -5,5 +5,5 @@ from django.contrib import admin
 from . import models as mds
 
 admin.site.register(mds.Stockmeta)
-admin.site.register(mds.Watchlist)
+admin.site.register(mds.StockGroup)
 
