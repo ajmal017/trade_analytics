@@ -10,6 +10,7 @@ import itertools as itt
 import numpy as np
 
 
+
 def DownloadData(Symbol, Fromdate,Todate):
 	df=web.DataReader(Symbol, 'yahoo', Fromdate,Todate)
 	return df

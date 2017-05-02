@@ -38,6 +38,15 @@ class StockMetaQuerySet(models.QuerySet):
 		# L=self.count()
 		IDS=list(self.values_list('id',flat=True))
 		return IDS
+	
+	def asdf(self,columns=None):
+		if columns is not None:
+			columns=tuple(columns)
+			df=pd.DataFrame(list(self.values(*columns)) )
+		else:
+			df=pd.DataFrame(list(self.values()) )
+
+		return df
 
 class StockMetaManager(models.Manager):
 	
@@ -70,7 +79,7 @@ class Stockmeta(models.Model):
 	LastPriceUpdate= models.DateField(null=True,db_index=True)
 	Startdate=models.DateField(null=True)
 	Lastdate=models.DateField(null=True)
-	
+
 	DownloadData=models.BooleanField(help_text='Download data for this Symbol',default=True)
 
 	label_choices=( 
