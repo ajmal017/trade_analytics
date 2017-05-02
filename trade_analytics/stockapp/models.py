@@ -103,6 +103,12 @@ class Stockmeta(models.Model):
 	def __str__(self):
 		return self.Symbol
 
+class ComputeStatus_Stockmeta(models.Model):
+	status_choices=(('ToDo','ToDo'),('Run','Run'),('Fail','Fail'),('Success','Success'))
+	Status=models.CharField(choices=status_choices,max_length=10)
+	Symbol=models.ForeignKey( Stockmeta,on_delete=models.CASCADE)
+	created_at = models.DateField(auto_now_add=True,null=True)
+
 
 class IndexFunction(hmd.UserBase):
 	IndexCode=models.TextField(help_text='Code to compute the index')

@@ -39,6 +39,9 @@ def UpdatePriceData(Symbols_ids,inputtype,*args,**kwargs):
 	Todate=pd.datetime.today().date()
 
 	for stk in stocks:
+		comstat=stkmd.ComputeStatus_Stockmeta.get(Status='ToDo',Symbol=stk)
+		comstat.Status='Run'
+		comstat.save()
 
 		if stk.Lastdate is None:
 			Fromdate=pd.datetime(2002,1,1).date()
@@ -47,16 +50,22 @@ def UpdatePriceData(Symbols_ids,inputtype,*args,**kwargs):
 
 		if (Todate-Fromdate).days<1:
 			print "Already updated ",stk, "\r",
+			comstat.Status='Success'
+			comstat.save()
 			continue
 
 		if stk.LastPriceUpdate==pd.datetime.today().date():
 			print "skipping ",stk," as LastpriceUpdate is today \r",
+			comstat.Status='Success'
+			comstat.save()
 			continue
 
 		try:
 			df=DownloadData(stk.Symbol, Fromdate,Todate)
 		except:
 			print "error downloading ",stk, " for input dates ",Fromdate,Todate
+			comstat.Status='Fail'
+			comstat.save()
 			continue
 
 		if stk.Lastdate is not None:
@@ -64,6 +73,10 @@ def UpdatePriceData(Symbols_ids,inputtype,*args,**kwargs):
 				print "skipping ",stk," as it is already uptodate \r",
 				stk.LastPriceUpdate=pd.datetime.today()
 				stk.save()
+
+				comstat.Status='Success'
+				comstat.save()
+
 				continue				
 
 		objs=[]
@@ -93,6 +106,8 @@ def UpdatePriceData(Symbols_ids,inputtype,*args,**kwargs):
 		
 
 		stk.save()
+		comstat.Status='Success'
+		comstat.save()
 
 		print "Updated data for ", stk, " downloaded ", len(df)," with key = ",kwargs.get('lock',default=None),'\r',
 		del df
@@ -100,6 +115,13 @@ def UpdatePriceData(Symbols_ids,inputtype,*args,**kwargs):
 def RunDataDownload():
 	# get chumks of ids to work on. This is a iterable of lists
 	stocksiter=stkmd.Stockmeta.objects.all().IDchunks(100)
+	stkmd.ComputeStatus_Stockmeta.objects.filter(Status='Success').delete()
+	stkmd.ComputeStatus_Stockmeta.objects.filter(Status='Run').delete()
+	stkmd.ComputeStatus_Stockmeta.objects.filter(Status='ToDo').delete()
+	objs=[]
+	for stk in stkmd.Stockmeta.objects.all():
+		objs.append( stkmd.ComputeStatus_Stockmeta(Status='ToDo',Symbol=stk) )
+	stkmd.ComputeStatus_Stockmeta.objects.bulk_create(objs)
 
 	#append the additional arg of 'id'
 	# computeargs_iter=itt.imap(lambda x: itt.izip([x],['id']) , stocksiter)
