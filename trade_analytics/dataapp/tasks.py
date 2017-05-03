@@ -39,7 +39,7 @@ def UpdatePriceData(Symbols_ids,inputtype,*args,**kwargs):
 	Todate=pd.datetime.today().date()
 
 	for stk in stocks:
-		comstat=stkmd.ComputeStatus_Stockmeta.get(Status='ToDo',Symbol=stk)
+		comstat=stkmd.ComputeStatus_Stockmeta.objects.get(Status='ToDo',Symbol=stk)
 		comstat.Status='Run'
 		comstat.save()
 
@@ -49,13 +49,13 @@ def UpdatePriceData(Symbols_ids,inputtype,*args,**kwargs):
 			Fromdate=stk.Lastdate
 
 		if (Todate-Fromdate).days<1:
-			print "Already updated ",stk, "\r",
+			print "Already updated ",stk
 			comstat.Status='Success'
 			comstat.save()
 			continue
 
 		if stk.LastPriceUpdate==pd.datetime.today().date():
-			print "skipping ",stk," as LastpriceUpdate is today \r",
+			print "skipping ",stk," as LastpriceUpdate is today "
 			comstat.Status='Success'
 			comstat.save()
 			continue
@@ -69,9 +69,9 @@ def UpdatePriceData(Symbols_ids,inputtype,*args,**kwargs):
 			continue
 
 		if stk.Lastdate is not None:
-			if df.index[-1]<=stk.Lastdate:
-				print "skipping ",stk," as it is already uptodate \r",
-				stk.LastPriceUpdate=pd.datetime.today()
+			if df.index[-1].date()<=stk.Lastdate:
+				print "skipping ",stk," as it is already uptodate "
+				stk.LastPriceUpdate=pd.datetime.today().date()
 				stk.save()
 
 				comstat.Status='Success'
@@ -79,12 +79,19 @@ def UpdatePriceData(Symbols_ids,inputtype,*args,**kwargs):
 
 				continue				
 
+		df['Close']=df['Close'].astype(float)
+		df['Open']=df['Open'].astype(float)
+		df['High']=df['High'].astype(float)
+		df['Low']=df['Low'].astype(float)
+		df['Volume']=df['Volume'].astype(int)
+
 		objs=[]
 		for ind in df.index:
 			objs.append( dtamd.Stockprice(Close=df.loc[ind,'Close'], Open=df.loc[ind,'Open'] ,
 										 High=df.loc[ind,'High'],Low=df.loc[ind,'Low'],
 										 Volume=df.loc[ind,'Volume'],Date=ind,Symbol=stk.Symbol,Symbol_id=stk.id)  )
 		
+
 		if 'lock' not in kwargs:
 			dtamd.Stockprice.objects.bulk_create(objs)
 		else:
@@ -92,16 +99,20 @@ def UpdatePriceData(Symbols_ids,inputtype,*args,**kwargs):
 			dtamd.Stockprice.objects.bulk_create(objs)
 			kwargs['lock'].release()
 
-		stk.LastPriceUpdate=pd.datetime.today()
+		stk.LastPriceUpdate=pd.datetime.today().date()
+
 		if stk.Startdate is None:
-			stk.Startdate=df.index[0]
-		if df.index[0]<stk.Startdate:
-			stk.Startdate=df.index[0]
+			stk.Startdate=df.index[0].date()
+
+		print type(df.index[0].date()),type(stk.Startdate)
+		
+		if df.index[0].date()<stk.Startdate:
+			stk.Startdate=df.index[0].date()
 
 		if stk.Lastdate is None:
-			stk.Lastdate=df.index[-1]
-		if df.index[-1]>stk.Lastdate:
-			stk.Lastdate=df.index[-1]
+			stk.Lastdate=df.index[-1].date()
+		if df.index[-1].date()>stk.Lastdate:
+			stk.Lastdate=df.index[-1].date()
 
 		
 
@@ -109,7 +120,7 @@ def UpdatePriceData(Symbols_ids,inputtype,*args,**kwargs):
 		comstat.Status='Success'
 		comstat.save()
 
-		print "Updated data for ", stk, " downloaded ", len(df)," with key = ",kwargs.get('lock',default=None),'\r',
+		print "Updated data for ", stk, " downloaded ", len(df)," with key = ",kwargs.get('lock',None)
 		del df
 
 def RunDataDownload():
