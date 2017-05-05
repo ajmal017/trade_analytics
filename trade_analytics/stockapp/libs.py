@@ -3,7 +3,12 @@ import stockapp.models as md
 import utility.models as utmd
 import os
 
+import imp
 
+importss="""
+from %(module)s import %(class)s
+C=%(class)s() 
+"""
 
 def SyncIndices_files2db():
 	IndexCodes=md.IndexCode.objects.all()
@@ -11,20 +16,21 @@ def SyncIndices_files2db():
 		if indcode.File is None:
 			indcode.File=indcode.getfilepath()
 
-		D=cdmng.GetClasses(indcode.File)
+		foo = imp.load_source(indcode.getimportpath(),indcode.File)
+		D=cdmng.GetClasses(indcode.File,foo)
 		for d in D:
 			if d['name']==utmd.index.name:
-				if md.IndexClass.objects.filter(IndexCode=indcode,IndexName=d['classname']).exists():
-					indclass=md.IndexClass.objects.get(IndexCode=indcode,IndexName=d['classname'])
+				if md.IndexClass.objects.filter(IndexCode=indcode,ClassName=d['classname']).exists():
+					indclass=md.IndexClass.objects.get(IndexCode=indcode,ClassName=d['classname'])
 					indclass.IndexDescription=d['description']
 				else:
-					indclass=md.IndexClass(IndexCode=indcode,IndexName=d['classname'], IndexDescription=d['description'] )
+					indclass=md.IndexClass(IndexCode=indcode,ClassName=d['classname'], ClassDescription=d['description'] )
 				indclass.save()
 
-				exec("""
-					from %(module)s import %(class)s
-					C=%(class)s() 
-					""")
+				C=None
+				ss=importss%{'module':'indcode.getimportpath(),','class': d['classname']}
+				exec(ss)
+
 				for indx in C.meta.keys():
 					if md.Index.objects.filter(IndexLabel=C.meta[indx]['label'] ).exists():
 						index=md.Index.objects.get(IndexLabel=C.meta[indx]['label'] )
@@ -43,6 +49,7 @@ def SyncIndices_files2db():
 		with open(indcode.File,'r') as codestr:
 			indcode.Code=codestr.read()
 		
+		indcode.save()
 		
 
 def SyncIndices_db2files():

@@ -16,9 +16,9 @@ import utility.models as md
 
 """
 
-def GetClasses(ff):
+def GetClasses(ff,foo):
 	D=[]
-	for pp in inspect.getmembers(inspect.getmembers(ff)):
+	for pp in inspect.getmembers(foo):
 		if inspect.isclass(pp[1]):
 			if issubclass(pp[1],md.index):
 				D.append( {'classname': pp[0],'description':inspect.getdoc(pp[1]),'filename':ff,'name':md.index.name} )

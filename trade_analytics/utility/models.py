@@ -15,7 +15,7 @@ class basecode(object):
 		if 'label' not in self.meta.keys():
 			self.meta['label']={}
 
-		for key,value in kwargs:
+		for key,value in kwargs.items():
 			self.meta['label'][key]=value
 
 	def setvalue(self,key,value):

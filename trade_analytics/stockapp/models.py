@@ -119,6 +119,14 @@ class IndexCode(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
+	def getimportpath(self):
+		if not self.User:
+			username='AnonymousUser'
+		else:
+			username=self.User.username
+		path = 'stockapp.IndexCodes.'+username
+		return path
+
 	def getfilepath(self):
 		from django.conf import settings
 		if not self.User:
