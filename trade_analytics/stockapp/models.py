@@ -1,12 +1,11 @@
 from __future__ import unicode_literals,division
 
 from django.db import models
-import datetime
+from django.contrib.auth.models import User
 import pandas as pd
 import logging
-from home import models as hmd
 from multiselectfield import MultiSelectField
-from django.db import connection,reset_queries
+import os
 
 
 
@@ -64,24 +63,6 @@ class Stockmeta(models.Model):
 	"""
 
 	# objects = models.Manager() # The default manager.
-	objects = StockMetaManager()
-
-	Company=models.CharField(max_length=100,null=True,blank=True,help_text="Company name")
-	Marketcap=models. DecimalField(max_digits=9,decimal_places=2,null=True,blank=True,help_text="Market Capitalization")
-	Competitors=models.CharField(max_length=1100,null=True,blank=True,help_text="List of Competitors")
-	Symbol = models.CharField(max_length=6,null=False,blank=True,db_index=True,help_text="Stock Symbol",default='SYMBOL')
-	Sector = models.CharField(max_length=100,null=True,blank=True,db_index=True,help_text="Stock Sector")
-	Industry = models.CharField(max_length=100,null=True,blank=True,db_index=True,help_text="Stock Industry")
-	
-	status_choices=(('Active','Active'),('Inactive','Inactive'))
-	Status=models.CharField(max_length=25,choices=status_choices,null=True,blank=True,db_index=True,help_text="Active or not")
-	
-	LastPriceUpdate= models.DateField(null=True,db_index=True)
-	Startdate=models.DateField(null=True)
-	Lastdate=models.DateField(null=True)
-
-	DownloadData=models.BooleanField(help_text='Download data for this Symbol',default=True)
-
 	label_choices=( 
 					('ETF','ETF'),
 					('Stock','Stock'),
@@ -98,32 +79,65 @@ class Stockmeta(models.Model):
 
 		)
 
+	objects = StockMetaManager()
+
+	Company=models.CharField(max_length=100,null=True,blank=True,help_text="Company name")
+	Marketcap=models. DecimalField(max_digits=9,decimal_places=2,null=True,blank=True,help_text="Market Capitalization")
+	Competitors=models.CharField(max_length=1100,null=True,blank=True,help_text="List of Competitors")
+	Symbol = models.CharField(max_length=10,null=False,blank=True,db_index=True,help_text="Stock Symbol",default='SYMBOL')
+	Sector = models.CharField(max_length=100,null=True,blank=True,db_index=True,help_text="Stock Sector")
+	Industry = models.CharField(max_length=100,null=True,blank=True,db_index=True,help_text="Stock Industry")
+	
+	status_choices=(('Active','Active'),('Inactive','Inactive'))
+	Status=models.CharField(max_length=25,choices=status_choices,null=True,blank=True,db_index=True,help_text="Active or not")
+	
+	LastPriceUpdate= models.DateField(null=True,db_index=True)
+	Startdate=models.DateField(null=True)
+	Lastdate=models.DateField(null=True)
+
 	Labels = MultiSelectField(choices=label_choices,blank=True)
+
+	Download=models.BooleanField(help_text='Download data for this Symbol',default=True)
+	Derived=models.BooleanField(help_text='Download data for this Symbol',default=False)
+	ComputeFeature=models.BooleanField(help_text='Compute Features for this Symbol',default=True)
+	User = models.ForeignKey(User,on_delete=models.CASCADE, null = True)
 
 	def __str__(self):
 		return self.Symbol
 
-class ComputeStatus_Stockmeta(models.Model):
+class ComputeStatus_Stockdownload(models.Model):
 	status_choices=(('ToDo','ToDo'),('Run','Run'),('Fail','Fail'),('Success','Success'))
 	Status=models.CharField(choices=status_choices,max_length=10)
 	Symbol=models.ForeignKey( Stockmeta,on_delete=models.CASCADE)
 	created_at = models.DateField(auto_now_add=True,null=True)
 
 
-class IndexFunction(hmd.UserBase):
-	IndexCode=models.TextField(help_text='Code to compute the index')
-	IndexName=models.CharField(help_text='Name of the index',max_length=50)
-	IndexDescription=models.CharField(help_text='Description of the index',max_length=200)
-
+class IndexCode(models.Model):
+	Code=models.TextField(help_text='Code of all the indices')
+	File=models.FilePathField(help_text='File of all the indices')
+	User = models.ForeignKey(User,on_delete=models.CASCADE, null = True)
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
-class StockGroup(hmd.UserBase):
+	def getfilepath(self):
+		from django.conf import settings
+		path = os.path.join(settings.BASE_DIR,'stockapp','IndexCodes',User.username)
+		return path
+
+class IndexClass(models.Model):
+	IndexName=models.CharField(help_text='Name of the index',max_length=50)
+	IndexDescription=models.CharField(help_text='Description of the index',max_length=200)
+	IndexCode = models.ForeignKey(IndexCode,on_delete=models.CASCADE)
+	created_at = models.DateTimeField(auto_now_add=True,null=True)
+	updated_at = models.DateTimeField(auto_now=True,null=True)
+
+
+class StockGroup(models.Model):
 	GroupName=models.CharField(max_length=50,null=True)
 	GroupDescription=models.CharField(max_length=1000,null=True,blank=True)
 	Symbol = models.ManyToManyField(Stockmeta)
-	Indicies = models.ManyToManyField(IndexFunction)
-
+	IndexClasses = models.ManyToManyField(IndexClass)
+	User = models.ForeignKey(User,on_delete=models.CASCADE, null = True)
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 

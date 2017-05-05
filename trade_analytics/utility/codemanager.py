@@ -1,5 +1,6 @@
-import pandas as pd
 import os
+import inspect
+import utility.models as md
 
 """
 - keeps track of .py files in a folder
@@ -15,17 +16,36 @@ import os
 
 """
 
+def GetClasses(ff):
+	D=[]
+	for pp in inspect.getmembers(inspect.getmembers(ff)):
+		if inspect.isclass(pp[1]):
+			if issubclass(pp[1],md.index):
+				D.append( {'classname': pp[0],'description':inspect.getdoc(pp[1]),'filename':ff,'name':md.index.name} )
+			elif issubclass(pp[1],md.feature):
+				D.append( {'classname': pp[0],'description':inspect.getdoc(pp[1]),'filename':ff,'name':md.feature.name} )
+			elif issubclass(pp[1],md.query):
+				D.append( {'classname': pp[0],'description':inspect.getdoc(pp[1]),'filename':ff,'name':md.query.name} )
+			else:
+				raise NotImplemented("model class not implemented")
+
 
 class codemanager(object):
 	"""
 	- provide the folder to track and sync
 	- provide the table to push into the meta information
 	"""
-	def __init__(self,folder,tableorm):
+	def __init__(self,folder,tableorm,trackof=()):
 		if not os.path.isdir(folder):
 			raise Exception("%s folder not there" % folder)
 		if not os.path.isfile(os.path.join(folder,'__init__.py')):
 			raise Exception("%s folder is not a module" % folder)
 
 		self.pythonfiles=[f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder,f)) and '.py' in f  ]
-		
+
+		if 'BASE.py' not in self.pythonfiles:
+			raise Exception(" base file is not there")
+
+	def GetClasses(self):
+		for ff in self.getfiles:
+			yield GetClasses(ff)

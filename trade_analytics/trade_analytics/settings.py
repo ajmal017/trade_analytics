@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'stockapp',
     'queryapp',
     'dataapp',
+    'featureapp',
     'computeapp',
     
 ]
