@@ -30,22 +30,3 @@ def GetClasses(ff):
 				raise NotImplemented("model class not implemented")
 
 
-class codemanager(object):
-	"""
-	- provide the folder to track and sync
-	- provide the table to push into the meta information
-	"""
-	def __init__(self,folder,tableorm,trackof=()):
-		if not os.path.isdir(folder):
-			raise Exception("%s folder not there" % folder)
-		if not os.path.isfile(os.path.join(folder,'__init__.py')):
-			raise Exception("%s folder is not a module" % folder)
-
-		self.pythonfiles=[f for f in os.listdir(folder) if os.path.isfile(os.path.join(folder,f)) and '.py' in f  ]
-
-		if 'BASE.py' not in self.pythonfiles:
-			raise Exception(" base file is not there")
-
-	def GetClasses(self):
-		for ff in self.getfiles:
-			yield GetClasses(ff)

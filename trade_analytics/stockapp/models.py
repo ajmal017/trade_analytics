@@ -115,29 +115,46 @@ class ComputeStatus_Stockdownload(models.Model):
 class IndexCode(models.Model):
 	Code=models.TextField(help_text='Code of all the indices')
 	File=models.FilePathField(help_text='File of all the indices')
-	User = models.ForeignKey(User,on_delete=models.CASCADE, null = True)
+	User = models.ForeignKey(User,on_delete=models.CASCADE, blank = True, null = True)
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
 	def getfilepath(self):
 		from django.conf import settings
-		path = os.path.join(settings.BASE_DIR,'stockapp','IndexCodes',User.username)
+		if not self.User:
+			username='AnonymousUser'
+		else:
+			username=self.User.username
+		path = os.path.join(settings.BASE_DIR,'stockapp','IndexCodes',username+'.py')
 		return path
 
 class IndexClass(models.Model):
-	IndexName=models.CharField(help_text='Name of the index',max_length=50)
-	IndexDescription=models.CharField(help_text='Description of the index',max_length=200)
+	ClassName=models.CharField(help_text='Name of the index',max_length=50)
+	ClassDescription=models.CharField(help_text='Description of the index',max_length=500,null=True)
 	IndexCode = models.ForeignKey(IndexCode,on_delete=models.CASCADE)
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
+
+class Index(models.Model):
+	IndexClass=models.ForeignKey(IndexClass,on_delete=models.CASCADE)
+
+	IndexName=models.CharField(help_text='Name of the index',max_length=150, blank = True, null = True)
+	IndexDescription=models.CharField(help_text='Description of the index',max_length=500, blank = True, null = True)
+	IndexLabel=models.CharField(help_text='Description of the index',max_length=50,  unique=True)
+	IndexResultType=models.CharField(help_text='Description of the index',max_length=20, blank = True, null = True)
+	
+	computefeatures=models.BooleanField(help_text='Run feature extractions on this index',default=True)
+
+	created_at = models.DateTimeField(auto_now_add=True,null=True)
+	updated_at = models.DateTimeField(auto_now=True,null=True)
 
 class StockGroup(models.Model):
 	GroupName=models.CharField(max_length=50,null=True)
 	GroupDescription=models.CharField(max_length=1000,null=True,blank=True)
 	Symbol = models.ManyToManyField(Stockmeta)
 	IndexClasses = models.ManyToManyField(IndexClass)
-	User = models.ForeignKey(User,on_delete=models.CASCADE, null = True)
+	User = models.ForeignKey(User,on_delete=models.CASCADE, blank = True, null = True)
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 

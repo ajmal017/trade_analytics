@@ -19,12 +19,31 @@ def SyncIndices_files2db():
 					indclass.IndexDescription=d['description']
 				else:
 					indclass=md.IndexClass(IndexCode=indcode,IndexName=d['classname'], IndexDescription=d['description'] )
+				indclass.save()
 
+				exec("""
+					from %(module)s import %(class)s
+					C=%(class)s() 
+					""")
+				for indx in C.meta.keys():
+					if md.Index.objects.filter(IndexLabel=C.meta[indx]['label'] ).exists():
+						index=md.Index.objects.get(IndexLabel=C.meta[indx]['label'] )
+						index.IndexClass=indclass
+						index.IndexName=C.meta[indx]['name']
+						index.IndexDescription=C.meta[indx]['description']
+						index.IndexResultType=str(C.meta[indx]['resulttype'])
+						index.computefeatures=C.meta[indx]['computefeatures']
+						index.save()
+
+					else: 
+						index=md.Index(IndexClass=indclass,IndexName=C.meta[indx]['name'],IndexDescription=C.meta[indx]['description'],
+								IndexLabel=C.meta[indx]['label'],IndexResultType=str(C.meta[indx]['resulttype']),computefeatures=C.meta[indx]['computefeatures'])
+						index.save()
 
 		with open(indcode.File,'r') as codestr:
 			indcode.Code=codestr.read()
 		
-		indclass.save()
+		
 
 def SyncIndices_db2files():
 	IndexCodes=md.IndexCode.objects.all()
@@ -33,4 +52,4 @@ def SyncIndices_db2files():
 			indcode.File=indcode.getfilepath()
 
 		with open(indcode.File,'w') as codestr:
-			indcode.Code=codestr.write()
+			codestr.write(indcode.Code)
