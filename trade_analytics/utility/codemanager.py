@@ -29,4 +29,4 @@ def GetClasses(ff,foo):
 			else:
 				raise NotImplemented("model class not implemented")
 
-
+	return D

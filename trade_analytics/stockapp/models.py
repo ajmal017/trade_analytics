@@ -110,14 +110,21 @@ class ComputeStatus_Stockdownload(models.Model):
 	Status=models.CharField(choices=status_choices,max_length=10)
 	Symbol=models.ForeignKey( Stockmeta,on_delete=models.CASCADE)
 	created_at = models.DateField(auto_now_add=True,null=True)
+	updated_at = models.DateTimeField(auto_now=True,null=True)
 
+	def __str__(self):
+		return ", ".join( [str(self.Symbol),str(self.Status),str(self.created_at),str(self.updated_at)] )
 
-class IndexCode(models.Model):
+class IndexComputeCode(models.Model):
 	Code=models.TextField(help_text='Code of all the indices')
 	File=models.FilePathField(help_text='File of all the indices')
 	User = models.ForeignKey(User,on_delete=models.CASCADE, blank = True, null = True)
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
+
+	def __str__(self):
+		return ", ".join([ str(self.User),' ... ',str(self.File[-20:]) ])
+
 
 	def getimportpath(self):
 		if not self.User:
@@ -136,20 +143,31 @@ class IndexCode(models.Model):
 		path = os.path.join(settings.BASE_DIR,'stockapp','IndexCodes',username+'.py')
 		return path
 
-class IndexClass(models.Model):
+class IndexComputeClass(models.Model):
 	ClassName=models.CharField(help_text='Name of the index',max_length=50)
 	ClassDescription=models.CharField(help_text='Description of the index',max_length=500,null=True)
-	IndexCode = models.ForeignKey(IndexCode,on_delete=models.CASCADE)
+	IndexComputeCode = models.ForeignKey(IndexComputeCode,on_delete=models.CASCADE)
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
+	def __str__(self):
+		return str(self.IndexComputeCode.id)+', '+str(self.ClassName)
+	def importcomputeclass(self):
+		computeclass=None
+		importpath=self.IndexComputeCode.getimportpath()
+		exec("from %(importpath)s import %(classname)s as computeclass"%{'importpath':importpath,'classname':self.ClassName})
+		return (self.ClassName,computeclass)
 
 class Index(models.Model):
-	IndexClass=models.ForeignKey(IndexClass,on_delete=models.CASCADE)
+	"""
+	Names of all the index/functions/labels 
+	We can apply the index to several groups
+	"""
+	IndexComputeClass=models.ForeignKey(IndexComputeClass,on_delete=models.CASCADE)
 
-	IndexName=models.CharField(help_text='Name of the index',max_length=150, blank = True, null = True)
+	IndexName=models.CharField(help_text='Long name',max_length=150, blank = True, null = True)
 	IndexDescription=models.CharField(help_text='Description of the index',max_length=500, blank = True, null = True)
-	IndexLabel=models.CharField(help_text='Description of the index',max_length=50,  unique=True)
+	IndexLabel=models.CharField(help_text='Unique Abbreviated label for index',max_length=50,  unique=True)
 	IndexResultType=models.CharField(help_text='Description of the index',max_length=20, blank = True, null = True)
 	
 	computefeatures=models.BooleanField(help_text='Run feature extractions on this index',default=True)
@@ -157,15 +175,38 @@ class Index(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
+	def __str__(self):
+		return ", ".join( [ str(self.IndexLabel),str(self.IndexName),str(self.IndexResultType),str(self.IndexClass) ])
+
 class StockGroup(models.Model):
 	GroupName=models.CharField(max_length=50,null=True)
 	GroupDescription=models.CharField(max_length=1000,null=True,blank=True)
 	Symbol = models.ManyToManyField(Stockmeta)
-	IndexClasses = models.ManyToManyField(IndexClass)
 	User = models.ForeignKey(User,on_delete=models.CASCADE, blank = True, null = True)
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
 	
 	def __str__(self):
-		return self.Watchlist_name
+		return self.GroupName
+
+class StockGroupIndex(models.Model):
+	"""
+	first add the new symbol in stockmeta, then add entry here for the group and the required index
+	"""
+	Symbol=models.ForeignKey(Stockmeta,on_delete=models.CASCADE)
+	StockGroup=models.ForeignKey(StockGroup,on_delete=models.CASCADE)
+	Index = models.ForeignKey(Index)
+
+	def __str__(self):
+		return self.Symbol.Symbol+', '+self.StockGroup.GroupName+', '+self.Index.IndexLabel
+
+class ComputeStatus_StockGroupIndex(models.Model):
+	status_choices=(('ToDo','ToDo'),('Run','Run'),('Fail','Fail'),('Success','Success'))
+	Status=models.CharField(choices=status_choices,max_length=10)
+	StockGroupIndex=models.ForeignKey( StockGroupIndex,on_delete=models.CASCADE)
+	created_at = models.DateField(auto_now_add=True,null=True)
+	updated_at = models.DateTimeField(auto_now=True,null=True)
+
+	def __str__(self):
+		return ", ".join( [str(self.StockGroupIndex),str(self.Status),str(self.created_at),str(self.updated_at)] )
