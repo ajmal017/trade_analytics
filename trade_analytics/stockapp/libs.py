@@ -9,7 +9,8 @@ import time
 
 
 
-
+def resetstockmeta():
+	md.Stockmeta.objects.all().update(LastPriceUpdate=None,Lastdate=None,Startdate=None)
 
 
 def addIndex(SymbolName,stkgrp,index,Sector=None,Industry=None,User=None):
@@ -23,7 +24,14 @@ def addIndex(SymbolName,stkgrp,index,Sector=None,Industry=None,User=None):
 	stkgrpind.save()
 	return {'status':'Success','what':"Symbol "+SymbolName+" added to database"}
 
+
+
+
 def SyncIndices_files2db():
+	"""
+	-> if u change a classname, delete it --> it will be deleted in db and all its correspondin labels, and sstockgrpindex, stockmeta and stockprice ... al deleted
+	-> 
+	"""
 	IndexCodes=md.IndexComputeCode.objects.all()
 	for indcode in IndexCodes:
 		if indcode.File is None:

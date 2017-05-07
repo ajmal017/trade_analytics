@@ -21,14 +21,19 @@ def StockDataFrame_sanitize(df,standardize=False):
 	df['High']=df['High'].astype(float)
 	df['Low']=df['Low'].astype(float)
 	df['Volume']=df['Volume'].astype(int)
+
 	def setdate(x):
 		if isinstance(x,basestring):
 			return pd.to_datetime(x).date()
 		if type(x)==datetime.datetime or type(x)==pd.datetime:
 			return x.date()
 		return x
+	
+	if 'Date' in df.columns:
+		df['Date']=df['Date'].apply(setdate)
+	else:
+		df.index=df.index.map(setdate)
 
-	df['Date']=df['Date'].apply(setdate )
 	if standardize:
 		df.index=df['Date']
 		df.drop(['Date'],axis=1,inplace=True)
@@ -118,7 +123,9 @@ def postdownloadcheck(stk,downloadLastdate):
 			return {'status':'Success'}
 		else:
 			return {'status':'Run'}
-
+	else:
+		return {'status':'Run'}
+		
 def UpdatePriceData(Symbols_ids,*args,**kwargs):
 	"""Update stock price data for given symbol ids
 
@@ -127,11 +134,14 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 			- args have to be json serializable for multiprocessing
 
 	"""
+	semaphore=kwargs.get('semaphore',None)
+	if semaphore:
+		semaphore.acquire()
 
 	stocks=stkmd.Stockmeta.objects.filter(id__in=Symbols_ids)
 
 	for stk in stocks:
-		comstat=stkmd.ComputeStatus_Stockmeta.objects.get(Status='ToDo',Symbol=stk)
+		comstat=stkmd.ComputeStatus_Stockdownload.objects.get(Status='ToDo',Symbol=stk)
 		comstat.Status='Run'
 		comstat.save()
 
@@ -170,7 +180,7 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 			continue	
 
 
-		df=StockDataFrame_sanitize(df)
+		df=StockDataFrame_sanitize(df,standardize=False)
 		
 
 		objs=[]
@@ -180,12 +190,13 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 										 Volume=df.loc[ind,'Volume'],Date=ind,Symbol=stk.Symbol,Symbol_id=stk.id)  )
 		
 
-		if 'lock' not in kwargs:
-			dtamd.Stockprice.objects.bulk_create(objs)
+		# use a lock/semaphore if required
+		if kwargs.get('lock',None):
+			with kwargs['lock']:
+				dtamd.Stockprice.objects.bulk_create(objs)
 		else:
-			kwargs['lock'].acquire()
 			dtamd.Stockprice.objects.bulk_create(objs)
-			kwargs['lock'].release()
+						
 
 		stk.LastPriceUpdate=pd.datetime.today().date()
 
@@ -210,4 +221,6 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 		print "Updated data for ", stk, " downloaded ", len(df)," with key = ",kwargs.get('lock',None)
 		del df
 
+	if semaphore:
+		semaphore.release()
 
