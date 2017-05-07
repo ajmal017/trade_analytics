@@ -81,3 +81,6 @@ class feature(basecode):
 
 class query(basecode):
 	name='query'
+
+class chart(basecode):
+	name='chart'

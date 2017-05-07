@@ -26,15 +26,23 @@ class AveragePrice(utmd.index):
 		grpstks_ids=kwargs.get('grpstks_ids',None)
 
 		
-		df=dtalibs.GetStockData(grpstks_ids,Fromdate,Todate,'concat')
-
-		dd=df.groupby('Date').agg('mean').reset_index()
+		df=dtalibs.GetStockData(grpstks_ids,Fromdate,Todate,'concat',standardize=True)
+		dd=df[['Close','Open','High','Low','Volume']].groupby(by=df.index).agg('mean')
 		self.setvalue("AvgClose",dd)
 		
 		# still need to implement
-		df['VolClose']=df['Close']*(df['Volume']/df['Volume'].sum()  )
-		dv=df[['Date','VolClose']].groupby('Date').agg('np.sum').reset_index()
-		self.setvalue("VolAvgClose",dv)
+		del dd
+		dd=pd.DataFrame()
+		for date,dg in df[['Close','Open','High','Low','Volume']].groupby(by=df.index):
+			sumvol=dg['Volume'].sum()
+			volfrac=dg['Volume']/sumvol
+			dp=pd.DataFrame({'Close':(dg['Close']*volfrac).sum(),
+						  'Open': (dg['Open']*volfrac).sum(),
+						  'High': (dg['High']*volfrac).sum(),
+						  'Low': (dg['Low']*volfrac).sum(),
+						  'Volume': dg['Volume'].mean()},index=[date])
+			dd=pd.concat([dd,dp])
+		self.setvalue("VolAvgClose",dd)
 		
 
 

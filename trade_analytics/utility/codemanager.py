@@ -1,7 +1,7 @@
 import os
 import inspect
 import utility.models as md
-
+from types import ModuleType
 """
 - keeps track of .py files in a folder
 - all information in each .py is pulled as meta information
@@ -16,16 +16,32 @@ import utility.models as md
 
 """
 
-def GetClasses(ff,foo):
+
+def import_computeindexclass(codestr,modulename,membername=None):
+	compiled = compile(codestr, '', 'exec')
+	module = ModuleType(modulename)
+	exec(compiled, module.__dict__)
+	if membername:
+		return (module,eval("module.%s"%membername))
+	else:
+		return (module,None)
+
+
+
+
+
+def GetClasses(module):
 	D=[]
-	for pp in inspect.getmembers(foo):
+	for pp in inspect.getmembers(module):
 		if inspect.isclass(pp[1]):
 			if issubclass(pp[1],md.index):
-				D.append( {'classname': pp[0],'description':inspect.getdoc(pp[1]),'filename':ff,'name':md.index.name} )
+				D.append( {'classname': pp[0],'description':inspect.getdoc(pp[1]),'name':md.index.name} )
 			elif issubclass(pp[1],md.feature):
-				D.append( {'classname': pp[0],'description':inspect.getdoc(pp[1]),'filename':ff,'name':md.feature.name} )
+				D.append( {'classname': pp[0],'description':inspect.getdoc(pp[1]),'name':md.feature.name} )
 			elif issubclass(pp[1],md.query):
-				D.append( {'classname': pp[0],'description':inspect.getdoc(pp[1]),'filename':ff,'name':md.query.name} )
+				D.append( {'classname': pp[0],'description':inspect.getdoc(pp[1]),'name':md.query.name} )
+			elif issubclass(pp[1],md.chart):
+				D.append( {'classname': pp[0],'description':inspect.getdoc(pp[1]),'name':md.chart.name} )
 			else:
 				raise NotImplemented("model class not implemented")
 

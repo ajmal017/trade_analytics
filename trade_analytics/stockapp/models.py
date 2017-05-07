@@ -84,7 +84,7 @@ class Stockmeta(models.Model):
 	Company=models.CharField(max_length=100,null=True,blank=True,help_text="Company name")
 	Marketcap=models. DecimalField(max_digits=9,decimal_places=2,null=True,blank=True,help_text="Market Capitalization")
 	Competitors=models.CharField(max_length=1100,null=True,blank=True,help_text="List of Competitors")
-	Symbol = models.CharField(max_length=10,null=False,blank=True,db_index=True,help_text="Stock Symbol",default='SYMBOL')
+	Symbol = models.CharField(max_length=10,unique=True,null=False,blank=True,db_index=True,help_text="Stock Symbol",default='SYMBOL')
 	Sector = models.CharField(max_length=100,null=True,blank=True,db_index=True,help_text="Stock Sector")
 	Industry = models.CharField(max_length=100,null=True,blank=True,db_index=True,help_text="Stock Industry")
 	
@@ -97,7 +97,7 @@ class Stockmeta(models.Model):
 
 	Labels = MultiSelectField(choices=label_choices,blank=True)
 
-	Download=models.BooleanField(help_text='Download data for this Symbol',default=True)
+	Update=models.BooleanField(help_text='Update data for this Symbol',default=True)
 	Derived=models.BooleanField(help_text='Download data for this Symbol',default=False)
 	ComputeFeature=models.BooleanField(help_text='Compute Features for this Symbol',default=True)
 	User = models.ForeignKey(User,on_delete=models.CASCADE, null = True)
@@ -152,11 +152,7 @@ class IndexComputeClass(models.Model):
 
 	def __str__(self):
 		return str(self.IndexComputeCode.id)+', '+str(self.ClassName)
-	def importcomputeclass(self):
-		computeclass=None
-		importpath=self.IndexComputeCode.getimportpath()
-		exec("from %(importpath)s import %(classname)s as computeclass"%{'importpath':importpath,'classname':self.ClassName})
-		return (self.ClassName,computeclass)
+	
 
 class Index(models.Model):
 	"""
@@ -176,7 +172,7 @@ class Index(models.Model):
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
 	def __str__(self):
-		return ", ".join( [ str(self.IndexLabel),str(self.IndexName),str(self.IndexResultType),str(self.IndexClass) ])
+		return ", ".join( [ str(self.IndexLabel),str(self.IndexName),str(self.IndexResultType),str(self.IndexComputeClass) ])
 
 class StockGroup(models.Model):
 	GroupName=models.CharField(max_length=50,null=True)
@@ -201,12 +197,3 @@ class StockGroupIndex(models.Model):
 	def __str__(self):
 		return self.Symbol.Symbol+', '+self.StockGroup.GroupName+', '+self.Index.IndexLabel
 
-class ComputeStatus_StockGroupIndex(models.Model):
-	status_choices=(('ToDo','ToDo'),('Run','Run'),('Fail','Fail'),('Success','Success'))
-	Status=models.CharField(choices=status_choices,max_length=10)
-	StockGroupIndex=models.ForeignKey( StockGroupIndex,on_delete=models.CASCADE)
-	created_at = models.DateField(auto_now_add=True,null=True)
-	updated_at = models.DateTimeField(auto_now=True,null=True)
-
-	def __str__(self):
-		return ", ".join( [str(self.StockGroupIndex),str(self.Status),str(self.created_at),str(self.updated_at)] )

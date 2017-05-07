@@ -29,3 +29,4 @@ def RunDataDownload():
 	# run in parallel
 	PllCmpt=uty.ParallelCompute( computeargs_iter, UpdatePriceData )
 	PllCmpt.parallelrun()
+
