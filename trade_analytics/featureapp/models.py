@@ -16,14 +16,30 @@ def dictfetchall(cursor):
 
 class FeatureData(object):
 	_DATABASE='featuredata'
-
+	_TABLE='featuredata'
+	_dbindexname='dbindex'
 	def _inspectdb(self):
 		pass
-		
+	def _createtable(self):
+		# if self.connection.vendor=='sqlite'
+		with self.connectioncursor() as cursor:
+			cursor.execute("""CREATE TABLE %(TABLENAME)s (
+				id int PRIMARY KEY,
+				Date date,
+				Symbol varchar(20)
+				);""")
+			q=dictfetchall(cursor)
+
+	def _createindex(self):
+		with self.connectioncursor() as cursor:
+			cursor.execute("CREATE UNIQUE INDEX %(dbindexname)s;"%{'dbindexname':self._dbindexname})
+	
+
 	def __init__(self):
 		"""
 		on iniitialization, inspect the table and get all the column names and types
 		"""
+		self.connection = connections[self._DATABASE]
 		self.connectioncursor = connections[self._DATABASE].cursor
 
 

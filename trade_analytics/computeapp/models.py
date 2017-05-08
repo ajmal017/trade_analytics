@@ -11,3 +11,16 @@ from django.db import models
 #		3. provide progress bars rest api based on remaining number of tasks 
 #		4. Keep log of failed tasks
 #		5.
+
+
+
+
+class ComputeStatus_Stockdownload(models.Model):
+	status_choices=(('ToDo','ToDo'),('Run','Run'),('Fail','Fail'),('Success','Success'))
+	Status=models.CharField(choices=status_choices,max_length=10)
+	Symbol=models.ForeignKey( Stockmeta,on_delete=models.CASCADE)
+	created_at = models.DateField(auto_now_add=True,null=True)
+	updated_at = models.DateTimeField(auto_now=True,null=True)
+
+	def __str__(self):
+		return ", ".join( [str(self.Symbol),str(self.Status),str(self.created_at),str(self.updated_at)] )
