@@ -62,7 +62,7 @@ def SyncPrice2Meta():
 	while not InActiveQ.empty():
 		InActiveQ.get()
 
-	for stk in md.Stockmeta.objects.all():
+	for stk in md.Stockmeta.objects.all()[:100]:
 		inQ.put(stk.id) 
 	time.sleep(1)
 
