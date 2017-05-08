@@ -13,6 +13,7 @@ import time
 def processQ_SyncPrice2Meta(inQ,BadStartQ,BadLastQ,NoDataQ,InActiveQ):
 	while True:
 		try:
+			print "trying to get data"
 			id=inQ.get()
 		except mp.Queue.Empty:
 			print "Queue Done"
@@ -77,6 +78,8 @@ def SyncPrice2Meta():
 		p.join()
 		time.sleep(1)
 
+	print "DOne all jobs"
+	
 	BadStartstks=[]
 	while not BadStartQ.empty():
 		BadStartstks.append( md.Stockmeta.objects.get(id=BadStartQ.get()) )
