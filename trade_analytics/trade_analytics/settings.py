@@ -122,6 +122,12 @@ DATABASES = {
         'DESCRIPTION': "Save the large stock price data separately",
 
     },
+    'featuredata': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR,'databases', 'featuredata.sqlite3'),
+        'DESCRIPTION': "Save Feature Data separately",
+
+    },
     'datascience': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'databases' ,'datascience.sqlite3'),
@@ -129,7 +135,7 @@ DATABASES = {
     }
 }
 
-DATABASE_ROUTERS = ['trade_analytics.db_routers.StockPriceRouter', ]
+DATABASE_ROUTERS = ['trade_analytics.db_routers.StockPriceRouter','trade_analytics.db_routers.FeatureDataRouter' ]
 # dont forget to run
 # python manage.py makemigrations
 # python manage.py migrate
