@@ -69,6 +69,37 @@ def GetStockData(Symbolids,Fromdate,Todate,format,standardize=True):
 		df=StockDataFrame_sanitize(df,standardize=standardize)
 		return df
 	
+
+
+
+def predownloadcheck(stk):
+	Todate=pd.datetime.today().date()
+
+	if stk.Lastdate is None:
+		Fromdate=pd.datetime(2002,1,1).date()
+	else:
+		Fromdate=stk.Lastdate
+
+
+	if stk.LastPriceUpdate==pd.datetime.today().date():
+		print "skipping ",stk," as LastpriceUpdate is today "
+		return {'status':'Success','Todate':Todate,'Fromdate':Fromdate}
+	else:
+		return {'status':'Run','Todate':Todate,'Fromdate':Fromdate}
+
+
+	if Todate.dayofweek==0:
+		print "Today is weekend so no download ",stk
+		return {'status':'Success','Todate':Todate,'Fromdate':Fromdate}
+
+	if (Todate-Fromdate).days<1:
+		print "Already updated ",stk
+		return {'status':'Success','Todate':Todate,'Fromdate':Fromdate}
+	else:
+		return {'status':'Run','Todate':Todate,'Fromdate':Fromdate}
+
+
+	
 def DownloadData(Symbol, Fromdate,Todate):
 	try:
 		df=web.DataReader(Symbol, 'yahoo', Fromdate,Todate)
@@ -78,6 +109,10 @@ def DownloadData(Symbol, Fromdate,Todate):
 		return {'df':None,'status':'Fail'}
 
 def ComputeIndex(stk,Fromdate,Todate):
+	print "----------------------------------------"
+	print "Compute Index on ",stk.Symbol
+	print "----------------------------------------"
+	
 	stkgrpindex=stkmd.StockGroupIndex.objects.get(Symbol=stk)
 	stkgrp=stkgrpindex.StockGroup
 	stkind=stkgrpindex.Index
@@ -93,28 +128,6 @@ def ComputeIndex(stk,Fromdate,Todate):
 	except:
 		print "error computing index ",stk, " for input dates ",Fromdate,Todate	
 		return {'df':None,'status':'Fail'}
-
-def predownloadcheck(stk):
-	Todate=pd.datetime.today().date()
-
-	if stk.Lastdate is None:
-		Fromdate=pd.datetime(2002,1,1).date()
-	else:
-		Fromdate=stk.Lastdate
-
-	if (Todate-Fromdate).days<1:
-		print "Already updated ",stk
-		return {'status':'Success','Todate':Todate,'Fromdate':Fromdate}
-	else:
-		return {'status':'Run','Todate':Todate,'Fromdate':Fromdate}
-
-
-	if stk.LastPriceUpdate==pd.datetime.today().date():
-		print "skipping ",stk," as LastpriceUpdate is today "
-		return {'status':'Success','Todate':Todate,'Fromdate':Fromdate}
-	else:
-		return {'status':'Run','Todate':Todate,'Fromdate':Fromdate}
-
 
 def postdownloadcheck(stk,downloadLastdate):
 	if stk.Lastdate is not None:
@@ -154,6 +167,8 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 		if UpCk['status']=='Success':
 			comstat.Status='Success'
 			comstat.save()
+			stk.LastPriceUpdate=pd.datetime.today().date()
+			stk.save()
 			continue
 		else:
 			Fromdate=UpCk['Fromdate']
@@ -169,6 +184,8 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 		else:
 			comstat.Status='Fail'
 			comstat.save()
+			stk.LastPriceUpdate=pd.datetime.today().date()
+			stk.save()
 			continue
 
 		UpCk=postdownloadcheck(stk,df.index[-1].date())

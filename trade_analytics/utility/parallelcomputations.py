@@ -30,6 +30,7 @@ def Q2list(func,Q,*args,**kwargs):
         while(not Q.empty()):
             try:
                 q=Q.get_nowait()
+                time.sleep(0.1)
             except mp.Queue.Empty:
                 print "queue is empty"
                 continue
@@ -63,6 +64,12 @@ class ParallelCompute(object):
             self.method='celery'
         else:
             self.method='Process'
+
+    def SingleRun(self):
+        for compute_list in chunks(self.paralist,1):
+            self.func(compute_list,) 
+
+        print "Done Single Core"
 
     def ParallelRun(self,chunkby=100,Semaphore=True,Lock=True):
 
@@ -109,6 +116,7 @@ class ParallelCompute(object):
         Q=mp.Queue()
         for compute_list in chunks(self.paralist,chunkby):
             Q.put((compute_list,) )
+        time.sleep(0.1)
 
         func=Q2list(self.func,Q)
         P=[]

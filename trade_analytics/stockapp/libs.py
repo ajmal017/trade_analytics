@@ -1,6 +1,8 @@
+from __future__ import division
 from utility  import codemanager as cdmng
 import stockapp.models as md
 import utility.models as utmd
+
 import os
 import imp
 import shutil
@@ -8,10 +10,13 @@ import pandas as pd
 import time
 
 
-
 def resetstockmeta():
-	md.Stockmeta.objects.all().update(LastPriceUpdate=None,Lastdate=None,Startdate=None)
+	md.Stockmeta.objects.all().update(Status='Active',LastPriceUpdate=None,Lastdate=None,Startdate=None)
 	md.ComputeStatus_Stockdownload.objects.all().delete()
+
+
+
+
 
 def addIndex(SymbolName,stkgrp,index,Sector=None,Industry=None,User=None):
 	if md.Stockmeta.objects.filter(Symbol=SymbolName).exists():
