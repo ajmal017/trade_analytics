@@ -11,7 +11,7 @@ import time
 
 def resetstockmeta():
 	md.Stockmeta.objects.all().update(LastPriceUpdate=None,Lastdate=None,Startdate=None)
-
+	md.ComputeStatus_Stockdownload.objects.all().delete()
 
 def addIndex(SymbolName,stkgrp,index,Sector=None,Industry=None,User=None):
 	if md.Stockmeta.objects.filter(Symbol=SymbolName).exists():
