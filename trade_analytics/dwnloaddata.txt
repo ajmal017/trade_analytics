@@ -1,3 +1,271 @@
+Process Process-6:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 114, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/celery/local.py", line 191, in __call__
+    return self._get_current_object()(*a, **kw)
+  File "/usr/local/lib/python2.7/dist-packages/celery/app/task.py", line 379, in __call__
+    return self.run(*args, **kwargs)
+  File "/home/venkat/trade_analytics/trade_analytics/dataapp/libs.py", line 196, in UpdatePriceData
+    dtamd.Stockprice.objects.bulk_create(objs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 443, in bulk_create
+    ids = self._batched_insert(objs_without_pk, fields, batch_size)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1084, in _batched_insert
+    self._insert(item, fields=fields, using=self.db)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1061, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/sql/compiler.py", line 1099, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 80, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/utils.py", line 94, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return Database.Cursor.execute(self, query, params)
+OperationalError: attempt to write a readonly database
+Updated data for  UCTT  downloaded  3302  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SBAC  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SFUN  downloaded  1670  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SNSS  downloaded  2923  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SEMG  downloaded  1650  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  RSPP  downloaded  831  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SBLK  downloaded  2373  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SN  downloaded  1355  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SNAK  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SRI  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Process Process-3:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 114, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/celery/local.py", line 191, in __call__
+    return self._get_current_object()(*a, **kw)
+  File "/usr/local/lib/python2.7/dist-packages/celery/app/task.py", line 379, in __call__
+    return self.run(*args, **kwargs)
+  File "/home/venkat/trade_analytics/trade_analytics/dataapp/libs.py", line 196, in UpdatePriceData
+    dtamd.Stockprice.objects.bulk_create(objs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 443, in bulk_create
+    ids = self._batched_insert(objs_without_pk, fields, batch_size)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1084, in _batched_insert
+    self._insert(item, fields=fields, using=self.db)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1061, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/sql/compiler.py", line 1099, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 80, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/utils.py", line 94, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return Database.Cursor.execute(self, query, params)
+OperationalError: attempt to write a readonly database
+Updated data for  ATHX  downloaded  2494  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  IRT  downloaded  940  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  BLDR  downloaded  2985  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  CNTY  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  CLGX  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  ARRY  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  AEGR  downloaded  1537  with key =  <Lock(owner=SomeOtherProcess)>
+error downloading  DARA  for input dates  2002-01-01 2017-05-08
+Updated data for  MGAM  downloaded  3296  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  DW  downloaded  3777  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  CLSN  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Process Process-4:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 114, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/celery/local.py", line 191, in __call__
+    return self._get_current_object()(*a, **kw)
+  File "/usr/local/lib/python2.7/dist-packages/celery/app/task.py", line 379, in __call__
+    return self.run(*args, **kwargs)
+  File "/home/venkat/trade_analytics/trade_analytics/dataapp/libs.py", line 196, in UpdatePriceData
+    dtamd.Stockprice.objects.bulk_create(objs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 443, in bulk_create
+    ids = self._batched_insert(objs_without_pk, fields, batch_size)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1084, in _batched_insert
+    self._insert(item, fields=fields, using=self.db)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1061, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/sql/compiler.py", line 1099, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 80, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/utils.py", line 94, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return Database.Cursor.execute(self, query, params)
+OperationalError: attempt to write a readonly database
+Updated data for  PTLA  downloaded  997  with key =  <Lock(owner=SomeOtherProcess)>
+error downloading  PCP  for input dates  2002-01-01 2017-05-08
+Updated data for  PFPT  downloaded  1269  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  WSTC  downloaded  1039  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  QEP  downloaded  1735  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  RGLS  downloaded  1150  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  RRTS  downloaded  1758  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SEAC  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  WGP  downloaded  1109  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  XPO  downloaded  3419  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  LKQ  downloaded  3420  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  MHLD  downloaded  2267  with key =  <Lock(owner=SomeOtherProcess)>
+Process Process-1:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 114, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/celery/local.py", line 191, in __call__
+    return self._get_current_object()(*a, **kw)
+  File "/usr/local/lib/python2.7/dist-packages/celery/app/task.py", line 379, in __call__
+    return self.run(*args, **kwargs)
+  File "/home/venkat/trade_analytics/trade_analytics/dataapp/libs.py", line 196, in UpdatePriceData
+    dtamd.Stockprice.objects.bulk_create(objs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 443, in bulk_create
+    ids = self._batched_insert(objs_without_pk, fields, batch_size)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1084, in _batched_insert
+    self._insert(item, fields=fields, using=self.db)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1061, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/sql/compiler.py", line 1099, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 80, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/utils.py", line 94, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return Database.Cursor.execute(self, query, params)
+OperationalError: attempt to write a readonly database
+error downloading  ARSD  for input dates  2002-01-01 2017-05-08
+error downloading  CMGE  for input dates  2002-01-01 2017-05-08
+Updated data for  CLFD  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  CPL  downloaded  3173  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  AETI  downloaded  2512  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  EBF  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  EXG  downloaded  2529  with key =  <Lock(owner=SomeOtherProcess)>
+error downloading  BOTA  for input dates  2002-01-01 2017-05-08
+Updated data for  CCIH  downloaded  1660  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  ASX  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  ETY  downloaded  2627  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  FCT  downloaded  3259  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  CJJD  downloaded  1912  with key =  <Lock(owner=SomeOtherProcess)>
+Process Process-7:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 114, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/celery/local.py", line 191, in __call__
+    return self._get_current_object()(*a, **kw)
+  File "/usr/local/lib/python2.7/dist-packages/celery/app/task.py", line 379, in __call__
+    return self.run(*args, **kwargs)
+  File "/home/venkat/trade_analytics/trade_analytics/dataapp/libs.py", line 196, in UpdatePriceData
+    dtamd.Stockprice.objects.bulk_create(objs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 443, in bulk_create
+    ids = self._batched_insert(objs_without_pk, fields, batch_size)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1084, in _batched_insert
+    self._insert(item, fields=fields, using=self.db)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1061, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/sql/compiler.py", line 1099, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 80, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/utils.py", line 94, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return Database.Cursor.execute(self, query, params)
+OperationalError: attempt to write a readonly database
+Updated data for  CW  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  CNQ  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  CRIS  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  CSTE  downloaded  1289  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  COMM  downloaded  888  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  DSCI  downloaded  3814  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  COG  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  COO  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  CNAT  downloaded  953  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  CHA  downloaded  3643  with key =  <Lock(owner=SomeOtherProcess)>
+Process Process-2:
+Traceback (most recent call last):
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 258, in _bootstrap
+    self.run()
+  File "/usr/lib/python2.7/multiprocessing/process.py", line 114, in run
+    self._target(*self._args, **self._kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/celery/local.py", line 191, in __call__
+    return self._get_current_object()(*a, **kw)
+  File "/usr/local/lib/python2.7/dist-packages/celery/app/task.py", line 379, in __call__
+    return self.run(*args, **kwargs)
+  File "/home/venkat/trade_analytics/trade_analytics/dataapp/libs.py", line 196, in UpdatePriceData
+    dtamd.Stockprice.objects.bulk_create(objs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 443, in bulk_create
+    ids = self._batched_insert(objs_without_pk, fields, batch_size)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1084, in _batched_insert
+    self._insert(item, fields=fields, using=self.db)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1061, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/sql/compiler.py", line 1099, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 80, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/utils.py", line 94, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return Database.Cursor.execute(self, query, params)
+OperationalError: attempt to write a readonly database
+Updated data for  ZGNX  downloaded  1623  with key =  <Lock(owner=None)>
+Updated data for  SYUT  downloaded  3115  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  NEWM  downloaded  820  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SYNM  downloaded  3156  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  PEIX  downloaded  3051  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  TGE  downloaded  232  with key =  <Lock(owner=SomeOtherProcess)>
+error downloading  BAGR  for input dates  2002-01-01 2017-05-08
+error downloading  ASPX  for input dates  2002-01-01 2017-05-08
+Updated data for  CLDX  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  KPTI  downloaded  880  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  INSY  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  FPRX  downloaded  915  with key =  <Lock(owner=SomeOtherProcess)>
+error downloading  ASDR  for input dates  2002-01-01 2017-05-08
+Updated data for  GSL  downloaded  2196  with key =  <Lock(owner=SomeOtherProcess)>
 Process Process-5:
 Traceback (most recent call last):
   File "/usr/lib/python2.7/multiprocessing/process.py", line 258, in _bootstrap
@@ -8,37 +276,41 @@ Traceback (most recent call last):
     return self._get_current_object()(*a, **kw)
   File "/usr/local/lib/python2.7/dist-packages/celery/app/task.py", line 379, in __call__
     return self.run(*args, **kwargs)
-  File "/home/venkat/trade_analytics/trade_analytics/dataapp/libs.py", line 177, in UpdatePriceData
-    stk.save()
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/base.py", line 806, in save
-    force_update=force_update, update_fields=update_fields)
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/base.py", line 836, in save_base
-    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/base.py", line 903, in _save_table
-    forced_update)
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/base.py", line 953, in _do_update
-    return filtered._update(values) > 0
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 662, in _update
-    return query.get_compiler(self.db).execute_sql(CURSOR)
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/sql/compiler.py", line 1191, in execute_sql
-    cursor = super(SQLUpdateCompiler, self).execute_sql(result_type)
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/sql/compiler.py", line 886, in execute_sql
-    raise original_exception
-OperationalError: database is locked
-skipping  EGL  as it is already uptodate 
-skipping  BLMN  as it is already uptodate 
-skipping  TSRO  as it is already uptodate 
-skipping  EIGI  as it is already uptodate 
-skipping  DY  as it is already uptodate 
-skipping  EBS  as it is already uptodate 
-skipping  SSYS  as it is already uptodate 
-skipping  SRNE  as it is already uptodate 
-skipping  SLB  as it is already uptodate 
-skipping  SNMX  as it is already uptodate 
-skipping  SNY  as it is already uptodate 
-skipping  SGYP  as it is already uptodate 
-skipping  TTMI  as it is already uptodate 
-Process Process-4:
+  File "/home/venkat/trade_analytics/trade_analytics/dataapp/libs.py", line 196, in UpdatePriceData
+    dtamd.Stockprice.objects.bulk_create(objs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 443, in bulk_create
+    ids = self._batched_insert(objs_without_pk, fields, batch_size)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1084, in _batched_insert
+    self._insert(item, fields=fields, using=self.db)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1061, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/sql/compiler.py", line 1099, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 80, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/utils.py", line 94, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return Database.Cursor.execute(self, query, params)
+OperationalError: attempt to write a readonly database
+Updated data for  EGL  downloaded  1208  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  BLMN  downloaded  1193  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  TSRO  downloaded  1221  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  EIGI  downloaded  888  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  DY  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  EBS  downloaded  2635  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SSYS  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SRNE  downloaded  2553  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SLB  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SNMX  downloaded  3242  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  SNY  downloaded  3739  with key =  <Lock(owner=SomeOtherProcess)>
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          Process Process-22:
 Traceback (most recent call last):
   File "/usr/lib/python2.7/multiprocessing/process.py", line 258, in _bootstrap
     self.run()
@@ -52,226 +324,19 @@ Traceback (most recent call last):
     comstat=stkmd.ComputeStatus_Stockdownload.objects.get(Status='ToDo',Symbol=stk)
   File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 85, in manager_method
     return getattr(self.get_queryset(), name)(*args, **kwargs)
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 374, in get
-    num = len(clone)
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 232, in __len__
-    self._fetch_all()
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1103, in _fetch_all
-    self._result_cache = list(self._iterable_class(self))
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 53, in __iter__
-    results = compiler.execute_sql(chunked_fetch=self.chunked_fetch)
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/sql/compiler.py", line 886, in execute_sql
-    raise original_exception
-OperationalError: database is locked
-skipping  PTLA  as it is already uptodate 
-error downloading  PCP  for input dates  2002-01-01 2017-05-08
-skipping  PFPT  as it is already uptodate 
-skipping  WSTC  as it is already uptodate 
-skipping  QEP  as it is already uptodate 
-skipping  RGLS  as it is already uptodate 
-skipping  RRTS  as it is already uptodate 
-skipping  SEAC  as it is already uptodate 
-skipping  WGP  as it is already uptodate 
-skipping  XPO  as it is already uptodate 
-skipping  LKQ  as it is already uptodate 
-skipping  MHLD  as it is already uptodate 
-skipping  RLYP  as it is already uptodate 
-skipping  WAGE  as it is already uptodate 
-error downloading  VVTV  for input dates  2002-01-01 2017-05-08
-skipping  BERY  as it is already uptodate 
-skipping  DST  as it is already uptodate 
-skipping  TRVN  as it is already uptodate 
-skipping  UNP  as it is already uptodate 
-skipping  THLD  as it is already uptodate 
-skipping  SNCR  as it is already uptodate 
-skipping  TTPH  as it is already uptodate 
-skipping  NOA  as it is already uptodate 
-skipping  SSH  as it is already uptodate 
-skipping  VSTM  as it is already uptodate 
-skipping  ENTA  as it is already uptodate 
-skipping  ATHX  as it is already uptodate 
-skipping  IRT  as it is already uptodate 
-skipping  BLDR  as it is already uptodate 
-skipping  CNTY  as it is already uptodate 
-skipping  CLGX  as it is already uptodate 
-skipping  ARRY  as it is already uptodate 
-skipping  AEGR  as it is already uptodate 
-error downloading  DARA  for input dates  2002-01-01 2017-05-08
-skipping  MGAM  as it is already uptodate 
-skipping  DW  as it is already uptodate 
-skipping  CLSN  as it is already uptodate 
-skipping  CIMT  as it is already uptodate 
-error downloading  HLSS  for input dates  2002-01-01 2017-05-08
-error downloading  GY  for input dates  2002-01-01 2017-05-08
-skipping  LBY  as it is already uptodate 
-skipping  JONE  as it is already uptodate 
-skipping  LAD  as it is already uptodate 
-skipping  JW-A  as it is already uptodate 
-skipping  KAR  as it is already uptodate 
-skipping  DWCH  as it is already uptodate 
-skipping  HHC  as it is already uptodate 
-skipping  HF  as it is already uptodate 
-skipping  III  as it is already uptodate 
-skipping  GWPH  as it is already uptodate 
-skipping  GSVC  as it is already uptodate 
-skipping  GNCA  as it is already uptodate 
-skipping  ALE  as it is already uptodate 
-error downloading  RNO  for input dates  2002-01-01 2017-05-08
-skipping  TTEK  as it is already uptodate 
-skipping  ERA  as it is already uptodate 
-skipping  EPM  as it is already uptodate 
-skipping  KN  as it is already uptodate 
-skipping  EVC  as it is already uptodate 
-skipping  ELOS  as it is already uptodate 
-skipping  ESPR  as it is already uptodate 
-skipping  ENT  as it is already uptodate 
-skipping  KIRK  as it is already uptodate 
-skipping  TRNO  as it is already uptodate 
-skipping  A  as it is already uptodate 
-skipping  SONS  as it is already uptodate 
-skipping  TTGT  as it is already uptodate 
-skipping  TXMD  as it is already uptodate 
-skipping  TUES  as it is already uptodate 
-skipping  EJ  as it is already uptodate 
-skipping  KOP  as it is already uptodate 
-skipping  FURX  as it is already uptodate 
-error downloading  RCPT  for input dates  2002-01-01 2017-05-08
-error downloading  PAMT  for input dates  2002-01-01 2017-05-08
-skipping  SCS  as it is already uptodate 
-skipping  SCI  as it is already uptodate 
-skipping  TISA  as it is already uptodate 
-skipping  WSTL  as it is already uptodate 
-skipping  R  as it is already uptodate 
-skipping  PLKI  as it is already uptodate 
-skipping  RPRX  as it is already uptodate 
-skipping  RDY  as it is already uptodate 
-skipping  TMO  as it is already uptodate 
-skipping  PZN  as it is already uptodate 
-error downloading  QTWW  for input dates  2002-01-01 2017-05-08
-skipping  PSTB  as it is already uptodate 
-skipping  OVAS  as it is already uptodate 
-skipping  PATK  as it is already uptodate 
-skipping  PETX  as it is already uptodate 
-skipping  PED  as it is already uptodate 
-skipping  PMT  as it is already uptodate 
-skipping  TLOG  as it is already uptodate 
-skipping  PSDV  as it is already uptodate 
-skipping  PGTI  as it is already uptodate 
-skipping  NM  as it is already uptodate 
-skipping  FLXN  as it is already uptodate 
-skipping  NNBR  as it is already uptodate 
-skipping  NNI  as it is already uptodate 
-skipping  XLRN  as it is already uptodate 
-skipping  NTWK  as it is already uptodate 
-skipping  BX  as it is already uptodate 
-skipping  PRSC  as it is already uptodate 
-skipping  FLML  as it is already uptodate 
-skipping  PACT  as it is already uptodate 
-skipping  OCLS  as it is already uptodate 
-error downloading  OPLK  for input dates  2002-01-01 2017-05-08
-error downloading  LTXC  for input dates  2002-01-01 2017-05-08
-error downloading  SCBT  for input dates  2002-01-01 2017-05-08
-error downloading  BCKE  for input dates  2002-01-01 2017-05-08
-skipping  VNET  as it is already uptodate 
-skipping  PFLT  as it is already uptodate 
-skipping  NRG  as it is already uptodate 
-skipping  LZB  as it is already uptodate 
-skipping  LOPE  as it is already uptodate 
-skipping  OMED  as it is already uptodate 
-skipping  MMS  as it is already uptodate 
-skipping  OESX  as it is already uptodaskipping  ZGNX  as it is already uptodate 
-skipping  SYUT  as it is already uptodate 
-skipping  NEWM  as it is already uptodate 
-skipping  SYNM  as it is already uptodate 
-skipping  PEIX  as it is already uptodate 
-skipping  TGE  as it is already uptodate 
-error downloading  BAGR  for input dates  2002-01-01 2017-05-08
-error downloading  ASPX  for input dates  2002-01-01 2017-05-08
-skipping  CLDX  as it is already uptodate 
-skipping  KPTI  as it is already uptodate 
-skipping  INSY  as it is already uptodate 
-skipping  FPRX  as it is already uptodate 
-error downloading  ASDR  for input dates  2002-01-01 2017-05-08
-skipping  GSL  as it is already uptodate 
-skipping  TYG  as it is already uptodate 
-skipping  STO  as it is already uptodate 
-skipping  AMBI  as it is already uptodate 
-skipping  FRGI  as it is already uptodate 
-skipping  CEMP  as it is already uptodate 
-error downloading  CLDN  for input dates  2002-01-01 2017-05-08
-skipping  JJSF  as it is already uptodate 
-skipping  TTM  as it is already uptodate 
-skipping  ATRS  as it is already uptodate 
-skipping  HW  as it is already uptodate 
-skipping  CBD  as it is already uptodate 
-skipping  ATRO  as it is already uptodate 
-skipping  BTG  as it is already uptodate 
-skipping  CYNO  as it is already uptodate 
-skipping  UNIS  as it is already uptodate 
-skipping  ITCI  as it is already uptodate 
-skipping  CTT  as it is already uptodate 
-skipping  CORE  as it is already uptodate 
-skipping  APTS  as it is already uptodate 
-skipping  CBM  as it is already uptodate 
-skipping  CSU  as it is already uptodate 
-skipping  FOR  as it is already uptodate 
-skipping  COHU  as it is already uptodate 
-skipping  STAA  as it is already uptodate 
-skipping  HURN  as it is already uptodate 
-skipping  HRTX  as it is already uptodate 
-skipping  LABL  as it is already uptodate 
-error downloading  SURG  for input dates  2002-01-01 2017-05-08
-skipping  TPC  as it is already uptodate 
-skipping  OGXI  as it is already uptodate 
-skipping  NSTG  as it is already uptodate 
-skipping  STAR  as it is already uptodate 
-skipping  HIIQ  as it is already uptodate 
-skipping  THO  as it is already uptodate 
-error downloading  SFXE  for input dates  2002-01-01 2017-05-08
-skipping  MIXT  as it is already uptodate 
-skipping  SRDX  as it is already uptodate 
-skipping  LSCC  as it is already uptodate 
-skipping  MEIP  as it is already uptodate 
-skipping  ORB  as it is already uptodate 
-skipping  SMED  as it is already uptodate 
-skipping  NVAX  as it is already uptodate 
-skipping  VC  as it is already uptodate 
-skipping  NEO  as it is already uptodate 
-skipping  OSIS  as it is already uptodate 
-skipping  SATS  as it is already uptodate 
-skipping  HSBC  as it is already uptodate 
-skipping  MOV  as it is already uptodate 
-skipping  TEAR  as it is already uptodate 
-skipping  EGLT  as it is already uptodate 
-skipping  MRTX  as it is already uptodate 
-skipping  TWER  as it is already uptodate 
-skipping  QURE  as it is already uptodate 
-skipping  SPA  as it is already uptodate 
-skipping  SHOR  as it is already uptodate 
-skipping  ERUS  as it is already uptodate 
-skipping  WLB  as it is already uptodate 
-skipping  USAT  as it is already uptodate 
-skipping  XNCR  as it is already uptodate 
-skipping  TIS  as it is already uptodate 
-skipping  REXR  as it is already uptodate 
-skipping  RAS  as it is already uptodate 
-skipping  BFLY  as it is already uptodate 
-error downloading  CYBX  for input dates  2002-01-01 2017-05-08
-skipping  DORM  as it is already uptodate 
-skipping  AWK  as it is already uptodate 
-skipping  IPCI  as it is already uptodate 
-skipping  CSII  as it is already uptodate 
-skipping  EPZM  as it is already uptodate 
-skipping  DFRG  as it is already uptodate 
-skipping  CR  as it is already uptodate 
-skipping  ATRC  as it is already uptodate 
-skipping  CBK  as it is already uptodate 
-skipping  CARA  as it is already uptodate 
-skipping  BRP  as it is already uptodate 
-skipping  STWD  as it is already uptodate 
-skipping  BLUE  as it is already uptodate 
-skipping  BBSI  as it is already uptodate 
-skipping  ASEA  as it Process Process-1:
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 380, in get
+    self.model._meta.object_name
+DoesNotExist: ComputeStatus_Stockdownload matching query does not exist.
+Updated data for  SCHL  downloaded  3863  with key =  <Lock(owner=None)>
+Updated data for  RPM  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  ROIC  downloaded  1889  with key =  <Lock(owner=None)>
+Updated data for  RATE  downloaded  1481  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  PSEC  downloaded  3218  with key =  <Lock(owner=None)>
+Updated data for  PTEN  downloaded  3863  with key =  <Lock(owner=None)>
+Updated data for  RDNT  downloaded  3863  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  REGI  downloaded  1333  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  PHH  downloaded  3096  with key =  <Lock(owner=SomeOtherProcess)>
+Process Process-23:
 Traceback (most recent call last):
   File "/usr/lib/python2.7/multiprocessing/process.py", line 258, in _bootstrap
     self.run()
@@ -281,322 +346,46 @@ Traceback (most recent call last):
     return self._get_current_object()(*a, **kw)
   File "/usr/local/lib/python2.7/dist-packages/celery/app/task.py", line 379, in __call__
     return self.run(*args, **kwargs)
-  File "/home/venkat/trade_analytics/trade_analytics/dataapp/libs.py", line 177, in UpdatePriceData
-    stk.save()
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/base.py", line 806, in save
-    force_update=force_update, update_fields=update_fields)
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/base.py", line 836, in save_base
-    updated = self._save_table(raw, cls, force_insert, force_update, using, update_fields)
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/base.py", line 903, in _save_table
-    forced_update)
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/base.py", line 953, in _do_update
-    return filtered._update(values) > 0
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 662, in _update
-    return query.get_compiler(self.db).execute_sql(CURSOR)
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/sql/compiler.py", line 1191, in execute_sql
-    cursor = super(SQLUpdateCompiler, self).execute_sql(result_type)
-  File "/usr/local/lib/python2.7/dist-packages/django/db/models/sql/compiler.py", line 886, in execute_sql
-    raise original_exception
+  File "/home/venkat/trade_analytics/trade_analytics/dataapp/libs.py", line 196, in UpdatePriceData
+    dtamd.Stockprice.objects.bulk_create(objs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/manager.py", line 85, in manager_method
+    return getattr(self.get_queryset(), name)(*args, **kwargs)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 443, in bulk_create
+    ids = self._batched_insert(objs_without_pk, fields, batch_size)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1084, in _batched_insert
+    self._insert(item, fields=fields, using=self.db)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/query.py", line 1061, in _insert
+    return query.get_compiler(using=using).execute_sql(return_id)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/models/sql/compiler.py", line 1099, in execute_sql
+    cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 80, in execute
+    return super(CursorDebugWrapper, self).execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/utils.py", line 94, in __exit__
+    six.reraise(dj_exc_type, dj_exc_value, traceback)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/utils.py", line 65, in execute
+    return self.cursor.execute(sql, params)
+  File "/usr/local/lib/python2.7/dist-packages/django/db/backends/sqlite3/base.py", line 328, in execute
+    return Database.Cursor.execute(self, query, params)
 OperationalError: database is locked
-error downloading  ARSD  for input dates  2002-01-01 2017-05-08
-error downloading  CMGE  for input dates  2002-01-01 2017-05-08
-skipping  CLFD  as it is already uptodate 
-skipping  CPL  as it is already uptodate 
-skipping  AETI  as it is already uptodate 
-skipping  EBF  as it is already uptodate 
-skipping  EXG  as it is already uptodate 
-error downloading  BOTA  for input dates  2002-01-01 2017-05-08
-skipping  CCIH  as it is already uptodate 
-skipping  ASX  as it is already uptodate 
-skipping  ETY  as it is already uptodate 
-skipping  FCT  as it is already uptodate 
-skipping  CJJD  as it is already uptodate 
-skipping  CSV  as it is already uptodate 
-skipping  BBL  as it is already uptodate 
-skipping  DXYN  as it is already uptodate 
-skipping  ANW  as it is already uptodate 
-skipping  CUK  as it is already uptodate 
-skipping  DEO  as it is already uptodate 
-skipping  HMST  as it is already uptodate 
-skipping  BTI  as it is already uptodate 
-skipping  FHCO  as it is already uptodate 
-skipping  EOS  as it is already uptodate 
-skipping  BITA  as it is already uptodate 
-skipping  E  as it is already uptodate 
-skipping  BSPM  as it is already uptodate 
-skipping  HMC  as it is already uptodate 
-skipping  ATAX  as it is already uptodate 
-skipping  DSPG  as it is already uptodate 
-error downloading  FRM  for input dates  2002-01-01 2017-05-08
-skipping  CRDS  as it is already uptodate 
-skipping  FMO  as it is already uptodate 
-skipping  AEG  as it is already uptodate 
-skipping  ZIGO  as it is already uptodate 
-skipping  EFT  as it is already uptodate 
-error downloading  IFT  for input dates  2002-01-01 2017-05-08
-skipping  HPJ  as it is already uptodate 
-skipping  KYE  as it is already uptodate 
-skipping  LYG  as it is already uptodate 
-skipping  INTL  as it is already uptodate 
-skipping  MNOV  as it is already uptodate 
-skipping  HRG  as it is already uptodate 
-skipping  NTT  as it is already uptodate 
-skipping  KEP  as it is already uptodate 
-skipping  NSSC  as it is already uptodate 
-skipping  IBN  as it is already uptodate 
-skipping  IEP  as it is already uptodate 
-skipping  MYI  as it is already uptodate 
-skipping  IQI  as it is already uptodate 
-skipping  LFC  as it is already uptodate 
-skipping  LUX  as it is already uptodate 
-error downloading  LOJN  for input dates  2002-01-01 2017-05-08
-skipping  LRAD  as it is already uptodate 
-skipping  LXU  as it is already uptodate 
-skipping  IWD  as it is already uptodate 
-skipping  MGNX  as it is already uptodate 
-skipping  HDB  as it is already uptodate 
-skipping  ITI  as it is already uptodate 
-skipping  GURE  as it is already uptodate 
-skipping  JVA  as it is already uptodate 
-skipping  OHRP  as it is already uptodate 
-skipping  ING  as it is already uptodate 
-skipping  MFG  as it is already uptodate 
-skipping  KYN  as it is already uptodate 
-skipping  LYTS  as it is already uptodate 
-skipping  IIIN  as it is already uptodate 
-skipping  INFU  as it is already uptodate 
-skipping  NYMX  as it is already uptodate 
-error downloading  IRE  for input dates  2002-01-01 2017-05-08
-skipping  MOBI  as it is already uptodate 
-skipping  MDCI  as it is already uptodate 
-error downloading  OXBT  for input dates  2002-01-01 2017-05-08
-skipping  RAVN  as it is already uptodate 
-skipping  PUK  as it is already uptodate 
-skipping  PRKR  as it is already uptodate 
-skipping  REPH  as it is already uptodate 
-skipping  RICK  as it is already uptodate 
-skipping  RNET  as it is already uptodate 
-skipping  SMTX  as it is already uptodate 
-skipping  RXDX  as it is already uptodate 
-skipping  SNE  as it is already uptodate 
-skipping  SRV  as it is already uptodate 
-skipping  STS  as it is already uptodate 
-skipping  VVI  as it is already uptodate 
-is already uptodate 
-skipping  BT  as it is already uptodate 
-skipping  BNFT  as it is already uptodate 
-skipping  AZZ  as it is already uptodate 
-skipping  ASGN  as it is already uptodate 
-skipping  ANIP  as it is already uptodate 
-skipping  CMRX  as it is already uptodate 
-skipping  GPK  as it is already uptodate 
-te 
-skipping  OCN  as it is already uptodate 
-skipping  BFNC  as it is already uptodate 
-skipping  MBII  as it is already uptodate 
-skipping  MYCC  as it is already uptodate 
-skipping  PHMD  as it is already uptodate 
-skipping  PWR  as it is already uptodate 
-skipping  MRIN  as it is already uptodate 
-skipping  PPP  as it is already uptodate 
-skipping  PII  as it is already uptodate 
-skipping  CW  as it is already uptodate 
-skipping  CNQ  as it is already uptodate 
-skipping  CRIS  as it is already uptodate 
-skipping  CSTE  as it is already uptodate 
-skipping  COMM  as it is already uptodate 
-skipping  DSCI  as it is already uptodate 
-skipping  COG  as it is already uptodate 
-skipping  COO  as it is already uptodate 
-skipping  CNAT  as it is already uptodate 
-skipping  CHA  as it is already uptodate 
-skipping  CNCE  as it is already uptodate 
-skipping  CLW  as it is already uptodate 
-skipping  CMLS  as it is already uptodate 
-skipping  CVO  as it is already uptodate 
-skipping  CLDT  as it is already uptodate 
-skipping  BXMT  as it is already uptodate 
-skipping  GREK  as it is already uptodate 
-skipping  CHDN  as it is already uptodate 
-skipping  CALD  as it is already uptodate 
-skipping  CYTK  as it is already uptodate 
-skipping  CHMI  as it is already uptodate 
-skipping  CHTP  as it is already uptodate 
-skipping  CAMP  as it is already uptodate 
-skipping  BURL  as it is already uptodate 
-skipping  AES  as it is already uptodate 
-skipping  BIDU  as it is already uptodate 
-error downloading  AZIA  for input dates  2002-01-01 2017-05-08
-skipping  BTE  as it is already uptodate 
-skipping  AFSI  as it is already uptodate 
-error downloading  BIND  for input dates  2002-01-01 2017-05-08
-skipping  AIRM  as it is already uptodate 
-skipping  PG  as it is already uptodate 
-skipping  AEGN  as it is already uptodate 
-skipping  BOOM  as it is already uptodate 
-skipping  AR  as it is already uptodate 
-skipping  ABCO  as it is already uptodate 
-skipping  AME  as it is already uptodate 
-skipping  ACAD  as it is already uptodate 
-skipping  APC  as it is already uptodate 
-skipping  ALLT  as it is already uptodate 
-skipping  AGO  as it is already uptodate 
-skipping  ALK  as it is already uptodate 
-skipping  BNS  as it is already uptodate 
-skipping  ADUS  as it is already uptodate 
-skipping  CCK  as it is already uptodate 
-skipping  ARMK  as it is already uptodate 
-skipping  AGEN  as it is already uptodate 
-skipping  CAH  as it is already uptodate 
-skipping  BAP  as it is already uptodate 
-skipping  BC  as it is already uptodate 
-skipping  AZC  as it is already uptodate 
-skipping  BBEP  as it is already uptodate 
-skipping  BA  as it is already uptodate 
-skipping  AVNR  as it is already uptodate 
-skipping  BIOD  as it is already uptodate 
-skipping  BAGL  as it is already uptodate 
-skipping  ARMH  as it is already uptodate 
-error downloading  CAP  for input dates  2002-01-01 2017-05-08
-skipping  GCI  as it is already uptodate 
-skipping  FUN  as it is already uptodate 
-skipping  LGND  as it is already uptodate 
-skipping  ACHC  as it is already uptodate 
-skipping  AMZN  as it is already uptodate 
-skipping  GIB  as it is already uptodate 
-skipping  CQH  as it is already uptodate 
-skipping  GIII  as it is already uptodate 
-skipping  BRD  as it is already uptodate 
-skipping  GM  as it is already uptodate 
-skipping  GTE  as it is already uptodate 
-skipping  FANG  as it is already uptodate 
-skipping  EQT  as it is already uptodate 
-skipping  KKR  as it is already uptodate 
-skipping  EOG  as it is already uptodate 
-skipping  CPA  as it is already uptodate 
-skipping  CRM  as it is already uptodate 
-skipping  COHR  as it is already uptodate 
-skipping  CXO  as it is already uptodate 
-skipping  HDS  as it is already uptodate 
-skipping  FNSR  as it is already uptodate 
-skipping  DLPH  as it is already uptodate 
-skipping  JPM  as it is already uptodate 
-skipping  CVS  as it is already uptodate 
-skipping  KEX  as it is already uptodate 
-skipping  INCY  as it is already uptodate 
-skipping  DHT  as it is already uptodate 
-skipping  INFN  as it is already uptodate 
-skipping  GLUU  as it is already uptodate 
-skipping  IDTI  as it is already uptodate 
-skipping  HOG  as it is already uptodate 
-skipping  HCSG  as it is already uptodate 
-error downloading  EOX  for input dates  2002-01-01 2017-05-08
-skipping  SYNA  as it is already uptodate 
-skipping  SU  as it is already uptodate 
-skipping  SLM  as it is already uptodate 
-skipping  SLCA  as it skipping  UCTT  as it is already uptodate 
-skipping  SBAC  as it is already uptodate 
-skipping  SFUN  as it is already uptodate 
-skipping  SNSS  as it is already uptodate 
-skipping  SEMG  as it is already uptodate 
-skipping  RSPP  as it is already uptodate 
-skipping  SBLK  as it is already uptodate 
-skipping  SN  as it is already uptodate 
-skipping  SNAK  as it is already uptodate 
-skipping  SRI  as it is already uptodate 
-skipping  SPHS  as it is already uptodate 
-skipping  SPNC  as it is already uptodate 
-error downloading  SPDC  for input dates  2002-01-01 2017-05-08
-skipping  RARE  as it is already uptodate 
-skipping  MFC  as it is already uptodate 
-skipping  TOWR  as it is already uptodate 
-error downloading  AMZG  for input dates  2002-01-01 2017-05-08
-skipping  XOMA  as it is already uptodate 
-skipping  WIX  as it is already uptodate 
-skipping  SIMG  as it is already uptodate 
-skipping  WCN  as it is already uptodate 
-skipping  EME  as it is already uptodate 
-error downloading  STNR  for input dates  2002-01-01 2017-05-08
-error downloading  SUNE  for input dates  2002-01-01 2017-05-08
-skipping  GPX  as it is already uptodate 
-skipping  ENB  as it is already uptodate 
-skipping  EGBN  as it is already uptodate 
-skipping  EQIX  as it is already uptodate 
-skipping  EGHT  as it is already uptodate 
-skipping  ETN  as it is already uptodate 
-skipping  EXAR  as it is already uptodate 
-skipping  ENS  as it is already uptodate 
-skipping  EXAS  as it is already uptodate 
-error downloading  ENI  for input dates  2002-01-01 2017-05-08
-skipping  EXTR  as it is already uptodate 
-skipping  FXCM  as it is already uptodate 
-skipping  FB  as it is already uptodate 
-skipping  EVHC  as it is already uptodate 
-skipping  GPOR  as it is already uptodate 
-skipping  GLT  as it is already uptodate 
-skipping  GILD  as it is already uptodate 
-skipping  STKL  as it is already uptodate 
-skipping  FLR  as it is already uptodate 
-error downloading  GSIG  for input dates  2002-01-01 2017-05-08
-skipping  STBZ  as it is already uptodate 
-skipping  SUPN  as it is already uptodate 
-skipping  EEFT  as it is already uptodate 
-skipping  ECYT  as it is already uptodate 
-skipping  SWFT  as it is already uptodate 
-skipping  TA  as it is already uptodate 
-skipping  STML  as it is already uptodate 
-skipping  ELY  as it is already uptodate 
-skipping  GLOG  as it is already uptodate 
-skipping  EFC  as it is already uptodate 
-error downloading  HPTX  for input dates  2002-01-01 2017-05-08
-error downloading  KYTH  for input dates  2002-01-01 2017-05-08
-skipping  HTHT  as it is already uptodate 
-skipping  HMSY  as it is already uptodate 
-skipping  HI  as it is already uptodate 
-skipping  HLF  as it is already uptodate 
-skipping  HOLI  as it is already uptodate 
-skipping  HEOP  as it is already uptodate 
-skipping  HYGS  as it is already uptodate 
-error downloading  HMIN  for input dates  2002-01-01 2017-05-08
-skipping  HZNP  as it is already uptodate 
-skipping  HZO  as it is already uptodate 
-skipping  KBIO  as it is already uptodate 
-skipping  IMMR  as it is already uptodate 
-skipping  IMMU  as it is already uptodate 
-skipping  LGIH  as it is already uptodate 
-skipping  LCI  as it is already uptodate 
-skipping  DFS  as it is already uptodate 
-skipping  KW  as it is already uptodate 
-skipping  JKS  as it is already uptodate 
-skipping  URBN  as it is already uptodate 
-skipping  GCAP  as it is already uptodate 
-skipping  FLWS  as it is already uptodate 
-skipping  HASI  as it is already uptodate 
-skipping  DHR  as it is already uptodate 
-skipping  CZZ  as it is already uptodate 
-error downloading  JAH  for input dates  2002-01-01 2017-05-08
-skipping  GWR  as it is already uptodate 
-skipping  FOXF  as it is already uptodate 
-skipping  HDSN  as it is already uptodate 
-skipping  HAIN  as it is already uptodate 
-skipping  HITT  as it is already uptodate 
-skipping  IILG  as it is already uptodate 
-skipping  HLX  as it is already uptodate 
-error downloading  BWS  for input dates  2002-01-01 2017-05-08
-error downloading  AYN  for input dates  2002-01-01 2017-05-08
-skipping  is already uptodate 
-skipping  EFII  as it is already uptodate 
-skipping  FET  as it is already uptodate 
-skipping  SNPS  as it is already uptodate 
-error downloading  SQI  for input dates  2002-01-01 2017-05-08
-skipping  SNN  as it is already uptodate 
-CELP  as it is already uptodate 
-skipping  BRAZ  as it is already uptodate 
-skipping  CEMI  as it is already uptodate 
-skipping  AMWD  as it is already uptodate 
-skipping  INGN  as it is already uptodate 
-skipping  AMC  as it is already uptodate 
-skipping  CUBI  as it is already uptodate 
-skipping  AMG  as it is already uptodate 
-skipping  ADC  as it is already uptodate 
-skipping  ADES  as it is already uptodate 
+error downloading  TLM  for input dates  2002-01-01 2017-05-08
+error downloading  TEG  for input dates  2002-01-01 2017-05-08
+Updated data for  FCH  downloaded  3863  with key =  <Lock(owner=None)>
+Updated data for  TAP  downloaded  3863  with key =  <Lock(owner=None)>
+Updated data for  GRPN  downloaded  1383  with key =  <Lock(owner=SomeOtherProcess)>
+Updated data for  ETV  downloaded  2985  with key =  <Lock(owner=None)>
+Updated data for  TRI  downloaded  3752  with key =  <Lock(owner=None)>
+Updated data for  TNK  downloaded  2365  with key =  <Lock(owner=None)>
+Updated data for  UA  downloaded  283  with key =  <Lock(owner=None)>
+Updated data for  TUP  downloaded  3863  with key =  <Lock(owner=None)>
+Updated data for  SKT  downloaded  3863  with key =  <Lock(owner=None)>
+Updated data for  UMPQ  downloaded  3863  with key =  <Lock(owner=None)>
+Updated data for  TWI  downloaded  3863  with key =  <Lock(owner=None)>
+Updated data for  UMBF  downloaded  3863  with key =  <Lock(owner=None)>
+Updated data for  EGP  downloaded  3863  with key =  <Lock(owner=None)>
+Updated data for  SPWR  downloaded  2885  with key =  <Lock(owner=None)>
+Updated data for  SIR  downloaded  1300  with key =  <Lock(owner=None)>
+Updated data for  SFM  downloaded  948  with key =  <Lock(owner=None)>
+Updated data for  ELNK  downloaded  3815  with key =  <Lock(owner=None)>
+Updated data for  TRIP  downloaded  1361  with key =  <Lock(owner=None)>
