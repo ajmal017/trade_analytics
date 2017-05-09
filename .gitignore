@@ -3,6 +3,8 @@
 djangolog
 celerylog
 *.pid
+dbconf.json
+backup
 *.out
 *.csv
 logs
