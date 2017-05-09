@@ -5,6 +5,9 @@ import stockapp.models as stkmd
 from dataapp import models as dtamd
 import utility.codemanager as utcdmng
 import datetime
+import time
+import pdb
+
 
 def StockDataFrame_validate(df,columns=['Close','Open','High','Low','Volume']):
 	for cc in columns:
@@ -31,7 +34,18 @@ def StockDataFrame_sanitize(df,standardize=False):
 	
 	if 'Date' in df.columns:
 		df['Date']=df['Date'].apply(setdate)
-	else:
+	
+	index_is_datetype=False
+	if isinstance(df.index[0],basestring):
+		try:
+			pd.to_datetime(df.index[0]).date()
+			index_is_datetype=True
+		except:
+			index_is_datetype=False
+	elif type(df.index[0])==datetime.datetime or type(df.index[0])==pd.datetime or type(df.index[0])==pd.datetime.date or type(df.index[0])==datetime.date:
+		index_is_datetype=True
+
+	if index_is_datetype:
 		df.index=df.index.map(setdate)
 
 	if standardize:
@@ -52,21 +66,27 @@ def GetStockData(Symbolids,Fromdate,Todate,format,standardize=True):
 
 	if format=='list':
 		L=[]
+		starttime=time.time()
 		for symbid in Symbolids:
 			df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id=symbid,Date__range=[Fromdate,Todate]).values() ) )
 			df=StockDataFrame_sanitize(df,standardize=standardize)
 			L.append( df )
+		print " Time for GetStockData = ",time.time()-starttime
 		return L
 	elif format=='dict':
+		starttime=time.time()
 		D={}
 		for symbid in Symbolids:
 			df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id=symbid,Date__range=[Fromdate,Todate]).values() ) ) 
 			df=StockDataFrame_sanitize(df,standardize=standardize)
 			D[symbid]= df
+		print " Time for GetStockData = ",time.time()-starttime
 		return D		
 	elif format=='concat':
+		starttime=time.time()
 		df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id__in=Symbolids,Date__range=[Fromdate,Todate]).values() ) )
 		df=StockDataFrame_sanitize(df,standardize=standardize)
+		print " Time for GetStockData = ",time.time()-starttime
 		return df
 	
 
@@ -112,7 +132,7 @@ def ComputeIndex(stk,Fromdate,Todate):
 	print "----------------------------------------"
 	print "Compute Index on ",stk.Symbol
 	print "----------------------------------------"
-	
+
 	stkgrpindex=stkmd.StockGroupIndex.objects.get(Symbol=stk)
 	stkgrp=stkgrpindex.StockGroup
 	stkind=stkgrpindex.Index
@@ -154,13 +174,17 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 	stocks=stkmd.Stockmeta.objects.filter(id__in=Symbols_ids)
 
 	for stk in stocks:
+		print "Working on ",stk.Symbol," ",stk.id
 		comstat=stkmd.ComputeStatus_Stockdownload.objects.get(Status='ToDo',Symbol=stk)
 		comstat.Status='Run'
 		comstat.save()
 
 		if stk.Update==False:
+			print "skipping as update was set to False"
 			comstat.Status='Success'
 			comstat.save()
+			stk.LastPriceUpdate=pd.datetime.today().date()
+			stk.save()
 			continue
 
 		UpCk=predownloadcheck(stk)
@@ -174,10 +198,15 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 			Fromdate=UpCk['Fromdate']
 			Todate=UpCk['Todate']
 		
+		print "passed pre-check"
+
+
 		if stk.Derived:
 			DD=ComputeIndex(stk, Fromdate,Todate)
 		else:
 			DD=DownloadData(stk.Symbol, Fromdate,Todate)
+
+		print "done download"
 
 		if DD['status']=='Success':
 			df=DD['df']
@@ -188,7 +217,9 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 			stk.save()
 			continue
 
-		UpCk=postdownloadcheck(stk,df.index[-1].date())
+		df=StockDataFrame_sanitize(df,standardize=False)
+
+		UpCk=postdownloadcheck(stk,df.index[-1])
 		if UpCk['status']=='Success':
 			stk.LastPriceUpdate=pd.datetime.today().date()
 			stk.save()
@@ -214,29 +245,27 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 		else:
 			dtamd.Stockprice.objects.bulk_create(objs)
 						
-
 		stk.LastPriceUpdate=pd.datetime.today().date()
 
 		if stk.Startdate is None:
-			stk.Startdate=df.index[0].date()
+			stk.Startdate=df.index[0]
 
-		if df.index[0].date()<stk.Startdate:
-			stk.Startdate=df.index[0].date()
+		if df.index[0]<stk.Startdate:
+			stk.Startdate=df.index[0]
 
 		if stk.Lastdate is None:
-			stk.Lastdate=df.index[-1].date()
+			stk.Lastdate=df.index[-1]
 
-		if df.index[-1].date()>stk.Lastdate:
-			stk.Lastdate=df.index[-1].date()
+		if df.index[-1]>stk.Lastdate:
+			stk.Lastdate=df.index[-1]
 
-		
+
 
 		stk.save()
 		comstat.Status='Success'
 		comstat.save()
 
-		print "Updated data for ", stk, " downloaded ", len(df)," with key = ",kwargs.get('lock',None)
-		del df
+		print "Updated data for ", stk, " downloaded ", len(df)
 
 	if semaphore:
 		semaphore.release()

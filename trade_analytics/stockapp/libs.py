@@ -22,7 +22,7 @@ def addIndex(SymbolName,stkgrp,index,Sector=None,Industry=None,User=None):
 	if md.Stockmeta.objects.filter(Symbol=SymbolName).exists():
 		return {'status':'Fail','what':"Symbol "+SymbolName+" already exists"}
 	# add the symbol to stockmeta
-	stk=md.Stockmeta(Symbol=SymbolName,Status='Active',Update=False,Derived=True,ComputeFeature=True,Sector=Sector,Industry=Industry,User=User)
+	stk=md.Stockmeta(Symbol=SymbolName,Status='Active',Update=True,Derived=True,ComputeFeature=True,Sector=Sector,Industry=Industry,User=User)
 	stk.save()
 
 	stkgrpind=md.StockGroupIndex(Symbol=stk,Index=index,StockGroup=stkgrp)

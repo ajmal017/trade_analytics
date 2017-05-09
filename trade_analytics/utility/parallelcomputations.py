@@ -1,4 +1,5 @@
 import multiprocessing as mp
+from Queue import Empty
 import time
 import pdb
 
@@ -31,7 +32,7 @@ def Q2list(func,Q,*args,**kwargs):
             try:
                 q=Q.get_nowait()
                 time.sleep(0.1)
-            except mp.Queue.Empty:
+            except Empty:
                 print "queue is empty"
                 continue
             if type(q)==list or type(q)==tuple:
