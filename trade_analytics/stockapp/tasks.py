@@ -6,16 +6,16 @@ import dataapp.models as dtamd
 import itertools as itt
 import numpy as np
 import multiprocessing as mp
+from Queue import Empty
 import time
+import pandas as pd
 
 
-
-def processQ_SyncPrice2Meta(inQ,BadStartQ,BadLastQ,NoDataQ,InActiveQ):
+def processQ_SyncPrice2Meta(inQ,BadStartQ,BadLastQ,NoDataQ,InActiveQ,DuplicatesQ):
 	while True:
 		try:
-			print "trying to get data"
 			id=inQ.get_nowait()
-		except mp.Queue.Empty:
+		except Empty:
 			print "Queue Done"
 			break
 
@@ -25,22 +25,39 @@ def processQ_SyncPrice2Meta(inQ,BadStartQ,BadLastQ,NoDataQ,InActiveQ):
 		stkprices=dtamd.Stockprice.objects.filter(Symbol_id=stk.id).order_by('Date')
 		if len(stkprices)>0:
 			if stk.Startdate!=stkprices.first().Date:
-				BadStartQ.put(stk.id)
+				BadStartQ.put((stk.id,stkprices.first().Date))
 				time.sleep(np.abs(np.random.randint(3)+1)/10)
 				print '\t',stk.Symbol," start dates are not synced"
 			if stk.Lastdate!=stkprices.last().Date:
-				BadLastQ.put(stk.id)
+				BadLastQ.put((stk.id,stkprices.last().Date))
 				time.sleep(np.abs(np.random.randint(3))/10)
 				print '\t',stk.Symbol," last dates are not synced"
+
+			# checking for duplicates
+			df=pd.DataFrame(list(stkprices.values('id','Date','Symbol','Symbol_id')))
+			df['Date']=df['Date'].apply(lambda x: x.strftime("%Y-%m-%d"))
+			dp=df.drop_duplicates(subset=['Date','Symbol','Symbol_id'])
+			if len(df)!=len(dp):
+				dupid=list(set(df['id'].values)-set(dp['id'].values))
+				print "--------------------DUPLICATES---------------------------"
+				print len(dupid)," Duplicates detected for ",stk.Symbol
+				print "---------------------------------------------------------"
+				for d in dupid:
+					DuplicatesQ.put(d)
+				time.sleep(0.1)
+				# stkprices.filter(id__in=dupid).delete()
+
 		else:
-			NoDataQ.put(stk.id)
+			NoDataQ.put((stk.id,None))
 			time.sleep(np.abs(np.random.randint(3))/10)
 			print '\t',stk.Symbol," has no data"
 
 		if md.ComputeStatus_Stockdownload.objects.filter(Symbol=stk,Status='Fail').count()>=10:
-			InActiveQ.put(stk.id)
+			InActiveQ.put((stk.id,None))
 			time.sleep(np.abs(np.random.randint(3))/10)
 			print stk.Symbol," failed 10 times will be made inactive"
+
+		
 
 def SyncPrice2Meta():
 	"""
@@ -51,6 +68,7 @@ def SyncPrice2Meta():
 	BadLastQ=mp.Queue()
 	NoDataQ=mp.Queue()
 	InActiveQ=mp.Queue()
+	DuplicatesQ=mp.Queue()
 
 	while not inQ.empty():
 		inQ.get()
@@ -62,14 +80,16 @@ def SyncPrice2Meta():
 		NoDataQ.get()
 	while not InActiveQ.empty():
 		InActiveQ.get()
+	while not DuplicatesQ.empty():
+		DuplicatesQ.get()
 
-	for stk in md.Stockmeta.objects.all()[:100]:
+	for stk in md.Stockmeta.objects.all():
 		inQ.put(stk.id) 
 	time.sleep(1)
 
 	P=[]
 	for i in range(mp.cpu_count()-1):
-		P.append(mp.Process(target=processQ_SyncPrice2Meta,args=(inQ,BadStartQ,BadLastQ,NoDataQ,InActiveQ)))
+		P.append(mp.Process(target=processQ_SyncPrice2Meta,args=(inQ,BadStartQ,BadLastQ,NoDataQ,InActiveQ,DuplicatesQ)))
 	for p in P:
 		p.start()
 		time.sleep(1)
@@ -82,21 +102,47 @@ def SyncPrice2Meta():
 
 	BadStartstks=[]
 	while not BadStartQ.empty():
-		BadStartstks.append( md.Stockmeta.objects.get(id=BadStartQ.get()) )
+		q=BadStartQ.get()
+		BadStartstks.append( [md.Stockmeta.objects.get(id=q[0]),q[1] ] )
 	BadLaststks=[]
 	while not BadLastQ.empty():
-		BadLaststks.append( md.Stockmeta.objects.get(id=BadLastQ.get()) )
+		q=BadLastQ.get()
+		BadLaststks.append( [md.Stockmeta.objects.get(id=q[0]),q[1] ] )
 	NoDatastks=[]
 	while not NoDataQ.empty():
-		NoDatastks.append( md.Stockmeta.objects.get(id=NoDataQ.get()) )
+		q=NoDataQ.get()
+		NoDatastks.append( [md.Stockmeta.objects.get(id=q[0]),q[1] ] )
 	InActivestks=[]
 	while not InActiveQ.empty():
-		InActivestks.append( md.Stockmeta.objects.get(id=InActiveQ.get()) )
+		q=InActiveQ.get()
+		InActivestks.append( [md.Stockmeta.objects.get(id=q[0]),q[1] ] )
 
-	print 'Summary'
+	Duplicatestkprc=[]
+	while not DuplicatesQ.empty():
+		q=DuplicatesQ.get()
+		Duplicatestkprc.append( q )
+
+	print "====================================================="
+	print '		Summary'
+	print "====================================================="
 	print 'NoData = ',len(NoDatastks)
 	print 'BadStartdates = ',len(BadStartstks)
 	print 'BadLastdates = ',len(BadLaststks)
 	print "InActive = ",len(InActivestks)
+	print "Duplicates = ",len(Duplicatestkprc)
+	print "====================================================="
 
+	print "Setting activity status"
+	for stk in  InActivestks:
+		stk[0].Status='Inactive'
+		stk[0].save()
 
+	print "Setting start date"
+	for stk in  BadStartstks:
+		stk[0].Startdate=stk[1]
+		stk[0].save()
+
+	print "Setting last date"
+	for stk in  BadLaststks:
+		stk[0].Lastdate=stk[1]
+		stk[0].save()

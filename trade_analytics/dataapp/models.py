@@ -23,7 +23,14 @@ class Stockprice(models.Model):
 
 	class Meta:
 		ordering = ["Date"]
-
+		indexes = [
+			models.Index(fields=['Date', 'Symbol','Symbol_id']),
+			models.Index(fields=['Date'], name='Date_idx'),
+			models.Index(fields=['Symbol'], name='Symbol_idx'),
+			models.Index(fields=['Symbol_id'], name='Symbol_id_idx'),
+		]
+		unique_together = ('Date', 'Symbol','Symbol_id')
+		index_together = ['Date', 'Symbol','Symbol_id']
 
 # TODO: Pymongo model
 # TODO: save features in mongodb
