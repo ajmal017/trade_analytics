@@ -45,7 +45,7 @@ def processQ_SyncPrice2Meta(inQ,BadStartQ,BadLastQ,NoDataQ,InActiveQ,DuplicatesQ
 				for d in dupid:
 					DuplicatesQ.put(d)
 				time.sleep(0.1)
-				# stkprices.filter(id__in=dupid).delete()
+				stkprices.filter(id__in=dupid).delete()
 
 		else:
 			NoDataQ.put((stk.id,None))

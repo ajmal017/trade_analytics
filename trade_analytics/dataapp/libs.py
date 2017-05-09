@@ -108,7 +108,7 @@ def predownloadcheck(stk):
 		return {'status':'Run','Todate':Todate,'Fromdate':Fromdate}
 
 
-	if Todate.dayofweek==0:
+	if Todate.dayofweek>=5:
 		print "Today is weekend so no download ",stk
 		return {'status':'Success','Todate':Todate,'Fromdate':Fromdate}
 
@@ -149,11 +149,14 @@ def ComputeIndex(stk,Fromdate,Todate):
 		print "error computing index ",stk, " for input dates ",Fromdate,Todate	
 		return {'df':None,'status':'Fail'}
 
-def postdownloadcheck(stk,downloadLastdate):
+def postdownloadcheck(stk,dfStartdate,dfLastdate):
 	if stk.Lastdate is not None:
-		if downloadLastdate<=stk.Lastdate:
+		if dfLastdate<=stk.Lastdate:
 			print "skipping ",stk," as it is already uptodate "
 			return {'status':'Success'}
+		elif dfStartdate<=stk.Lastdate:
+			print stk," download data has overlap "
+			return {'status':'Overlap'}
 		else:
 			return {'status':'Run'}
 	else:
@@ -219,14 +222,15 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 
 		df=StockDataFrame_sanitize(df,standardize=False)
 
-		UpCk=postdownloadcheck(stk,df.index[-1])
+		UpCk=postdownloadcheck(stk,df.index[0],df.index[-1])
 		if UpCk['status']=='Success':
 			stk.LastPriceUpdate=pd.datetime.today().date()
 			stk.save()
 			comstat.Status='Success'
 			comstat.save()
 			continue	
-
+		elif UpCk['status']=='Overlap':
+			df=df[df.index>stk.Lastdate]
 
 		df=StockDataFrame_sanitize(df,standardize=False)
 		
