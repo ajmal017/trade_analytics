@@ -22,7 +22,6 @@ class Stockprice(models.Model):
 		return str(self.Symbol)+' '+str(self.Date)+' '+str(self.Close)
 
 	class Meta:
-		ordering = ["Date"]
 		indexes = [
 			models.Index(fields=['Date', 'Symbol','Symbol_id']),
 			models.Index(fields=['Date'], name='Date_idx'),

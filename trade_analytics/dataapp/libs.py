@@ -2,6 +2,7 @@ from __future__ import division
 import pandas as pd
 import pandas_datareader.data as web
 import stockapp.models as stkmd
+from django.db import connections
 from dataapp import models as dtamd
 import utility.codemanager as utcdmng
 import datetime
@@ -19,6 +20,9 @@ def StockDataFrame_validate(df,columns=['Close','Open','High','Low','Volume']):
 	return True
 
 def StockDataFrame_sanitize(df,standardize=False):
+	if len(df)==0:
+		return df
+			
 	df['Close']=df['Close'].astype(float)
 	df['Open']=df['Open'].astype(float)
 	df['High']=df['High'].astype(float)
@@ -68,7 +72,10 @@ def GetStockData(Symbolids,Fromdate,Todate,format,standardize=True):
 		L=[]
 		starttime=time.time()
 		for symbid in Symbolids:
-			df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id=symbid,Date__range=[Fromdate,Todate]).values() ) )
+			sqlquery="SELECT * FROM dataapp_stockprice WHERE ((Symbol_id = %(ids)s) AND (Date BETWEEN '%(fromdate)s' AND '%(todate)s'));"
+			sqlQ=sqlquery%{'ids':symbid,'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
+			df=pd.read_sql(sqlQ,connections[dtamd.Stockprice._DATABASE])
+			# df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id=symbid,Date__range=[Fromdate,Todate]).values() ) )
 			df=StockDataFrame_sanitize(df,standardize=standardize)
 			L.append( df )
 		print " Time for GetStockData = ",time.time()-starttime
@@ -77,14 +84,24 @@ def GetStockData(Symbolids,Fromdate,Todate,format,standardize=True):
 		starttime=time.time()
 		D={}
 		for symbid in Symbolids:
-			df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id=symbid,Date__range=[Fromdate,Todate]).values() ) ) 
+			sqlquery="SELECT * FROM dataapp_stockprice WHERE ((Symbol_id = %(ids)s) AND (Date BETWEEN '%(fromdate)s' AND '%(todate)s'));"
+			sqlQ=sqlquery%{'ids':symbid,'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
+			df=pd.read_sql(sqlQ,connections[dtamd.Stockprice._DATABASE])
+			# df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id=symbid,Date__range=[Fromdate,Todate]).values() ) ) 
 			df=StockDataFrame_sanitize(df,standardize=standardize)
 			D[symbid]= df
 		print " Time for GetStockData = ",time.time()-starttime
 		return D		
 	elif format=='concat':
 		starttime=time.time()
-		df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id__in=Symbolids,Date__range=[Fromdate,Todate]).values() ) )
+		if len(Symbolids)==1:
+			sqlquery="SELECT * FROM dataapp_stockprice WHERE Symbol_id = %(ids)s AND Date BETWEEN '%(fromdate)s' AND '%(todate)s';"
+			sqlQ=sqlquery%{'ids':Symbolids[0],'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
+		else:
+			sqlquery="SELECT * FROM dataapp_stockprice WHERE Symbol_id IN %(ids)s AND Date BETWEEN '%(fromdate)s' AND '%(todate)s';"
+			sqlQ=sqlquery%{'ids':tuple(Symbolids),'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
+		df=pd.read_sql(sqlQ,connections[dtamd.Stockprice._DATABASE])
+		# df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id__in=Symbolids,Date__range=[Fromdate,Todate]).values() ) )
 		df=StockDataFrame_sanitize(df,standardize=standardize)
 		print " Time for GetStockData = ",time.time()-starttime
 		return df
