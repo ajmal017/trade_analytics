@@ -3,10 +3,8 @@
 djangolog
 celerylog
 *.pid
-dbconf.json
 *.out
 *.csv
-*.json
 logs
 StockData.h5
 stockpricedata.sqlite3

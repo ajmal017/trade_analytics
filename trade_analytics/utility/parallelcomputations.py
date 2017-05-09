@@ -39,6 +39,7 @@ def Q2list(func,Q,*args,**kwargs):
                 pass
             else:    
                 q=list(q)
+            
             func(q,*args,**kwargs)
     return wrapfunc
 
@@ -93,7 +94,7 @@ class ParallelCompute(object):
             for compute_list in chunks(self.paralist,chunkby):
                 # print "compute_list = ", tuple(compute_list)
                 # if type(compute_list)==tuple:
-
+                print lock,semaphore
                 P.append( mp.Process(target=self.func,args=(compute_list,),kwargs={'semaphore':semaphore,'lock':lock}) ) 
 
             for p in P:
@@ -116,13 +117,13 @@ class ParallelCompute(object):
 
         Q=mp.Queue()
         for compute_list in chunks(self.paralist,chunkby):
-            Q.put((compute_list,) )
+            Q.put(compute_list )
         time.sleep(0.1)
 
         func=Q2list(self.func,Q)
         P=[]
         for i in range(Ncores-1):
-            P.append( mp.Process(target=func,args=(),kwargs={'lock':lock}) ) 
+            P.append( mp.Process(target=func,args=(),kwargs={'lock':lock,'semaphore':None}) ) 
 
         for p in P:
             p.start()

@@ -32,7 +32,7 @@ def StockDataFrame_sanitize(df,standardize=False):
 	def setdate(x):
 		if isinstance(x,basestring):
 			return pd.to_datetime(x).date()
-		if type(x)==datetime.datetime or type(x)==pd.datetime:
+		if type(x)==datetime.datetime or type(x)==pd.datetime or type(x)==pd.Timestamp:
 			return x.date()
 		return x
 	
@@ -46,11 +46,14 @@ def StockDataFrame_sanitize(df,standardize=False):
 			index_is_datetype=True
 		except:
 			index_is_datetype=False
-	elif type(df.index[0])==datetime.datetime or type(df.index[0])==pd.datetime or type(df.index[0])==pd.datetime.date or type(df.index[0])==datetime.date:
+	elif type(df.index[0])==datetime.datetime or type(df.index[0])==pd.datetime or type(df.index[0])==pd.datetime.date or type(df.index[0])==datetime.date or type(df.index[0])==pd.Timestamp:
 		index_is_datetype=True
 
+
 	if index_is_datetype:
-		df.index=df.index.map(setdate)
+		df.index=map(lambda x :setdate(x),df.index)
+
+
 
 	if standardize:
 		df.index=df['Date']
@@ -218,7 +221,6 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 			Fromdate=UpCk['Fromdate']
 			Todate=UpCk['Todate']
 		
-		print "passed pre-check"
 
 
 		if stk.Derived:
@@ -226,7 +228,6 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 		else:
 			DD=DownloadData(stk.Symbol, Fromdate,Todate)
 
-		print "done download"
 
 		if DD['status']=='Success':
 			df=DD['df']
@@ -248,8 +249,6 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 			continue	
 		elif UpCk['status']=='Overlap':
 			df=df[df.index>stk.Lastdate]
-
-		df=StockDataFrame_sanitize(df,standardize=False)
 		
 
 		objs=[]

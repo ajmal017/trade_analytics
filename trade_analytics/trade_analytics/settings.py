@@ -104,10 +104,51 @@ WSGI_APPLICATION = 'trade_analytics.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 ## ---------------------------------------------------------------------------------------------##
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'databases','db.sqlite3'),
+#         'DESCRIPTION': "Primary and default router",
+#     },
+#     'initialization': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'databases', 'initialize.sqlite3'),
+#         'DESCRIPTION': "This is an initial data base for initialization (to upload to github)",
+
+#     },
+#     'stockpricedata': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR,'databases', 'stockpricedata.sqlite3'),
+#         'DESCRIPTION': "Save the large stock price data separately",
+
+#     },
+#     'featuredata': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR,'databases', 'featuredata.sqlite3'),
+#         'DESCRIPTION': "Save Feature Data separately",
+
+#     },
+#     'datascience': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'databases' ,'datascience.sqlite3'),
+#         'DESCRIPTION': "Independent Data sets for machine learning",
+#     }
+# }
+
+
+    #--------------------------POSTGRES --------------
+IP='192.168.1.106'
+PORT='5432'
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'databases','db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'trade_analytics',
+        'USER': os.getenv('DBUSER'),
+        'PASSWORD': os.getenv('DBPASS'),
+        'HOST': IP,
+        'PORT': PORT,
         'DESCRIPTION': "Primary and default router",
     },
     'initialization': {
@@ -117,14 +158,22 @@ DATABASES = {
 
     },
     'stockpricedata': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR,'databases', 'stockpricedata.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'stockpricedata',
+        'USER': os.getenv('DBUSER'),
+        'PASSWORD': os.getenv('DBPASS'),
+        'HOST': IP,
+        'PORT': PORT,
         'DESCRIPTION': "Save the large stock price data separately",
 
     },
     'featuredata': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR,'databases', 'featuredata.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'featuredata',
+        'USER': os.getenv('DBUSER'),
+        'PASSWORD': os.getenv('DBPASS'),
+        'HOST': IP,
+        'PORT': PORT,
         'DESCRIPTION': "Save Feature Data separately",
 
     },
@@ -134,6 +183,8 @@ DATABASES = {
         'DESCRIPTION': "Independent Data sets for machine learning",
     }
 }
+
+
 
 DATABASE_ROUTERS = ['trade_analytics.db_routers.StockPriceRouter','trade_analytics.db_routers.FeatureDataRouter' ]
 # dont forget to run

@@ -25,9 +25,12 @@ def RunDataDownload():
 	# computeargs_iter=itt.imap(lambda x: itt.izip([x],['id']) , stocksiter)
 
 	# run in parallel
-	stocksiter=list(stkmd.Stockmeta.objects.filter(Derived=False).values_list('id',flat=True))[0:10]+list(stkmd.Stockmeta.objects.filter(Derived=True).values_list('id',flat=True))
+	stocksiter=list(stkmd.Stockmeta.objects.filter(Derived=False).values_list('id',flat=True))+list(stkmd.Stockmeta.objects.filter(Derived=True).values_list('id',flat=True))
 	PllCmpt=utpc.ParallelCompute( stocksiter, UpdatePriceData )
-	# PllCmpt.ParallelRun(chunkby=100,Lock=True,Semaphore=True)
-	PllCmpt.SingleRun()
+	from django import db
+	db.connections.close_all()
+	# PllCmpt.ParallelRun(chunkby=100,Lock=False,Semaphore=True)
+	PllCmpt.ConsumerQueuerun(chunkby=100,Lock=False)
+	# PllCmpt.SingleRun()
 
 

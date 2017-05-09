@@ -15,7 +15,7 @@ class Stockprice(models.Model):
 	Volume=models.DecimalField(max_digits=15,decimal_places=2,null=True,blank=True)
 	Date = models.DateField(db_index=True,null=False)
 
-	Symbol=models.CharField(db_index=True,max_length=10,null=True,blank=True)
+	Symbol=models.CharField(db_index=True,max_length=20,null=True,blank=True)
 	Symbol_id=models.IntegerField(null=True,db_index=True)
 
 	def __str__(self):

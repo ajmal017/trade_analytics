@@ -144,7 +144,7 @@ class IndexComputeCode(models.Model):
 		return path
 
 class IndexComputeClass(models.Model):
-	ClassName=models.CharField(help_text='Name of the index',max_length=50)
+	ClassName=models.CharField(help_text='Name of the index',max_length=100)
 	ClassDescription=models.CharField(help_text='Description of the index',max_length=500,null=True)
 	IndexComputeCode = models.ForeignKey(IndexComputeCode,on_delete=models.CASCADE)
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
@@ -164,7 +164,7 @@ class Index(models.Model):
 	IndexName=models.CharField(help_text='Long name',max_length=150, blank = True, null = True)
 	IndexDescription=models.CharField(help_text='Description of the index',max_length=500, blank = True, null = True)
 	IndexLabel=models.CharField(help_text='Unique Abbreviated label for index',max_length=50,  unique=True)
-	IndexResultType=models.CharField(help_text='Description of the index',max_length=20, blank = True, null = True)
+	IndexResultType=models.CharField(help_text='Description of the index',max_length=100, blank = True, null = True)
 	
 	computefeatures=models.BooleanField(help_text='Run feature extractions on this index',default=True)
 
