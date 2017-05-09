@@ -30,7 +30,11 @@ class Stockprice(models.Model):
 			models.Index(fields=['Symbol_id'], name='Symbol_id_idx'),
 		]
 		unique_together = ('Date', 'Symbol','Symbol_id')
-		index_together = ['Date', 'Symbol','Symbol_id']
+		index_together = [
+							['Date', 'Symbol','Symbol_id'],
+							['Date', 'Symbol'],
+							['Date', 'Symbol_id'],
+						]
 
 # TODO: Pymongo model
 # TODO: save features in mongodb
