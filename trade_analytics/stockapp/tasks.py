@@ -88,6 +88,8 @@ def SyncPrice2Meta():
 	time.sleep(1)
 
 	P=[]
+	from django import db
+	db.connections.close_all()
 	for i in range(mp.cpu_count()-1):
 		P.append(mp.Process(target=processQ_SyncPrice2Meta,args=(inQ,BadStartQ,BadLastQ,NoDataQ,InActiveQ,DuplicatesQ)))
 	for p in P:
