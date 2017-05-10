@@ -9,7 +9,7 @@ import multiprocessing as mp
 from Queue import Empty
 import time
 import pandas as pd
-
+from django import db
 
 def processQ_SyncPrice2Meta(inQ,BadStartQ,BadLastQ,NoDataQ,InActiveQ,DuplicatesQ):
 	while True:
@@ -88,7 +88,7 @@ def SyncPrice2Meta():
 	time.sleep(1)
 
 	P=[]
-	from django import db
+	
 	db.connections.close_all()
 	for i in range(mp.cpu_count()-1):
 		P.append(mp.Process(target=processQ_SyncPrice2Meta,args=(inQ,BadStartQ,BadLastQ,NoDataQ,InActiveQ,DuplicatesQ)))
