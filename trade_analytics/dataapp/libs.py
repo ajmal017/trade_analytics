@@ -75,39 +75,39 @@ def GetStockData(Symbolids,Fromdate,Todate,format,standardize=True):
 		L=[]
 		starttime=time.time()
 		for symbid in Symbolids:
-			sqlquery="SELECT * FROM dataapp_stockprice WHERE ((Symbol_id = %(ids)s) AND (Date BETWEEN '%(fromdate)s' AND '%(todate)s'));"
+			sqlquery="SELECT * FROM dataapp_stockprice as dsp WHERE dsp.\"Symbol_id\" = %(ids)s AND dsp.\"Date\" BETWEEN '%(fromdate)s' AND '%(todate)s';"
 			sqlQ=sqlquery%{'ids':symbid,'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
 			df=pd.read_sql(sqlQ,connections[dtamd.Stockprice._DATABASE])
 			# df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id=symbid,Date__range=[Fromdate,Todate]).values() ) )
 			df=StockDataFrame_sanitize(df,standardize=standardize)
-			L.append( df )
+			L.append( df.sort_index() )
 		print " Time for GetStockData = ",time.time()-starttime
 		return L
 	elif format=='dict':
 		starttime=time.time()
 		D={}
 		for symbid in Symbolids:
-			sqlquery="SELECT * FROM dataapp_stockprice WHERE ((Symbol_id = %(ids)s) AND (Date BETWEEN '%(fromdate)s' AND '%(todate)s'));"
+			sqlquery="SELECT * FROM dataapp_stockprice as dsp WHERE dsp.\"Symbol_id\" = %(ids)s AND dsp.\"Date\" BETWEEN '%(fromdate)s' AND '%(todate)s';"
 			sqlQ=sqlquery%{'ids':symbid,'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
 			df=pd.read_sql(sqlQ,connections[dtamd.Stockprice._DATABASE])
 			# df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id=symbid,Date__range=[Fromdate,Todate]).values() ) ) 
 			df=StockDataFrame_sanitize(df,standardize=standardize)
-			D[symbid]= df
+			D[symbid]= df.sort_index()
 		print " Time for GetStockData = ",time.time()-starttime
 		return D		
 	elif format=='concat':
 		starttime=time.time()
 		if len(Symbolids)==1:
-			sqlquery="SELECT * FROM dataapp_stockprice WHERE Symbol_id = %(ids)s AND Date BETWEEN '%(fromdate)s' AND '%(todate)s';"
+			sqlquery="SELECT * FROM dataapp_stockprice as dsp WHERE dsp.\"Symbol_id\" = %(ids)s AND dsp.\"Date\" BETWEEN '%(fromdate)s' AND '%(todate)s';"
 			sqlQ=sqlquery%{'ids':Symbolids[0],'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
 		else:
-			sqlquery="SELECT * FROM dataapp_stockprice WHERE Symbol_id IN %(ids)s AND Date BETWEEN '%(fromdate)s' AND '%(todate)s';"
+			sqlquery="SELECT * FROM dataapp_stockprice as dsp WHERE dsp.\"Symbol_id\" IN %(ids)s AND dsp.\"Date\" BETWEEN '%(fromdate)s' AND '%(todate)s';"
 			sqlQ=sqlquery%{'ids':tuple(Symbolids),'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
 		df=pd.read_sql(sqlQ,connections[dtamd.Stockprice._DATABASE])
 		# df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id__in=Symbolids,Date__range=[Fromdate,Todate]).values() ) )
 		df=StockDataFrame_sanitize(df,standardize=standardize)
 		print " Time for GetStockData = ",time.time()-starttime
-		return df
+		return df.sort_index()
 	
 
 

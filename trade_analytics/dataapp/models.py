@@ -23,7 +23,7 @@ class Stockprice(models.Model):
 
 	class Meta:
 		indexes = [
-			models.Index(fields=['Date', 'Symbol','Symbol_id']),
+			models.Index(fields=['Date', 'Symbol_id']),
 			models.Index(fields=['Date'], name='Date_idx'),
 			models.Index(fields=['Symbol'], name='Symbol_idx'),
 			models.Index(fields=['Symbol_id'], name='Symbol_id_idx'),
