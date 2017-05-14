@@ -380,25 +380,7 @@ def RUN():
 		
 		time.sleep(2)
 
-	# # thrd1=threading.Thread(target=RUN,args=(df.copy(),ip))
-	# # thrd1.start()
-	
-	# print "---------2----------------" 
-	# ip=ip+1
-	# p2=mp.Process(target=RUN,args=(df.copy(),ip))    
-	# p2.start()
-	# # thrd2=threading.Thread(target=RUN,args=(df.copy(),ip))
-	# # thrd2.start()
 
-	# p1.join()
-	# p2.join()
-
-	# thrd1.join()
-	# thrd2.join()
-	# print "Your web server will self destruct in 2 minutes"
-	# time.sleep(100)
-	# stopTornado()
-	# thrd.join()
 
 if __name__ == '__main__':
 	RUN()
