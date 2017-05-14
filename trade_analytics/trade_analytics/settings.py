@@ -186,7 +186,7 @@ DATABASES = {
 
 
 
-DATABASE_ROUTERS = ['trade_analytics.db_routers.StockPriceRouter','trade_analytics.db_routers.FeatureDataRouter' ]
+DATABASE_ROUTERS = ['trade_analytics.db_routers.StockPriceRouter','trade_analytics.db_routers.FeatureDataRouter','trade_analytics.db_routers.DataScienceDataRouter' ]
 # dont forget to run
 # python manage.py makemigrations
 # python manage.py migrate

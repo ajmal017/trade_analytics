@@ -1,0 +1,174 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <title>Chart labeling</title>
+    <style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even){background-color: #f2f2f2}
+
+    input[type=text] {
+    padding:5px; 
+    border:2px solid #ccc; 
+    -webkit-border-radius: 5px;
+    border-radius: 5px;
+    margin:10px;
+    }
+
+    input[type=text]:focus {
+        border-color:#333;
+    }
+
+    input[type=submit] {
+        padding:10px 15px; 
+        background:#ccc; 
+        border:1 none;
+        cursor:pointer;
+        -webkit-border-radius: 5px;
+        border-radius: 5px; 
+        margin:10px;
+        min-width: 100px;
+    }
+
+    </style>
+
+    <script src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+    var ws;
+    var returnmsg;
+      $(document).ready(function(){
+         if ("WebSocket" in window) {
+            var ws_path = 'ws://localhost:{{ip}}/ws';
+            //alert(ws_path);
+            ws = new WebSocket (ws_path);
+            //alert(ws);
+            ws.onopen = function () {
+               ws.send(JSON.stringify({ 'cmnd':'connected' }) ) ;
+            };
+            ws.onmessage = function (msg) {
+              // returnmsg=msg.data;
+              // alert(msg);
+              returnmsg=JSON.parse(msg.data);
+              if(("image" in returnmsg)){
+                $("#cam").attr('src', 'data:image/png;base64,' + returnmsg['image']);
+               }
+               if(("T" in returnmsg)){
+                document.getElementById("T").value=returnmsg['T'];
+               }
+               if(("info" in returnmsg)){
+                var div = document.getElementById('info');
+                div.innerHTML = returnmsg['info'];
+               }
+               if(("labelslist" in returnmsg)){
+                var text = document.getElementById('labelsdiv');
+                text.innerHTML=""
+                for(var i = 0; i < returnmsg["labelslist"].length; i++){
+                  text.innerHTML = text.innerHTML+"<input type='submit' id='"+returnmsg["labelslist"][i]+"' value='"+returnmsg["labelslist"][i]+"' onclick=\"return sendlabel('"+ returnmsg["labelslist"][i] +"');\" >";
+                }
+
+               }
+
+              if(("logs" in returnmsg)){
+                var div = document.getElementById('logs');
+                div.innerHTML = returnmsg['logs'];
+               }
+
+               // ws.send(1);
+            };
+            ws.onerror = function (e) {
+               console.log(e);
+               // ws.send(1);
+            };
+            ws.onclose = function(evt) {
+            alert("Connection close");
+            };
+
+            // Send websocket message function
+            $("#moveleft").click(function(evt) {
+                ws.send(JSON.stringify({ 'cmnd':'moveleft'}) );
+            });
+            $("#moveright").click(function(evt) {
+                ws.send(JSON.stringify({ 'cmnd':'moveright'}) );
+            });
+            $("#setshift").click(function(evt) {
+                ws.send( JSON.stringify(  {'para':{ 'moveby':$("#moveby").val() }} ) );
+            });
+            $("#setwindow").click(function(evt) {
+                ws.send( JSON.stringify(  {'para':{ 'window':$("#window").val() }} ) );
+            });
+            $("#quit").click(function(evt) {
+                ws.send(JSON.stringify({ 'cmnd':'quit'}) );
+            });
+            $("#addlabel").click(function(evt) {
+                ws.send( JSON.stringify(  {'para':{ 'newlabel':$("#newlabel").val() }} ) );
+            });
+
+            
+
+         } else {
+             alert("WebSocket not supported");
+             window.close();
+         }
+      });
+      function sendlabel(label)
+      {
+          ws.send( JSON.stringify(  {'para':{ 'addlabel':{'label':label,'T': $("#T").val()} }} ) );
+      }
+      function deletelog(logid)
+      {
+          ws.send( JSON.stringify(  {'para':{ 'deletelog':{'logid':logid} }} ) );
+      }
+    </script>
+  </head>
+  <body>
+  <h1>Charts for given dataframe </h1>
+
+  <hr>
+  <div id="info">
+    
+  </div>
+  <hr>
+  <table>
+    <tr>
+      <td>Window (days):  <input type="number" name="window" id="window" value="360">   <input type="submit" id="setwindow" value="set window"> </td>
+    </tr>
+    <tr>
+      <td>Move by (days):  <input type="number" name="moveby" id="moveby" value="30">  <input type="submit" id="setshift" value="set shiftby"> </td>
+    </tr>
+
+    <tr>
+    <td> <img id="cam" src=""/></td>
+    </tr>
+
+    <tr>
+    T=<input type="text" id="T" value="" readonly="readonly" />
+    <br>
+      <td><div align="center" > <input type="submit" id="moveleft" value="Move left">  <input type="submit" id="moveright" value="Move right"> </div> </td>
+    </tr>
+    <tr>
+      <td>
+      Create New Label : <input type="text" id="newlabel"> <input type="submit" id="addlabel" value="Create label">
+      </td>
+    </tr>
+    <tr>
+    <td>
+      Select label(s): <div id="labelsdiv"></div>
+      </td>
+    </tr>
+    <tr>
+      <td><br><br><input type="submit" id="quit" value="Quit"> </td>
+    </tr>
+  </table>
+  <h2>Recorded logs in this window</h2>
+  <div id="logs"></div>
+  </body>
+</html> 
+
