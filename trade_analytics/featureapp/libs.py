@@ -22,6 +22,27 @@ class registerfeature(object):
 		self.usecache=cache
 		self.cache={}
 		self.registry={}
+	
+	def recordfeature(self):
+
+		if ftmd.FeaturesMeta.objects.filter(Featurelabel=self.name).exists():
+			featmeta=ftmd.FeaturesMeta.objects.get(Featurelabel=self.name)
+			featmeta.Featuredescription=self.doc
+			featmeta.Category=self.category
+			featmeta.Returntype=self.returntype.__name__
+			featmeta.operators=self.operators
+			featmeta.Query=self.query
+			featmeta.Userfilename=self.filename
+			featmeta.save()
+			print "Updated feature ",featmeta
+
+		else:
+			featmeta=ftmd.FeaturesMeta(Featurelabel=self.name,Featuredescription=self.doc,
+									Category=self.category,Returntype=self.returntype.__name__,
+									operators=self.operators,Query=self.query,Userfilename=self.filename)
+			featmeta.save()
+			print "Saving feature ",featmeta
+
 	def __call__(self,func):
 		
 		self.name=func.__name__
@@ -29,24 +50,8 @@ class registerfeature(object):
 		
 		# if self.name in self.registry:
 		# 	raise KeyError("label already there, please rename "+self.name)
-
-
-		if ftmd.FeaturesMeta.objects.filter(Featurelabel=self.name).exists():
-			featmeta=ftmd.FeaturesMeta.objects.get(Featurelabel=self.name)
-			featmeta.Featuredescription=self.doc
-			featmeta.Category=self.category
-			featmeta.returntype=self.returntype.__name__
-			featmeta.operators=self.operators
-			featmeta.Query=self.query
-			featmeta.Userfilename=self.filename
-			featmeta.save()
-
-		else:
-			featmeta=ftmd.FeaturesMeta(Featurelabel=self.name,Featuredescription=self.doc,
-									Category=self.category,returntype=self.returntype.__name__,
-									operators=self.operators,Query=self.query,Userfilename=self.filename)
-			featmeta.save()
-
+		
+		self.recordfeature()
 
 		self.registry[self.name]={'doc':self.doc}
 		
@@ -54,10 +59,8 @@ class registerfeature(object):
 			key=json.dumps([args[1:],kwargs])
 			if self.usecache:
 				if key in self.cache:
-					print "return cached result"
 					return self.cache[key]
 				else:
-					print "computing and saving result"
 					self.cache[key]=func(*args,**kwargs)
 					return self.cache[key]
 			else:
@@ -71,12 +74,24 @@ class featuremodel(object):
 		self.features={}
 		self.Symbol=Symbol
 		self.Trange=Trange
+		
 
 	def __getitem__(self,feat):
 		return getattr(self,feat)
 
-	def getfeaturelist(self):
-		return [x for x, y in self.__dict__.items() if hasattr(x,'isfeature')]
+	@classmethod
+	def getfeaturelist(cls):
+		return [x for x, y in cls.__dict__.items() if hasattr(cls.__dict__[x],'isfeature')]
+
+	@classmethod
+	def finalize(cls,filename):
+		featurelist=cls.getfeaturelist()
+		dbfeatures=list( ftmd.FeaturesMeta.objects.filter(Userfilename=filename).values_list('Featurelabel',flat=True) )
+		for ft in dbfeatures:
+			if ft not in featurelist:
+				print ft," is not there, so deleting it"
+				ftmd.FeaturesMeta.objects.filter(Featurelabel=ft).delete()
+
 
 	def computeall(self):
 		featurelist=self.getfeaturelist()	
@@ -87,6 +102,9 @@ class featuremodel(object):
 				self.ComputedFeatures[ft][T]=self[ft](T)
 
 		return self.ComputedFeatures
+	
+
+
 	def saveall(self):
 
 		for T in self.Trange:

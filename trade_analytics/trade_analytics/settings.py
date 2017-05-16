@@ -167,26 +167,26 @@ DATABASES = {
         'DESCRIPTION': "Save the large stock price data separately",
 
     },
-    'featuredata': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'featuredata',
-        'USER': os.getenv('DBUSER'),
-        'PASSWORD': os.getenv('DBPASS'),
-        'HOST': IP,
-        'PORT': PORT,
-        'DESCRIPTION': "Save Feature Data separately",
+    # 'featuredata': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'featuredata',
+    #     'USER': os.getenv('DBUSER'),
+    #     'PASSWORD': os.getenv('DBPASS'),
+    #     'HOST': IP,
+    #     'PORT': PORT,
+    #     'DESCRIPTION': "Save Feature Data separately",
 
-    },
-    'datascience': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'databases' ,'datascience.sqlite3'),
-        'DESCRIPTION': "Independent Data sets for machine learning",
-    }
+    # },
+    # 'datascience': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'databases' ,'datascience.sqlite3'),
+    #     'DESCRIPTION': "Independent Data sets for machine learning",
+    # }
 }
 
 
 
-DATABASE_ROUTERS = ['trade_analytics.db_routers.StockPriceRouter','trade_analytics.db_routers.FeatureDataRouter','trade_analytics.db_routers.DataScienceDataRouter' ]
+DATABASE_ROUTERS = ['trade_analytics.db_routers.StockPriceRouter']
 # dont forget to run
 # python manage.py makemigrations
 # python manage.py migrate
