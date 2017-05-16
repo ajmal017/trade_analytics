@@ -1,6 +1,29 @@
 import abc
 import json
 
+class registerfeature(object):
+    registry=[]
+    def __init__(self,para):
+        self.para=para
+        print "register init"
+    def __call__(self,func):
+        self.name=func.__name__
+        self.doc=func.__doc__
+        self.registry.append(self.name)
+        print "registered"
+        def func2(*args,**kwargs):
+            print "func2"
+            func(*args,**kwargs)
+            print "done"
+        return func2
+
+
+class foo(object):
+    @registerfeature(3)
+    def SMA10(self,val):
+        return val+3
+
+
 class Value(object):
 	def __init__(self,value=None,serializer='str',deserializer='int'):
 		"""
