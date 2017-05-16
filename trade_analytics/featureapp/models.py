@@ -5,37 +5,15 @@ from django.db import models
 import stockapp.models as stkmd
 from django.contrib.postgres.fields import ArrayField,JSONField
 import os
+import utility.models as utymd
 # Create your models here.
 
 
-class FeatureComputeCode(models.Model):
-	Code=models.TextField(help_text='Code of all the features')
-	File=models.FilePathField(help_text='File of all the features')
-	User = models.ForeignKey(User,on_delete=models.CASCADE, blank = True, null = True)
-	created_at = models.DateTimeField(auto_now_add=True,null=True)
-	updated_at = models.DateTimeField(auto_now=True,null=True)
+class FeatureComputeCode(utymd.ComputeCode):
 
-	def __str__(self):
-		return ", ".join([ str(self.User),' ... ',str(self.File[-20:]) ])
-
-
-	def getimportpath(self):
-		if not self.User:
-			username='AnonymousUser'
-		else:
-			username=self.User.username
-		path = 'featureapp.FeatureCodes.'+username
-		return path
-
-	def getfilepath(self):
-		from django.conf import settings
-		if not self.User:
-			username='AnonymousUser'
-		else:
-			username=self.User.username
-		path = os.path.join(settings.BASE_DIR,'featureapp','FeatureCodes',username+'.py')
-		return path
-
+	module='featureapp'
+	codesfolder='FeatureCodes'
+	
 
 
 class FeaturesMeta(models.Model):

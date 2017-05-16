@@ -1,6 +1,76 @@
 import abc
 import json
+import os
+from django.db import models
+from django.contrib.auth.models import User
+import shutil
+import time
+import pandas as pd
 
+
+class ComputeCode(models.Model):
+	
+
+	Code=models.TextField(help_text='Code of all the features')
+	File=models.FilePathField(help_text='File of all the features')
+	User = models.ForeignKey(User,on_delete=models.CASCADE, blank = True, null = True)
+	created_at = models.DateTimeField(auto_now_add=True,null=True)
+	updated_at = models.DateTimeField(auto_now=True,null=True)
+
+	module=None
+	codesfolder=None
+	
+	class Meta:
+		abstract = True
+
+	def __str__(self):
+		return ", ".join([ str(self.User),' ... ',str(self.File[-20:]) ])
+
+
+	def getimportpath(self):
+		if not self.User:
+			username='AnonymousUser'
+		else:
+			username=self.User.username
+		path = ".".join([self.module,self.codesfolder,username])
+		return path
+
+	def getfilepath(self):
+		from django.conf import settings
+		if not self.User:
+			username='AnonymousUser'
+		else:
+			username=self.User.username
+		path = os.path.join(settings.BASE_DIR,self.module,self.codesfolder,username+'.py')
+		return path
+
+	@classmethod
+	def Sync_db2files(cls):
+		ObjCodes=cls.objects.all()
+		for obj in ObjCodes:
+			if obj.File is None:
+				obj.File=obj.getfilepath()
+
+			if os.path.isfile(obj.File):
+				filetime=pd.to_datetime(time.ctime(os.path.getmtime(obj.File)))
+				if obj.updated_at<filetime:
+					# first make a copy of that file and then copy dbfile to disk
+					shutil.move(obj.File,obj.File.replace('.py',filetime.strftime("%Y-%m-%d_%H-%M-%S")+'.py'))
+
+			with open(obj.File,'w') as codestr:
+				codestr.write(obj.Code)
+
+	@classmethod
+	def Sync_files2db(cls):
+		ObjCodes=cls.objects.all()
+		for obj in ObjCodes:
+			if obj.File is None:
+				obj.File=obj.getfilepath()
+			with open(obj.File,'r') as codestr:
+				obj.Code=codestr.read(obj.Code)
+			obj.save()
+
+	
 
 
 class Value(object):
