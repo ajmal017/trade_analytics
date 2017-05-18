@@ -1,5 +1,5 @@
 from __future__ import division
-from featureapp.libs import registerquery, querymodel
+from queryapp.libs import registerquery, querymodel
 import pandas as pd
 import numpy as np
 filename=__name__.split('.')[-1]

@@ -2,20 +2,13 @@
 # from __future__ import absolute_import, unicode_literals
 from celery import shared_task
 import stockapp.models as stkmd
-import dataapp.models as dtamd
-import featureapp.models as ftmd
+import queryapp.models as qrymd
 
-import itertools as itt
-import numpy as np
-import multiprocessing as mp
-from Queue import Empty
-import time
 import pandas as pd
-from django import db
 
-def computefeatuers(stkid,Trange):
-	featurecodes=ftmd.FeatureComputeCode.objects.all()
-	for computecode in featurecodes:
+def computequeries(stkid,Trange):
+	querycodes=qrymd.QueryComputeCode.objects.all()
+	for computecode in querycodes:
 		computeclass=computecode.importcomputeclass()
 		CC=computeclass(stkid,Trange)
 		CC.computeall(skipdone=True)
@@ -29,6 +22,6 @@ def processfeatures(rerun=False):
 	Trange=[T.date() for T in Trange if T.weekday()<=4]
 
 	for stk in stocks:
-		computefeatuers(stk.id,Trange)
+		computequeries(stk.id,Trange)
 
 		

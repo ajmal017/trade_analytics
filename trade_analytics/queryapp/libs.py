@@ -87,12 +87,21 @@ class querymodel(object):
 			Trange=self.Trange
 
 
-		if (stkid,Trange) in self.featcache:
-			return self.featcache[(stkid,Trange)][feat]
+		if str((stkid,Trange)) in self.featcache:
+			return self.featcache[str((stkid,Trange))][feat]
 		else:
-			dfeat=pd.DataFrame(list( ftmd.FeaturesData.objects.filter(Symbol__id=stkid,T__in=Trange).values_list('Featuredata',flat=True) ) )
-			self.featcache[(stkid,Trange)]=dfeat
-			return dfeat[feat]
+			df1=pd.DataFrame(list( ftmd.FeaturesData.objects.filter(Symbol__id=stkid,T__in=Trange).values('T','Featuredata') ) )
+			df2=pd.DataFrame(df1['Featuredata'].tolist())
+			df3=pd.concat([df1, df2], axis=1)
+			del df1
+			del df2
+			df3.index=df3['T'].copy()
+			df3.drop(['Featuredata','T'],axis=1,inplace=True)
+			df3.sort_index(inplace=True)
+			
+			
+			self.featcache[str((stkid,Trange))]=df3
+			return df3[feat]
 	
 
 	def getqueryfunc(self,feat):
