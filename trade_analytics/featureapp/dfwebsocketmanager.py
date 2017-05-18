@@ -16,7 +16,7 @@ import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter, WeekdayLocator,\
 	DayLocator, MONDAY,date2num,num2date,AutoDateLocator
 from matplotlib.finance import quotes_historical_yahoo_ohlc, candlestick_ohlc,candlestick2_ochl
-
+import datascience.models as dtscmd
 import Queue
 import pandas as pd
 import sys
@@ -45,19 +45,20 @@ import zmq
 import pickle as pkl
 import zlib
 import simplejson as sjson
-context = zmq.Context()
-socket = context.socket(zmq.REP)
-socket.bind("tcp://*:5557")
+
 import os
 
 pd.set_option('max_colwidth', 150)
 
-import datascience.models as dtscmd
 
-# class MakeCharts(object):
-#     def __init__(df,)
+
+context = zmq.Context()
+socket = context.socket(zmq.REP)
+socket.bind("tcp://*:5559")
+websocketip=1820
 
 def MakeChart(dF,T0,T,featcols):
+	dF['datenum']=date2num(dF.index)
 	df=dF[T0:T].copy()
 	dfperf=dF[T:(T+pd.DateOffset(360)).date()].copy()
 	
@@ -77,8 +78,8 @@ def MakeChart(dF,T0,T,featcols):
 
 	quotes=[tuple(x) for x in df[['datenum','Open','High','Low','Close','Volume']].to_records(index=False)]
 	ret=candlestick_ohlc(ax[0], quotes, width=0.6)
-	ax[0].plot(df['datenum'],df['sma20'],'g--',label='sma20')
-	ax[0].plot(df['datenum'],df['sma50'],'r--',label='sma50')
+	ax[0].plot(df['datenum'],df['SMA20'],'g--',label='SMA20')
+	ax[0].plot(df['datenum'],df['SMA50'],'r--',label='SMA50')
 	
 	L=df['High'].max()-df['Low'].min()
 	mm=df['Volume'].max()
@@ -112,8 +113,8 @@ def MakeChart(dF,T0,T,featcols):
 	ax[1].xaxis.set_major_formatter(weekFormatter)
 	
 	ax[1].plot(dfperf['datenum'],dfperf['Close'],label='Close')
-	ax[1].plot(dfperf['datenum'],dfperf['sma20'],'g--',label='sma20')
-	ax[1].plot(dfperf['datenum'],dfperf['sma50'],'r--',label='sma50')
+	ax[1].plot(dfperf['datenum'],dfperf['SMA20'],'g--',label='SMA20')
+	ax[1].plot(dfperf['datenum'],dfperf['SMA50'],'r--',label='SMA50')
 	
 	L=dfperf['High'].max()-dfperf['Low'].min()
 	mm=dfperf['Volume'].max()
@@ -354,7 +355,7 @@ def RUN():
 					
 			if flg==True:
 				print "---------%s----------------"%str(i) 
-				ip=3350+i
+				ip=websocketip+i
 				p=mp.Process(target=webinterface,args=(df,featcols,ip))   
 				p.start()
 				P.append([p,time.time()])

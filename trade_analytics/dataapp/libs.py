@@ -8,7 +8,7 @@ import utility.codemanager as utcdmng
 import datetime
 import time
 import pdb
-
+from talib import abstract
 
 def StockDataFrame_validate(df,columns=['Close','Open','High','Low','Volume']):
 	for cc in columns:
@@ -38,7 +38,8 @@ def StockDataFrame_sanitize(df,standardize=False):
 	
 	if 'Date' in df.columns:
 		df['Date']=df['Date'].apply(setdate)
-	
+		df.sort_values(by=['Date'],inplace=True)
+		
 	index_is_datetype=False
 	if isinstance(df.index[0],basestring):
 		try:
@@ -62,52 +63,86 @@ def StockDataFrame_sanitize(df,standardize=False):
 			df.drop(['id'],axis=1,inplace=True)
 		if 'Symbol_id' in df.columns:
 			df.drop(['Symbol_id'],axis=1,inplace=True)
+		df.sort_index(inplace=True)
+
+	return df
+
+def addindicators(df,cols):
+	inputs = {
+    'open': df['Open'].values,
+    'high': df['High'].values,
+    'low': df['Low'].values,
+    'close': df['Close'].values,
+    'volume': df['Volume'].values
+	}
+	for cc in cols:
+		if cc['name']=='CCI':
+			df[cc['colname']]=abstract.CCI(inputs, timeperiod=cc['timeperiod'])
+
+		if cc['name']=='SMA':
+			df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).mean()
+		if cc['name']=='SMAstd':
+			df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).std()
+	
+		if cc['name']=='EMA':
+			df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).mean()
+		if cc['name']=='EMAstd':
+			df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).std(bias=False)
 
 	return df
 
 
-def GetStockData(Symbolids,Fromdate,Todate,format,standardize=True):
-	if type(Symbolids)!=list:
+def GetStockData(Symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None):
+	if type(Symbolids)==list:
 		Symbolids=list(Symbolids)
+
+	elif type(Symbolids)==tuple:
+		Symbolids=list(Symbolids)
+
+	elif type(Symbolids)==int or isinstance(Symbolids,basestring)==True:
+		Symbolids=list([Symbolids])
+	
+	if isinstance(Symbolids[0],basestring)==True:
+		for i in range(len(Symbolids)):
+			Symbolids[i]=stkmd.Stockmeta.objects.get(Symbol=Symbolids[i]).id
+
+	Symbolids=tuple(Symbolids)
+	if len(Symbolids)==1:
+		sqlquery="SELECT * FROM dataapp_stockprice as dsp WHERE dsp.\"Symbol_id\" = %(ids)s AND dsp.\"Date\" BETWEEN '%(fromdate)s' AND '%(todate)s';"
+		sqlQ=sqlquery%{'ids':str(Symbolids[0]),'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
+
+	else:
+		sqlquery="SELECT * FROM dataapp_stockprice as dsp WHERE dsp.\"Symbol_id\" IN %(ids)s AND dsp.\"Date\" BETWEEN '%(fromdate)s' AND '%(todate)s';"
+		sqlQ=sqlquery%{'ids':str(tuple(Symbolids)),'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
+
+	starttime=time.time()
+	df=pd.read_sql(sqlQ,connections[dtamd.Stockprice._DATABASE])
+	df=StockDataFrame_sanitize(df,standardize=standardize)
+	print " Time for GetStockData = ",time.time()-starttime
 
 
 	if format=='list':
 		L=[]
-		starttime=time.time()
 		for symbid in Symbolids:
-			sqlquery="SELECT * FROM dataapp_stockprice as dsp WHERE dsp.\"Symbol_id\" = %(ids)s AND dsp.\"Date\" BETWEEN '%(fromdate)s' AND '%(todate)s';"
-			sqlQ=sqlquery%{'ids':symbid,'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
-			df=pd.read_sql(sqlQ,connections[dtamd.Stockprice._DATABASE])
-			# df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id=symbid,Date__range=[Fromdate,Todate]).values() ) )
-			df=StockDataFrame_sanitize(df,standardize=standardize)
-			L.append( df.sort_index() )
-		print " Time for GetStockData = ",time.time()-starttime
+			dp=df[df['Symbol_id']==symbid].copy()
+			if addcols is not None:
+				dp=addindicators(dp,addcols)
+			L.append( dp )
 		return L
+
 	elif format=='dict':
 		starttime=time.time()
 		D={}
 		for symbid in Symbolids:
-			sqlquery="SELECT * FROM dataapp_stockprice as dsp WHERE dsp.\"Symbol_id\" = %(ids)s AND dsp.\"Date\" BETWEEN '%(fromdate)s' AND '%(todate)s';"
-			sqlQ=sqlquery%{'ids':symbid,'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
-			df=pd.read_sql(sqlQ,connections[dtamd.Stockprice._DATABASE])
-			# df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id=symbid,Date__range=[Fromdate,Todate]).values() ) ) 
-			df=StockDataFrame_sanitize(df,standardize=standardize)
-			D[symbid]= df.sort_index()
-		print " Time for GetStockData = ",time.time()-starttime
+			dp=df[df['Symbol_id']==symbid].copy()
+			if addcols is not None:
+				dp=addindicators(dp,addcols)
+			D[symbid]=dp 
 		return D		
+	
+
 	elif format=='concat':
-		starttime=time.time()
-		if len(Symbolids)==1:
-			sqlquery="SELECT * FROM dataapp_stockprice as dsp WHERE dsp.\"Symbol_id\" = %(ids)s AND dsp.\"Date\" BETWEEN '%(fromdate)s' AND '%(todate)s';"
-			sqlQ=sqlquery%{'ids':Symbolids[0],'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
-		else:
-			sqlquery="SELECT * FROM dataapp_stockprice as dsp WHERE dsp.\"Symbol_id\" IN %(ids)s AND dsp.\"Date\" BETWEEN '%(fromdate)s' AND '%(todate)s';"
-			sqlQ=sqlquery%{'ids':tuple(Symbolids),'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
-		df=pd.read_sql(sqlQ,connections[dtamd.Stockprice._DATABASE])
-		# df=pd.DataFrame( list( dtamd.Stockprice.objects.filter(Symbol_id__in=Symbolids,Date__range=[Fromdate,Todate]).values() ) )
-		df=StockDataFrame_sanitize(df,standardize=standardize)
-		print " Time for GetStockData = ",time.time()-starttime
-		return df.sort_index()
+		return df
 	
 
 

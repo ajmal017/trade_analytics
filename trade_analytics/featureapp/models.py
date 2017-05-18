@@ -13,7 +13,7 @@ class FeatureComputeCode(utymd.ComputeCode):
 
 	module='featureapp'
 	codesfolder='FeatureCodes'
-	
+	computeclassname='features'
 
 
 class FeaturesMeta(models.Model):

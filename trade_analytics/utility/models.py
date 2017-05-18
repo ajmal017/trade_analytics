@@ -11,20 +11,31 @@ import pandas as pd
 class ComputeCode(models.Model):
 	
 
-	Code=models.TextField(help_text='Code of all the features')
-	File=models.FilePathField(help_text='File of all the features')
+	Code=models.TextField(help_text='Code of all the features',null = True)
+	File=models.FilePathField(help_text='File of all the features',max_length=400,null = True)
 	User = models.ForeignKey(User,on_delete=models.CASCADE, blank = True, null = True)
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
 	module=None
 	codesfolder=None
-	
+	computeclassname=None
+
 	class Meta:
 		abstract = True
 
 	def __str__(self):
-		return ", ".join([ str(self.User),' ... ',str(self.File[-20:]) ])
+		if not self.User:
+			username='AnonymousUser'
+		else:
+			username=self.User.username
+
+		if not self.File:
+			Filename='None'
+		else:
+			Filename=self.File
+
+		return ", ".join([ str(username),' ... ',str(Filename[-20:]) ])
 
 
 	def getimportpath(self):
@@ -35,6 +46,14 @@ class ComputeCode(models.Model):
 		path = ".".join([self.module,self.codesfolder,username])
 		return path
 
+	def importcomputeclass(self):
+		import importlib
+		modpath=self.getimportpath()
+		module=importlib.import_module(modpath) 
+		compclass = getattr(module, self.computeclassname)
+		return compclass
+
+
 	def getfilepath(self):
 		from django.conf import settings
 		if not self.User:
@@ -43,6 +62,17 @@ class ComputeCode(models.Model):
 			username=self.User.username
 		path = os.path.join(settings.BASE_DIR,self.module,self.codesfolder,username+'.py')
 		return path
+
+	@classmethod
+	def initialize(cls):
+		if cls.objects.all().count()==0:
+			print "initializing files"
+			obj=cls(Code='')
+			obj.save()
+			obj.File=obj.getfilepath()
+			obj.save()
+
+			cls.Sync_db2files()
 
 	@classmethod
 	def Sync_db2files(cls):
@@ -64,13 +94,14 @@ class ComputeCode(models.Model):
 	def Sync_files2db(cls):
 		ObjCodes=cls.objects.all()
 		for obj in ObjCodes:
+			print "Sync ",obj," to db"
 			if obj.File is None:
 				obj.File=obj.getfilepath()
 			with open(obj.File,'r') as codestr:
-				obj.Code=codestr.read(obj.Code)
+				obj.Code=codestr.read()
 			obj.save()
 
-	
+
 
 
 class Value(object):
