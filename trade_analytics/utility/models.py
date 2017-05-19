@@ -50,6 +50,7 @@ class ComputeCode(models.Model):
 		import importlib
 		modpath=self.getimportpath()
 		module=importlib.import_module(modpath) 
+		module=reload(module)
 		compclass = getattr(module, self.computeclassname)
 		return compclass
 

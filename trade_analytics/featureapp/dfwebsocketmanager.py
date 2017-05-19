@@ -30,6 +30,7 @@ except:
 	from StringIO import StringIO
 import multiprocessing as mp
 
+import numpy as np
 import time
 # Import 3rd-party modules.
 import tornado
@@ -54,86 +55,115 @@ pd.set_option('max_colwidth', 150)
 
 context = zmq.Context()
 socket = context.socket(zmq.REP)
-socket.bind("tcp://*:5559")
-websocketip=1820
+socket.bind("tcp://*:5562")
+websocketip=1826
 
-def MakeChart(dF,T0,T,featcols):
-	dF['datenum']=date2num(dF.index)
-	df=dF[T0:T].copy()
-	dfperf=dF[T:(T+pd.DateOffset(360)).date()].copy()
+
+def MakeChart(df,pricecols,querycols,featcols):
+	"""
+	pricecols are additional columns that have same range as close
+	querycols are true/false snapped to close price
+	featcols are additional that are plotted below
 	
+	For example:
+	pricecols=[{'colname':'sma20','plotargs':('g',),'plotkwargs':{'label':'sma20',}},
+		  {'colname':'sma50','plotargs':('r',),'plotkwargs':{'label':'sma50',}}]
+	querycols=[{'colname':'hasCherries','plotargs':('y',),'plotkwargs':{'label':'hasCherries','marker':'o','markersize':15,'linestyle':''}}]
+	featcols=[ [{'colname':'cci5','plotargs':('r--',),'plotkwargs':{'label':'cci5',}}],
+			   [ {'colname':'cci50','plotargs':('g',),'plotkwargs':{'label':'cci50',}}]
+			 ]  
+	"""
+#     df=dF[T0:T].copy()
+#     dfperf=dF[T:(T+pd.DateOffset(360)).date()].copy()
+	
+	df['datenum']=date2num(df.index)
 	autodate=AutoDateLocator()
 	mondays = WeekdayLocator(MONDAY)        # major ticks on the mondays
 	alldays = DayLocator()              # minor ticks on the days
-	weekFormatter = DateFormatter('%Y\n %b %d')  # e.g., Jan 12
+	weekFormatter = DateFormatter('%Y %b %d')  # e.g., Jan 12
 	dayFormatter = DateFormatter('%d')      # e.g., 12
-
-	fig, ax = plt.subplots(1,2,figsize=(20,7))
-	fig.subplots_adjust(bottom=0.2)
-	ax[0].xaxis.set_major_locator(autodate)
-	ax[0].xaxis.set_minor_locator(alldays)
-	ax[0].xaxis.set_major_formatter(weekFormatter)
+	
+	Nsubplots=len(featcols)
+	fig, ax = plt.subplots(1,2,figsize=(15,7+2*Nsubplots))
+#     plt.figure(num=None, figsize=(30, 10), dpi=80, facecolor='w', edgecolor='k')
+#     fig.subplots_adjust(bottom=0.2)
+	ax1 = plt.subplot2grid((2+Nsubplots, 1), (0, 0), rowspan=2)
+	axft=[]
+	for i in range(Nsubplots):
+		axft.append(plt.subplot2grid((2+Nsubplots, 1), (2+i, 0),sharex=ax1))
+		
+	ax1.xaxis.set_major_locator(autodate)
+	ax1.xaxis.set_minor_locator(alldays)
+	ax1.xaxis.set_major_formatter(weekFormatter)
 	
 	
 
 	quotes=[tuple(x) for x in df[['datenum','Open','High','Low','Close','Volume']].to_records(index=False)]
-	ret=candlestick_ohlc(ax[0], quotes, width=0.6)
-	ax[0].plot(df['datenum'],df['SMA20'],'g--',label='SMA20')
-	ax[0].plot(df['datenum'],df['SMA50'],'r--',label='SMA50')
+	ret=candlestick_ohlc(ax1, quotes, width=0.6)
+	
+	for prcl in pricecols:
+		ax1.plot(df['datenum'],df[prcl['colname'] ],*prcl['plotargs'],**prcl['plotkwargs'] )
 	
 	L=df['High'].max()-df['Low'].min()
 	mm=df['Volume'].max()
-	ax[0].bar(df['datenum'],0.5*L*df['Volume']/mm,bottom=df['Low'].min()-1.5,color='y',alpha=0.5)
+	ax1.bar(df['datenum'],0.5*L*df['Volume']/mm,bottom=df['Low'].min()-1.5,color='y',alpha=0.5)
 #     volume_overlay3(ax[0], quotes, colorup='k', colordown='r', width=4, alpha=1.0)
 	
-	for ff in  featcols:
-		dp=df[df[ff]==True]
-		ax[0].plot(dp['datenum'],dp['Close'],'y',marker='o',markersize=15,linestyle='',label=ff)
-	
-	ax[0].set_xlim(quotes[0][0],quotes[-1][0])
-	ax[0].set_ylim(df['Low'].min()*0.9,df['High'].max()*1.1)
-	ax[0].grid()
-	
-	ax2 = ax[0].twinx()
-	ax2.set_ylim(df['Low'].min()*0.9,df['High'].max()*1.1)
-#     ax2.set_yticks( )
-	
-	ax[0].xaxis_date()
-	ax[0].autoscale_view()
-	plt.setp(ax[0].get_xticklabels(), rotation=45, horizontalalignment='right')
-	
-	autodate=AutoDateLocator()
-	mondays = WeekdayLocator(MONDAY)        # major ticks on the mondays
-	alldays = DayLocator()              # minor ticks on the days
-	weekFormatter = DateFormatter('%Y\n %b %d')  # e.g., Jan 12
-	dayFormatter = DateFormatter('%d')      # e.g., 12
+	flg=0
+	for qcl in  querycols:
+		dp=df[df[qcl['colname']]==True]
+		c=np.random.randint(0,10)/10.0
+		if flg==0:
+			ax1.plot(dp['datenum'],dp['Low']+(dp['High']-dp['Low'])*0,*qcl['plotargs'],**qcl['plotkwargs'])
+			flg=1
+		else:
+			ax1.plot(dp['datenum'],dp['High']+(dp['High']-dp['Low'])*0,*qcl['plotargs'],**qcl['plotkwargs'])
+			flg=0
 
-	ax[1].xaxis.set_major_locator(autodate)
-	ax[1].xaxis.set_minor_locator(alldays)
-	ax[1].xaxis.set_major_formatter(weekFormatter)
+	ax1.set_xlim(quotes[0][0],quotes[-1][0])
+	ax1.set_ylim(df['Low'].min()*0.9,df['High'].max()*1.1)
+	ax1.xaxis_date()
+	ax1.xaxis.tick_top()
+	ax1.autoscale_view()
+	ax1.legend()
+	ax1.grid()
 	
-	ax[1].plot(dfperf['datenum'],dfperf['Close'],label='Close')
-	ax[1].plot(dfperf['datenum'],dfperf['SMA20'],'g--',label='SMA20')
-	ax[1].plot(dfperf['datenum'],dfperf['SMA50'],'r--',label='SMA50')
+	ax12 = ax1.twinx()
+	ax12.set_ylim(df['Low'].min()*0.9,df['High'].max()*1.1)
+	ax12.grid()
 	
-	L=dfperf['High'].max()-dfperf['Low'].min()
-	mm=dfperf['Volume'].max()
-	ax[1].bar(dfperf['datenum'],0.5*L*dfperf['Volume']/mm,bottom=dfperf['Low'].min()-1.5,color='y',alpha=0.5)
+	plt.setp(ax1.get_xticklabels(), rotation=45, horizontalalignment='left')
+		
+	for i in range(len(featcols)):
+		autodate=AutoDateLocator()
+		mondays = WeekdayLocator(MONDAY)        # major ticks on the mondays
+		alldays = DayLocator()              # minor ticks on the days
+		weekFormatter = DateFormatter('%Y %b %d')  # e.g., Jan 12
+		dayFormatter = DateFormatter('%d')      # e.g., 12
+		
+		axft[i].xaxis.set_major_locator(autodate)
+		axft[i].xaxis.set_minor_locator(alldays)
+		axft[i].xaxis.set_major_formatter(weekFormatter)
+		
+		ftymax=-1000000
+		ftymin=100000
+		for ft in featcols[i]:
+			axft[i].plot(df['datenum'],df[ ft['colname'] ],*ft['plotargs'],**ft['plotkwargs'])
+			ftymin=min([ftymin,df[ft['colname']].min()])
+			ftymax=max([ftymax,df[ft['colname']].max()])
 
-	
-	ind3m=dfperf.index[dfperf.index<=(T+pd.DateOffset(90)).date()][-1]
-	ind6m=dfperf.index[dfperf.index<=(T+pd.DateOffset(180)).date()][-1]
-	ax[1].plot([dfperf.loc[ind3m,'datenum'],dfperf.loc[ind3m,'datenum']],[dfperf['Low'].min()*0.9,dfperf['High'].max()*1.1],label='Close')
-	ax[1].plot([dfperf.loc[ind6m,'datenum'],dfperf.loc[ind6m,'datenum']],[dfperf['Low'].min()*0.9,dfperf['High'].max()*1.1],label='Close')
-	
-	ax[1].set_ylim(dfperf['Low'].min()*0.9,dfperf['High'].max()*1.1)
-	ax[1].xaxis_date()
-	ax[1].autoscale_view()
-	ax[1].grid()
-	
-	plt.setp(ax[1].get_xticklabels(), rotation=45, horizontalalignment='right')
-	
-	plt.subplots_adjust(wspace=0.1, hspace=0)
+#         axft[i].set_ylim(ftymin*0.8,ftymax*1.2)
+		axft[i].set_xlim(quotes[0][0],quotes[-1][0])
+		axft[i].autoscale_view()
+		axft[i].legend()
+		axft[i].grid()
+		
+		if i==len(featcols)-1:
+			axft[i].xaxis_date()
+			plt.setp(axft[i].get_xticklabels(), rotation=45, horizontalalignment='right')
+		else:
+			axft[i].get_xaxis().set_visible(False)
+
 
 	figfile = StringIO()
 	fig.savefig(figfile,bbox_inches='tight',format='png')
@@ -145,15 +175,105 @@ def MakeChart(dF,T0,T,featcols):
 	return image
 
 
+# def MakeChart(dF,T0,T,featcols):
+# 	dF['datenum']=date2num(dF.index)
+# 	df=dF[T0:T].copy()
+# 	dfperf=dF[T:(T+pd.DateOffset(360)).date()].copy()
+	
+# 	autodate=AutoDateLocator()
+# 	mondays = WeekdayLocator(MONDAY)        # major ticks on the mondays
+# 	alldays = DayLocator()              # minor ticks on the days
+# 	weekFormatter = DateFormatter('%Y\n %b %d')  # e.g., Jan 12
+# 	dayFormatter = DateFormatter('%d')      # e.g., 12
 
-def precomputecharts(df,featcols,evnt,imageQ,plotQ):
+# 	fig, ax = plt.subplots(1,2,figsize=(20,7))
+# 	fig.subplots_adjust(bottom=0.2)
+# 	ax[0].xaxis.set_major_locator(autodate)
+# 	ax[0].xaxis.set_minor_locator(alldays)
+# 	ax[0].xaxis.set_major_formatter(weekFormatter)
+	
+	
+
+# 	quotes=[tuple(x) for x in df[['datenum','Open','High','Low','Close','Volume']].to_records(index=False)]
+# 	ret=candlestick_ohlc(ax[0], quotes, width=0.6)
+# 	ax[0].plot(df['datenum'],df['SMA20'],'g--',label='SMA20')
+# 	ax[0].plot(df['datenum'],df['SMA50'],'r--',label='SMA50')
+	
+# 	L=df['High'].max()-df['Low'].min()
+# 	mm=df['Volume'].max()
+# 	ax[0].bar(df['datenum'],0.5*L*df['Volume']/mm,bottom=df['Low'].min()-1.5,color='y',alpha=0.5)
+# #     volume_overlay3(ax[0], quotes, colorup='k', colordown='r', width=4, alpha=1.0)
+	
+# 	for ff in  featcols:
+# 		dp=df[df[ff]==True]
+# 		ax[0].plot(dp['datenum'],dp['Close'],'y',marker='o',markersize=15,linestyle='',label=ff)
+	
+# 	ax[0].set_xlim(quotes[0][0],quotes[-1][0])
+# 	ax[0].set_ylim(df['Low'].min()*0.9,df['High'].max()*1.1)
+# 	ax[0].grid()
+	
+# 	ax2 = ax[0].twinx()
+# 	ax2.set_ylim(df['Low'].min()*0.9,df['High'].max()*1.1)
+# #     ax2.set_yticks( )
+	
+# 	ax[0].xaxis_date()
+# 	ax[0].autoscale_view()
+# 	plt.setp(ax[0].get_xticklabels(), rotation=45, horizontalalignment='right')
+	
+# 	autodate=AutoDateLocator()
+# 	mondays = WeekdayLocator(MONDAY)        # major ticks on the mondays
+# 	alldays = DayLocator()              # minor ticks on the days
+# 	weekFormatter = DateFormatter('%Y\n %b %d')  # e.g., Jan 12
+# 	dayFormatter = DateFormatter('%d')      # e.g., 12
+
+# 	ax[1].xaxis.set_major_locator(autodate)
+# 	ax[1].xaxis.set_minor_locator(alldays)
+# 	ax[1].xaxis.set_major_formatter(weekFormatter)
+	
+# 	ax[1].plot(dfperf['datenum'],dfperf['Close'],label='Close')
+# 	ax[1].plot(dfperf['datenum'],dfperf['SMA20'],'g--',label='SMA20')
+# 	ax[1].plot(dfperf['datenum'],dfperf['SMA50'],'r--',label='SMA50')
+	
+# 	L=dfperf['High'].max()-dfperf['Low'].min()
+# 	mm=dfperf['Volume'].max()
+# 	ax[1].bar(dfperf['datenum'],0.5*L*dfperf['Volume']/mm,bottom=dfperf['Low'].min()-1.5,color='y',alpha=0.5)
+
+	
+# 	ind3m=dfperf.index[dfperf.index<=(T+pd.DateOffset(90)).date()][-1]
+# 	ind6m=dfperf.index[dfperf.index<=(T+pd.DateOffset(180)).date()][-1]
+# 	ax[1].plot([dfperf.loc[ind3m,'datenum'],dfperf.loc[ind3m,'datenum']],[dfperf['Low'].min()*0.9,dfperf['High'].max()*1.1],label='Close')
+# 	ax[1].plot([dfperf.loc[ind6m,'datenum'],dfperf.loc[ind6m,'datenum']],[dfperf['Low'].min()*0.9,dfperf['High'].max()*1.1],label='Close')
+	
+# 	ax[1].set_ylim(dfperf['Low'].min()*0.9,dfperf['High'].max()*1.1)
+# 	ax[1].xaxis_date()
+# 	ax[1].autoscale_view()
+# 	ax[1].grid()
+	
+# 	plt.setp(ax[1].get_xticklabels(), rotation=45, horizontalalignment='right')
+	
+# 	plt.subplots_adjust(wspace=0.1, hspace=0)
+
+# 	figfile = StringIO()
+# 	fig.savefig(figfile,bbox_inches='tight',format='png')
+# 	time.sleep(0.1)
+# 	plt.close(fig)
+# 	figfile.seek(0)
+# 	image= base64.b64encode(figfile.getvalue())
+# 	gc.collect()
+# 	return image
+
+
+
+def precomputecharts(df,pricecols,querycols,featcols,evnt,imageQ,plotQ):
 	while(1):
 		try:
 			plotpara=plotQ.get_nowait()
 			TF=plotpara['TF']
 			T0=plotpara['T0']
-			image=MakeChart(df,T0,TF,featcols)
-			imageQ.put({'T0':T0,'TF':TF,'image':image})
+			imageLeft=MakeChart(df[T0:TF].copy(),pricecols,querycols,featcols)
+			imageRight=MakeChart(df[TF:(TF+pd.DateOffset(360)).date()].copy(),pricecols,querycols,featcols)
+			
+			imageQ.put({'T0':T0,'TF':TF,'image':{'imageLeft':imageLeft,'imageRight':imageRight}})
 			time.sleep(0.1)
 
 		except Queue.Empty:
@@ -163,7 +283,7 @@ def precomputecharts(df,featcols,evnt,imageQ,plotQ):
 			print "event set"
 			break
 
-def webinterface(df,featcols,ip):
+def webinterface(df,pricecols,querycols,featcols,ip):
 	
 	server=None
 	
@@ -183,7 +303,7 @@ def webinterface(df,featcols,ip):
 			self.plotQ=Queue.Queue()
 			self.event=threading.Event()
 			self.event.clear()
-			self.thrd=threading.Thread(target=precomputecharts,args=(df,featcols,self.event,self.imageQ,self.plotQ))
+			self.thrd=threading.Thread(target=precomputecharts,args=(df,pricecols,querycols,featcols,self.event,self.imageQ,self.plotQ))
 			self.thrd.start()
 			self.dir='right'
 			self.chartsinQ=[]
@@ -282,7 +402,7 @@ def webinterface(df,featcols,ip):
 
 			try:
 				# image=MakeChart(df,self.T0,self.TF,featcols)
-				N=15
+				N=30
 				T0=self.T0
 				TF=self.TF
 
@@ -346,6 +466,9 @@ def RUN():
 			try:
 				z=zlib.decompress(message)
 				message=pkl.loads(z)
+				print "recieved = ",message
+				pricecols=message['pricecols']
+				querycols=message['querycols']
 				featcols=message['featcols']
 				df=message['df']
 				flg=True
@@ -356,7 +479,7 @@ def RUN():
 			if flg==True:
 				print "---------%s----------------"%str(i) 
 				ip=websocketip+i
-				p=mp.Process(target=webinterface,args=(df,featcols,ip))   
+				p=mp.Process(target=webinterface,args=(df,pricecols,querycols,featcols,ip))   
 				p.start()
 				P.append([p,time.time()])
 				i=i+1

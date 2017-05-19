@@ -11,6 +11,28 @@ import stockapp.models as stkmd
 import dataapp.models as dtamd
 import dataapp.libs as dtalibs
 
+
+
+
+def GetFeature(Symbolids,Trange=[T.date() for T in pd.date_range(pd.datetime(2002,1,1),pd.datetime.today()) if T.weekday()<=4]):
+	if type(Symbolids)!=list or type(Symbolids)!=tuple:
+		Symbolids=list((Symbolids))
+
+	df1=pd.DataFrame(list( ftmd.FeaturesData.objects.filter(Symbol__id__in=Symbolids,T__in=Trange).values('T','Featuredata') ) )
+
+	df2=pd.DataFrame(df1['Featuredata'].tolist())
+	df3=pd.concat([df1, df2], axis=1)
+	del df1
+	del df2
+	df3.index=df3['T'].copy()
+	df3.drop(['Featuredata','T'],axis=1,inplace=True)
+	df3.sort_index(inplace=True)
+	
+	
+	return df3
+
+
+
 class registerfeature(object):
 	
 	def __init__(self,filename=None,category=None,returntype=None,query=True,operators=None,null=False,cache=False):
@@ -93,7 +115,7 @@ class featuremodel(object):
 		self.Todate=Trange[-1]
 		self.stk=stkmd.Stockmeta.objects.get(id=Symbolid)
 
-
+		self.featcache={}
 
 	def GetStockData(self,*args,**kwargs):
 		return dtalibs.GetStockData(*args,**kwargs)
@@ -104,6 +126,27 @@ class featuremodel(object):
 		# print feat
 		return getattr(self,feat)
 
+	def LoadFeature(self,feat,Trange=None):
+		stkid=self.Symbolid
+		if Trange==None:
+			Trange=self.Trange
+
+
+		if str((stkid,Trange)) in self.featcache:
+			if feat in self.featcache[str((stkid,Trange))].columns: 
+				return self.featcache[str((stkid,Trange))][feat]
+			else:
+				cols=self.featcache[str((stkid,Trange))].columns
+				return self.featcache[str((stkid,Trange))][cols[0]]*np.nan
+		else:
+			df3=GetFeature([stkid],Trange)
+			self.featcache[str((stkid,Trange))]=df3
+			if feat in df3.columns:
+				return df3[feat]
+			else:
+				cols=self.featcache[str((stkid,Trange))].columns
+				return self.featcache[str((stkid,Trange))][cols[0]]*np.nan
+				
 	@classmethod
 	def getfeaturelist(cls):
 		return [x for x, y in cls.__dict__.items() if hasattr(cls.__dict__[x],'isfeature')]
@@ -156,19 +199,55 @@ class featuremodel(object):
 			featdata.save()
 		print "Done save"
 
-	def chartfeatures(self,df,cols,ip=5558):
+	def chartfeatures(self,addpricecols=(),addfeatcols=(),ip=5558):
 		import zmq
 		import zlib
 		import pickle as pkl
-
 		context = zmq.Context()
+		colors=['b','g','r','c','m','y','k','w']
+
+
+		if not hasattr(self,'df'):
+			self.df=self.GetStockData(self.Symbolid)
+
+
+		self.df=self.addindicators(self.df,[
+										{'name':'SMA','timeperiod':20,'colname':'SMA20'},
+										{'name':'SMA','timeperiod':50,'colname':'SMA50'},
+										{'name':'SMA','timeperiod':100,'colname':'SMA100'},
+										{'name':'SMA','timeperiod':200,'colname':'SMA200'},
+										{'name':'EMA','timeperiod':8,'colname':'EMA8'},
+									])
+
+
+		pricecols=[
+					{'colname':'SMA20','plotargs':('r',),'plotkwargs':{'label':'SMA20',}},
+					{'colname':'SMA50','plotargs':('b',),'plotkwargs':{'label':'SMA50',}},
+					{'colname':'SMA100','plotargs':('g',),'plotkwargs':{'label':'SMA100',}},
+					{'colname':'SMA200','plotargs':('m',),'plotkwargs':{'label':'SMA200',}},
+					{'colname':'EMA8','plotargs':('r--',),'plotkwargs':{'label':'EMA8',}},
+				]+list(addpricecols)
+
+		featcols=[]
+		
+		for ftblock in addfeatcols:
+			FT=[]
+			i=0
+			for ft in ftblock:
+				if ft not in self.df.columns:
+					self.df[ft]=self.LoadFeature(ft)
+
+				FT.append( {'colname':ft,'plotargs':(colors[i],),'plotkwargs':{'label':ft,}} ) 
+				i=i+1							
+
+			featcols.append(FT)
 
 		#  Socket to talk to server
 		print("Connecting to charting server")
 		socket = context.socket(zmq.REQ)
 		socket.connect("tcp://localhost:%s" % ip)
 
-		msg={'featcols':cols,'df':df.round(decimals=3)}
+		msg={'pricecols':pricecols,'querycols':[],'featcols':featcols,'df':self.df.round(decimals=3)}
 		p=pkl.dumps(msg)
 		z=zlib.compress(p)
 

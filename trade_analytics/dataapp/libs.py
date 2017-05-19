@@ -76,18 +76,19 @@ def addindicators(df,cols):
     'volume': df['Volume'].values
 	}
 	for cc in cols:
-		if cc['name']=='CCI':
-			df[cc['colname']]=abstract.CCI(inputs, timeperiod=cc['timeperiod'])
+		if cc['colname'] not in df.columns:
+			if cc['name']=='CCI':
+				df[cc['colname']]=abstract.CCI(inputs, timeperiod=cc['timeperiod'])
 
-		if cc['name']=='SMA':
-			df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).mean()
-		if cc['name']=='SMAstd':
-			df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).std()
-	
-		if cc['name']=='EMA':
-			df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).mean()
-		if cc['name']=='EMAstd':
-			df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).std(bias=False)
+			if cc['name']=='SMA':
+				df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).mean()
+			if cc['name']=='SMAstd':
+				df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).std()
+		
+			if cc['name']=='EMA':
+				df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).mean()
+			if cc['name']=='EMAstd':
+				df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).std(bias=False)
 
 	return df
 

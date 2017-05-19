@@ -10,6 +10,7 @@ import queryapp.models as qymd
 import stockapp.models as stkmd
 import dataapp.models as dtamd
 import featureapp.models as ftmd
+import featureapp.libs as ftlibs
 import dataapp.libs as dtalibs
 import matplotlib.pyplot as plt
 
@@ -77,7 +78,7 @@ class querymodel(object):
 	def addindicators(self,*args,**kwargs):
 		return dtalibs.addindicators(*args,**kwargs)
 
-	def GetFeature(self,feat,Symbol=None,Trange=None):
+	def LoadFeature(self,feat,Symbol=None,Trange=None):
 		if Symbol==None:
 			stkid=self.Symbolid
 		else:
@@ -90,16 +91,7 @@ class querymodel(object):
 		if str((stkid,Trange)) in self.featcache:
 			return self.featcache[str((stkid,Trange))][feat]
 		else:
-			df1=pd.DataFrame(list( ftmd.FeaturesData.objects.filter(Symbol__id=stkid,T__in=Trange).values('T','Featuredata') ) )
-			df2=pd.DataFrame(df1['Featuredata'].tolist())
-			df3=pd.concat([df1, df2], axis=1)
-			del df1
-			del df2
-			df3.index=df3['T'].copy()
-			df3.drop(['Featuredata','T'],axis=1,inplace=True)
-			df3.sort_index(inplace=True)
-			
-			
+			df3=ftlibs.GetFeature([stkid],Trange)
 			self.featcache[str((stkid,Trange))]=df3
 			return df3[feat]
 	
@@ -160,34 +152,87 @@ class querymodel(object):
 			qrydata.save()
 		print "Done save"
 
-	def OutcomeCharts(self):
+	def OutcomeCharts(self,perf=[]):
 		querylist=self.getquerylist()
-		self.Qdf['FutPROFIT10days']=self.GetFeature('FutPROFIT10days')
-		self.Qdf['FutLOSS10days']=self.GetFeature('FutLOSS10days')
+		if len(perf)==0:
+			return
+
+		for pp in perf:
+			if pp not in self.df.columns:
+				self.df[pp]=self.LoadFeature(pp)
 
 		color = dict(boxes='DarkGreen', whiskers='DarkOrange',medians='DarkBlue', caps='Gray')
 		
 		for qry in querylist:
+			print "----------------- %s ---------------" % qry
 			plt.figure()
-			dp=self.Qdf[(self.Qdf[qry]==1) ][['FutPROFIT10days','FutLOSS10days']]
+			dp=self.df[(self.df[qry]==1) ][perf]
 			dp.plot.box(color=color, sym='r+')
+			plt.setp(plt.gca().get_xticklabels(), rotation=45, horizontalalignment='right')
+
 			print "Number of signals = ",dp.shape
 			plt.show()
 
 
-	def chartfeatures(self,df,cols,ip=5558):
+	def chartfeatures(self,addpricecols=(),addquerycols=(),addfeatcols=(),ip=5558):
 		import zmq
 		import zlib
 		import pickle as pkl
-
 		context = zmq.Context()
+		querylist=self.getquerylist()
+		colors=['b','g','r','c','m','y','k','w']
+		markers=['o','s','^','<','>','*','+']
+
+		if not hasattr(self,'df'):
+			self.df=self.GetStockData(self.Symbolid)
+
+
+		self.df=self.addindicators(self.df,[
+										{'name':'SMA','timeperiod':20,'colname':'SMA20'},
+										{'name':'SMA','timeperiod':50,'colname':'SMA50'},
+										{'name':'SMA','timeperiod':100,'colname':'SMA100'},
+										{'name':'SMA','timeperiod':200,'colname':'SMA200'},
+										{'name':'EMA','timeperiod':8,'colname':'EMA8'},
+									])
+
+
+		pricecols=[
+					{'colname':'SMA20','plotargs':('r',),'plotkwargs':{'label':'SMA20',}},
+					{'colname':'SMA50','plotargs':('b',),'plotkwargs':{'label':'SMA50',}},
+					{'colname':'SMA100','plotargs':('g',),'plotkwargs':{'label':'SMA100',}},
+					{'colname':'SMA200','plotargs':('m',),'plotkwargs':{'label':'SMA200',}},
+					{'colname':'EMA8','plotargs':('r--',),'plotkwargs':{'label':'EMA8',}},
+				]+list(addpricecols)
+
+		if addquerycols ==None:
+			addquerycols=querylist
+
+		querycols=[]
+		for i,qry in enumerate(addquerycols):
+			if qry in self.df.columns:
+				querycols.append( {'colname':qry,'plotargs':(colors[i],),'plotkwargs':{'label':qry,'alpha':0.5,'marker':markers[i],'markerfacecolor':None,'markersize':15-i,'linestyle':''}} )
+						
+		
+		featcols=[]
+		
+		for ftblock in addfeatcols:
+			FT=[]
+			i=0
+			for ft in ftblock:
+				if ft not in self.df.columns:
+					self.df[ft]=self.LoadFeature(ft)
+
+				FT.append( {'colname':ft,'plotargs':(colors[i],),'plotkwargs':{'label':ft,}} ) 
+				i=i+1							
+
+			featcols.append(FT)
 
 		#  Socket to talk to server
 		print("Connecting to charting server")
 		socket = context.socket(zmq.REQ)
 		socket.connect("tcp://localhost:%s" % ip)
 
-		msg={'featcols':cols,'df':df.round(decimals=3)}
+		msg={'pricecols':pricecols,'querycols':querycols,'featcols':featcols,'df':self.df.round(decimals=3)}
 		p=pkl.dumps(msg)
 		z=zlib.compress(p)
 
