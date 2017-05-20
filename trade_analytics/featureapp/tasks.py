@@ -84,7 +84,7 @@ def processfeatures(rerun=False):
 	db.connections.close_all()
 	
 	P=[]
-	for i in rang:
+	for i in range(5):
 		P.append(mp.Process(target=processfeatQ,args=(INQ,)) )
 	
 	for p in P:
