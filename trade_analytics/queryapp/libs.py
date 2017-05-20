@@ -167,6 +167,9 @@ class querymodel(object):
 			print "----------------- %s ---------------" % qry
 			plt.figure()
 			dp=self.df[(self.df[qry]==1) ][perf]
+			if len(dp)==0:
+				continue
+				
 			dp.plot.box(color=color, sym='r+')
 			plt.setp(plt.gca().get_xticklabels(), rotation=45, horizontalalignment='right')
 

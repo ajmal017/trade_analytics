@@ -69,6 +69,46 @@ class features(featuremodel):
 		else:
 			return None
 
+	@registerfeature(filename=filename,category='Momentum',returntype=bool,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	def EMALowPoly2win4Fit(self,T):
+		"""
+		HasCherries
+		"""
+
+		if not hasattr(self,'df'):
+			self.df=self.GetStockData(self.Symbolid)
+
+		if 'EMA8' not in self.df.columns:
+			self.df=self.addindicators(self.df,[ {'name':'EMA','timeperiod':8,'colname':'EMA8'} ] )
+
+		if 'EMAstd8' not in self.df.columns:
+			self.df=self.addindicators(self.df,[ {'name':'EMAstd','timeperiod':8,'colname':'EMAstd8'} ] )
+
+		if 'EMALowPoly2win4Fit' not in self.df.columns:
+			def getbouncefeatures(dw):
+				n=int( len(dw)/2.0 )
+				err=(dw['Low']-dw['EMA8']).values
+				p=np.polyfit(np.arange(len(err)),err,2)
+				p=map(lambda x : None if np.isnan(x) else x,p)
+				return json.dumps({'poly':p,'err':map(lambda x : None if np.isnan(x) else x,list(err)),
+									'err_mean':np.mean(err),'err_max':max(err),'err_min':min(err),
+									'EMAstd8_mean':dw['EMAstd8'].mean(),'EMAstd8_max':dw['EMAstd8'].max(),'EMAstd8_min':dw['EMAstd8'].min(),
+									'EMA8_mean':dw['EMA8'].mean(),'EMA8_max':dw['EMA8'].max(),'EMA8_min':dw['EMA8'].min()
+									})
+			
+			self.applyrollingfunc('EMALowPoly2win4Fit',getbouncefeatures,4,edge='center')
+			self.df['EMALowPoly2win4Fit']=self.df['EMALowPoly2win4Fit'].apply(lambda x : json.loads(x) if not pd.isnull(x) else None).copy()
+
+
+
+
+		ind=self.df.index[self.df.index<=T]
+		if len(ind)>0:
+			ind=ind[-1]
+			return self.df.loc[ind,'EMALowPoly2win4Fit'] 
+		else:
+			return None
+
 	@registerfeature(filename=filename,category='Price',returntype=bool,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def SMA20(self,T):
 		"""
@@ -327,7 +367,96 @@ class features(featuremodel):
 			return None
 
 
-	
+	@registerfeature(filename=filename,category='Outcome',returntype=bool,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	def FutPROFIT30days(self,T):
+
+		if not hasattr(self,'df'):
+			self.df=self.GetStockData(self.Symbolid)
+
+		if not hasattr(self,'DFperf30'):
+			self.DFperf30=pd.DataFrame()
+			for i in range(1,30):
+				self.DFperf30[i]=-100*self.df['Close'].diff(periods=-i)/self.df['Close']
+			self.DFperf30['Zeroperf']=0
+
+		if 'FutPROFIT30days' not in self.df.columns:
+			self.df['FutPROFIT30days']=self.DFperf30.max(axis=1).round()
+
+		ind=self.df.index[self.df.index<=T]
+		if len(ind)>0:
+			ind=ind[-1]
+			return self.df.loc[ind,'FutPROFIT30days'] 
+		else:
+			return None
+
+
+	@registerfeature(filename=filename,category='Outcome',returntype=bool,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	def FutLOSS30days(self,T):
+
+		if not hasattr(self,'df'):
+			self.df=self.GetStockData(self.Symbolid)
+
+		if not hasattr(self,'DFperf30'):
+			self.DFperf30=pd.DataFrame()
+			for i in range(1,30):
+				self.DFperf30[i]=-100*self.df['Close'].diff(periods=-i)/self.df['Close']
+			self.DFperf30['Zeroperf']=0
+			
+		if 'FutLOSS30days' not in self.df.columns:
+			self.df['FutLOSS30days']=self.DFperf30.min(axis=1).round()
+
+		ind=self.df.index[self.df.index<=T]
+		if len(ind)>0:
+			ind=ind[-1]
+			return self.df.loc[ind,'FutLOSS30days'] 
+		else:
+			return None
+
+
+	@registerfeature(filename=filename,category='Outcome',returntype=bool,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	def FutPROFIT90days(self,T):
+
+		if not hasattr(self,'df'):
+			self.df=self.GetStockData(self.Symbolid)
+
+		if not hasattr(self,'DFperf90'):
+			self.DFperf90=pd.DataFrame()
+			for i in range(1,90):
+				self.DFperf90[i]=-100*self.df['Close'].diff(periods=-i)/self.df['Close']
+			self.DFperf90['Zeroperf']=0
+
+		if 'FutPROFIT90days' not in self.df.columns:
+			self.df['FutPROFIT90days']=self.DFperf90.max(axis=1).round()
+
+		ind=self.df.index[self.df.index<=T]
+		if len(ind)>0:
+			ind=ind[-1]
+			return self.df.loc[ind,'FutPROFIT90days'] 
+		else:
+			return None
+
+
+	@registerfeature(filename=filename,category='Outcome',returntype=bool,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	def FutLOSS90days(self,T):
+
+		if not hasattr(self,'df'):
+			self.df=self.GetStockData(self.Symbolid)
+
+		if not hasattr(self,'DFperf90'):
+			self.DFperf90=pd.DataFrame()
+			for i in range(1,90):
+				self.DFperf90[i]=-100*self.df['Close'].diff(periods=-i)/self.df['Close']
+			self.DFperf90['Zeroperf']=0
+			
+		if 'FutLOSS90days' not in self.df.columns:
+			self.df['FutLOSS90days']=self.DFperf90.min(axis=1).round()
+
+		ind=self.df.index[self.df.index<=T]
+		if len(ind)>0:
+			ind=ind[-1]
+			return self.df.loc[ind,'FutLOSS90days'] 
+		else:
+			return None
 
 
 # --------- This is required to sync the features to the database -------------

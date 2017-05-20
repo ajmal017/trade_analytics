@@ -109,16 +109,12 @@ def MakeChart(df,pricecols,querycols,featcols):
 	ax1.bar(df['datenum'],0.5*L*df['Volume']/mm,bottom=df['Low'].min()-1.5,color='y',alpha=0.5)
 #     volume_overlay3(ax[0], quotes, colorup='k', colordown='r', width=4, alpha=1.0)
 	
-	flg=0
+	df['gap']=0
 	for qcl in  querycols:
 		dp=df[df[qcl['colname']]==True]
-		c=np.random.randint(0,10)/10.0
-		if flg==0:
-			ax1.plot(dp['datenum'],dp['Low']+(dp['High']-dp['Low'])*0,*qcl['plotargs'],**qcl['plotkwargs'])
-			flg=1
-		else:
-			ax1.plot(dp['datenum'],dp['High']+(dp['High']-dp['Low'])*0,*qcl['plotargs'],**qcl['plotkwargs'])
-			flg=0
+		ax1.plot(dp['datenum'],dp['High']+dp['gap'],*qcl['plotargs'],**qcl['plotkwargs'])
+		for gind in dp.index:
+			df.loc[gind,'gap']=df.loc[gind,'gap']+2
 
 	ax1.set_xlim(quotes[0][0],quotes[-1][0])
 	ax1.set_ylim(df['Low'].min()*0.9,df['High'].max()*1.1)
@@ -270,6 +266,7 @@ def precomputecharts(df,pricecols,querycols,featcols,evnt,imageQ,plotQ):
 			plotpara=plotQ.get_nowait()
 			TF=plotpara['TF']
 			T0=plotpara['T0']
+			
 			imageLeft=MakeChart(df[T0:TF].copy(),pricecols,querycols,featcols)
 			imageRight=MakeChart(df[TF:(TF+pd.DateOffset(360)).date()].copy(),pricecols,querycols,featcols)
 			
@@ -311,6 +308,8 @@ def webinterface(df,pricecols,querycols,featcols,ip):
 			labelslist=list( set(dtscmd.Label.objects.all().values_list('label',flat=True)) )
 			self.write_message(json.dumps({'labelslist':labelslist}))
 
+			self.savedplots={}
+			
 			self.showlogs()
 
 		def on_close(self):
@@ -492,9 +491,9 @@ def RUN():
 		delP=[]
 		for p in P:
 			p[0].join(0.2)
-			if time.time()-p[1]>10000:
-				p[0].terminate()
-				time.sleep(0.5)
+			# if time.time()-p[1]>10000:
+			# 	p[0].terminate()
+			# 	time.sleep(0.5)
 
 			
 			if not p[0].is_alive():

@@ -13,6 +13,7 @@ import time
 import pandas as pd
 from django import db
 
+
 def computefeatuers(stkid,Trange):
 	featurecodes=ftmd.FeatureComputeCode.objects.all()
 	for computecode in featurecodes:
@@ -21,6 +22,17 @@ def computefeatuers(stkid,Trange):
 		CC.computeall(skipdone=True)
 		CC.saveall()
 
+
+def processfeatQ(Q):
+	while True:
+		try:
+			q=Q.get_nowait()
+		except Empty:
+			print "Q done"
+			break
+
+		computefeatuers(*q)
+
 def processfeatures(rerun=False):
 	stocks=stkmd.Stockmeta.objects.all()
 	Fromdate=pd.datetime(2008,1,1)
@@ -28,7 +40,19 @@ def processfeatures(rerun=False):
 	Trange=pd.date_range(Fromdate,Todate)
 	Trange=[T.date() for T in Trange if T.weekday()<=4]
 
+	INQ=mp.Queue()
 	for stk in stocks:
-		computefeatuers(stk.id,Trange)
+		INQ.put((stk.id,Trange))
+	
+	P=[]
+	for i in range(5):
+		P.append(mp.Process(target=processfeatQ,args=(INQ,)) )
+	
+	for p in P:
+		p.start()
+
+	for p in P:
+		p.join()
 
 		
+
