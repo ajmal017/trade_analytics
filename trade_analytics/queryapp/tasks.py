@@ -28,12 +28,30 @@ def computequeries(stkid,Trange):
 def processqryQ(Q):
 	while True:
 		try:
-			q=Q.get_nowait()
+			q=Q.get(block=True)
 		except Empty:
 			print "Q done"
 			break
 
-		computequeries(*q)
+
+		print "Working on ",q[0]
+
+
+		try:
+			comstat=qrymd.ComputeStatus_Query.objects.get(Status='ToDo',Symbol__id=q[0])
+			comstat.Status='Run'
+			comstat.save()
+
+			computequeries(*q)
+
+			comstat=qrymd.ComputeStatus_Query.objects.get(Status='Run',Symbol__id=q[0])
+			comstat.Status='Success'
+			comstat.save()
+
+		except:
+			comstat=qrymd.ComputeStatus_Query.objects.get(Status='Run',Symbol__id=q[0])
+			comstat.Status='Fail'
+			comstat.save()
 
 def processqueries(rerun=False):
 	stocks=stkmd.Stockmeta.objects.all()
@@ -42,12 +60,25 @@ def processqueries(rerun=False):
 	Trange=pd.date_range(Fromdate,Todate)
 	Trange=[T.date() for T in Trange if T.weekday()<=4]
 
+
+	qrymd.ComputeStatus_Query.objects.filter(Status='Success').delete()
+	qrymd.ComputeStatus_Query.objects.filter(Status='Run').delete()
+	qrymd.ComputeStatus_Query.objects.filter(Status='ToDo').delete()
+
+	objs=[]
+	for stk in stkmd.Stockmeta.objects.all():
+		objs.append( qrymd.ComputeStatus_Query(Status='ToDo',Symbol=stk) )
+	qrymd.ComputeStatus_Query.objects.bulk_create(objs)
+
+
 	INQ=mp.Queue()
 	for stk in stocks:
 		INQ.put((stk.id,Trange))
-	
+		time.sleep(0.01)
+
+		
 	P=[]
-	for i in range(5):
+	for i in range(6):
 		P.append(mp.Process(target=processqryQ,args=(INQ,)) )
 	
 	for p in P:

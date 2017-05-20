@@ -26,12 +26,30 @@ def computefeatuers(stkid,Trange):
 def processfeatQ(Q):
 	while True:
 		try:
-			q=Q.get_nowait()
+			q=Q.get(block=True)
 		except Empty:
 			print "Q done"
 			break
 
-		computefeatuers(*q)
+
+		print "Working on ",q[0]
+
+
+		try:
+			comstat=ftmd.ComputeStatus_Feature.objects.get(Status='ToDo',Symbol__id=q[0])
+			comstat.Status='Run'
+			comstat.save()
+
+			computefeatuers(*q)
+
+			comstat=ftmd.ComputeStatus_Feature.objects.get(Status='Run',Symbol__id=q[0])
+			comstat.Status='Success'
+			comstat.save()
+
+		except:
+			comstat=ftmd.ComputeStatus_Feature.objects.get(Status='Run',Symbol__id=q[0])
+			comstat.Status='Fail'
+			comstat.save()
 
 def processfeatures(rerun=False):
 	stocks=stkmd.Stockmeta.objects.all()
@@ -40,12 +58,26 @@ def processfeatures(rerun=False):
 	Trange=pd.date_range(Fromdate,Todate)
 	Trange=[T.date() for T in Trange if T.weekday()<=4]
 
+	ftmd.ComputeStatus_Feature.objects.filter(Status='Success').delete()
+	ftmd.ComputeStatus_Feature.objects.filter(Status='Run').delete()
+	ftmd.ComputeStatus_Feature.objects.filter(Status='ToDo').delete()
+
+	objs=[]
+	for stk in stkmd.Stockmeta.objects.all():
+		objs.append( ftmd.ComputeStatus_Feature(Status='ToDo',Symbol=stk) )
+	ftmd.ComputeStatus_Feature.objects.bulk_create(objs)
+
+	print "Buildoing compute Q"
 	INQ=mp.Queue()
-	for stk in stocks:
+	for stk in stocks[:100]:
+		print " adding to Q ",stk.id,"\r,"
 		INQ.put((stk.id,Trange))
+		time.sleep(0.01)
 	
+	print "Starting up processors"
+
 	P=[]
-	for i in range(5):
+	for i in range(6):
 		P.append(mp.Process(target=processfeatQ,args=(INQ,)) )
 	
 	for p in P:

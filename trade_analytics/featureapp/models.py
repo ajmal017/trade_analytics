@@ -45,3 +45,14 @@ class FeaturesData(models.Model):
 
 	def __str__(self):
 		return str(self.Symbol.Symbol)+" "+str(self.T)+" "+str(len(self.Featuredata))
+
+
+class ComputeStatus_Feature(models.Model):
+	status_choices=(('ToDo','ToDo'),('Run','Run'),('Fail','Fail'),('Success','Success'))
+	Status=models.CharField(choices=status_choices,max_length=10)
+	Symbol=models.ForeignKey( stkmd.Stockmeta,on_delete=models.CASCADE)
+	created_at = models.DateField(auto_now_add=True,null=True)
+	updated_at = models.DateTimeField(auto_now=True,null=True)
+
+	def __str__(self):
+		return ", ".join( [str(self.Symbol),str(self.Status),str(self.created_at),str(self.updated_at)] )
