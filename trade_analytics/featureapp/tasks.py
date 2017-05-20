@@ -35,25 +35,25 @@ def processfeatQ(Q):
 		print "Working on ",q[0]
 
 
-		try:
-			comstat=ftmd.ComputeStatus_Feature.objects.get(Status='ToDo',Symbol__id=q[0])
-			comstat.Status='Run'
-			comstat.save()
+		# try:
+		comstat=ftmd.ComputeStatus_Feature.objects.get(Status='ToDo',Symbol__id=q[0])
+		comstat.Status='Run'
+		comstat.save()
 
-			computefeatuers(*q)
+		computefeatuers(*q)
 
-			comstat=ftmd.ComputeStatus_Feature.objects.get(Status='Run',Symbol__id=q[0])
-			comstat.Status='Success'
-			comstat.save()
+		comstat=ftmd.ComputeStatus_Feature.objects.get(Status='Run',Symbol__id=q[0])
+		comstat.Status='Success'
+		comstat.save()
 
-			print "Done on ",q[0]
+		print "Done on ",q[0]
 
-		except:
-			comstat=ftmd.ComputeStatus_Feature.objects.get(Status='Run',Symbol__id=q[0])
-			comstat.Status='Fail'
-			comstat.save()
+		# except:
+			# comstat=ftmd.ComputeStatus_Feature.objects.get(Status='Run',Symbol__id=q[0])
+			# comstat.Status='Fail'
+			# comstat.save()
 
-			print "Failed on ",q[0]
+			# print "Failed on ",q[0]
 
 
 def processfeatures(rerun=False):
@@ -74,7 +74,7 @@ def processfeatures(rerun=False):
 
 	print "Buildoing compute Q"
 	INQ=mp.Queue()
-	for stk in stocks:
+	for stk in stocks[:100]:
 		print " adding to Q ",stk.id,"\r,"
 		INQ.put((stk.id,Trange))
 		time.sleep(0.01)
@@ -84,7 +84,7 @@ def processfeatures(rerun=False):
 	db.connections.close_all()
 	
 	P=[]
-	for i in range(6):
+	for i in range(2):
 		P.append(mp.Process(target=processfeatQ,args=(INQ,)) )
 	
 	for p in P:

@@ -9,6 +9,16 @@ filename=__name__.split('.')[-1]
 # --------------  features has to be the name of the class ------------------
 # Define your features in this class
 
+def replaceNaN2None(x):
+	if type(x)==list:
+		for i in range(len(x)):
+			if pd.isnull(x[i]):
+				x[i]=None
+
+		return x
+
+	if pd.isnull(x):
+		return None	
 
 	
 
@@ -51,9 +61,9 @@ class features(featuremodel):
 				p=np.polyfit(np.arange(len(err)),err,2)
 				p=map(lambda x : None if np.isnan(x) else x,p)
 				return json.dumps({'poly':p,'err':map(lambda x : None if np.isnan(x) else x,list(err)),
-									'err_mean':np.mean(err),'err_max':max(err),'err_min':min(err),
-									'SMAstd20_mean':dw['SMAstd20'].mean(),'SMAstd20_max':dw['SMAstd20'].max(),'SMAstd20_min':dw['SMAstd20'].min(),
-									'SMA20_mean':dw['SMA20'].mean(),'SMA20_max':dw['SMA20'].max(),'SMA20_min':dw['SMA20'].min()
+									'err_mean':replaceNaN2None(np.mean(err)),'err_max':replaceNaN2None(max(err)),'err_min':replaceNaN2None(min(err)),
+									'SMAstd20_mean':replaceNaN2None(dw['SMAstd20'].mean()),'SMAstd20_max':replaceNaN2None(dw['SMAstd20'].max()),'SMAstd20_min':replaceNaN2None(dw['SMAstd20'].min()),
+									'SMA20_mean':replaceNaN2None(dw['SMA20'].mean()),'SMA20_max':replaceNaN2None(dw['SMA20'].max()),'SMA20_min':replaceNaN2None(dw['SMA20'].min())
 									})
 			
 			self.applyrollingfunc('SMALowPoly2win4Fit',getbouncefeatures,4,edge='center')
@@ -91,9 +101,9 @@ class features(featuremodel):
 				p=np.polyfit(np.arange(len(err)),err,2)
 				p=map(lambda x : None if np.isnan(x) else x,p)
 				return json.dumps({'poly':p,'err':map(lambda x : None if np.isnan(x) else x,list(err)),
-									'err_mean':np.mean(err),'err_max':max(err),'err_min':min(err),
-									'EMAstd8_mean':dw['EMAstd8'].mean(),'EMAstd8_max':dw['EMAstd8'].max(),'EMAstd8_min':dw['EMAstd8'].min(),
-									'EMA8_mean':dw['EMA8'].mean(),'EMA8_max':dw['EMA8'].max(),'EMA8_min':dw['EMA8'].min()
+									'err_mean':replaceNaN2None(np.mean(err)),'err_max':replaceNaN2None(max(err)),'err_min':replaceNaN2None(min(err)),
+									'EMAstd8_mean':replaceNaN2None(dw['EMAstd8'].mean()),'EMAstd8_max':replaceNaN2None(dw['EMAstd8'].max()),'EMAstd8_min':replaceNaN2None(dw['EMAstd8'].min()),
+									'EMA8_mean':replaceNaN2None(dw['EMA8'].mean()),'EMA8_max':replaceNaN2None(dw['EMA8'].max()),'EMA8_min':replaceNaN2None(dw['EMA8'].min())
 									})
 			
 			self.applyrollingfunc('EMALowPoly2win4Fit',getbouncefeatures,4,edge='center')

@@ -189,7 +189,7 @@ class featuremodel(object):
 			for ft in self.ComputedFeatures.keys():
 				v=self.ComputedFeatures[ft][T]
 				try:
-					if pd.isnull(v):
+					if pd.isnull(v) :
 						featdata.Featuredata[ft]=None
 					else:
 						featdata.Featuredata[ft]=v
