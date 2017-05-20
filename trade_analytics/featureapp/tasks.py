@@ -13,6 +13,8 @@ import time
 import pandas as pd
 from django import db
 
+import logging
+logger = logging.getLogger(__name__)
 
 def computefeatuers(stkid,Trange):
 	featurecodes=ftmd.FeatureComputeCode.objects.all()
@@ -48,12 +50,14 @@ def processfeatQ(Q):
 
 			print "Done on ",q[0]
 
-		except:
+		except Exception as e:
 			comstat=ftmd.ComputeStatus_Feature.objects.get(Status='Run',Symbol__id=q[0])
 			comstat.Status='Fail'
 			comstat.save()
 
-			print "Failed on ",q[0]
+			logger.error("Failed Computation of "+str(q[0])+" "+str(e)  )
+
+			print "Failed on ",q[0],e
 
 
 def processfeatures(rerun=False):

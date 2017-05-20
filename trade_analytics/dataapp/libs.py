@@ -11,6 +11,10 @@ import pdb
 from talib import abstract
 import numpy as np
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 def StockDataFrame_validate(df,columns=['Close','Open','High','Low','Volume']):
 	for cc in columns:
 		if cc not in df.columns:
@@ -91,8 +95,11 @@ def addindicators(df,cols):
 					df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).mean()
 				if cc['name']=='EMAstd':
 					df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).std(bias=False)
-			except:
+			except Exception as e:
 				df[cc['colname']]=np.nan
+				print "error adding indicator ",cc['colname']
+				logger.error("error adding indicator "+cc['colname']+" "+str(type(e))+" "+str(e))
+				logger.exception(e)
 
 	return df
 

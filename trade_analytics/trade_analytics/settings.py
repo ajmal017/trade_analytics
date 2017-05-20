@@ -263,17 +263,25 @@ LOGGING = {
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
-        'file': {
+        'debugfile': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': os.path.join('logs','debug_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
             'formatter': 'verbose',
         },
+        
+        'errorfile': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join('logs','error_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
+            'formatter': 'verbose',
+        },
+
     },
     
     'loggers': {
         'django': {
-            'handlers': ['console','file'],
+            'handlers': ['console','debugfile','errorfile'],
             'propagate': True,
         },
     }

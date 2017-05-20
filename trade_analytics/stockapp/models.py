@@ -3,13 +3,14 @@ from __future__ import unicode_literals,division
 from django.db import models
 from django.contrib.auth.models import User
 import pandas as pd
-import logging
+
 from multiselectfield import MultiSelectField
 import os
 
 
 
 # Get an instance of a logger
+import logging
 logger = logging.getLogger(__name__)
 
 """
