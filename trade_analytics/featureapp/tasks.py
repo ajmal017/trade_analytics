@@ -74,7 +74,7 @@ def processfeatures(rerun=False):
 
 	print "Buildoing compute Q"
 	INQ=mp.Queue()
-	for stk in stocks[:100]:
+	for stk in stocks:
 		print " adding to Q ",stk.id,"\r,"
 		INQ.put((stk.id,Trange))
 		time.sleep(0.01)
@@ -84,7 +84,7 @@ def processfeatures(rerun=False):
 	db.connections.close_all()
 	
 	P=[]
-	for i in range(2):
+	for i in range(5):
 		P.append(mp.Process(target=processfeatQ,args=(INQ,)) )
 	
 	for p in P:
