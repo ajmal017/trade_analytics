@@ -9,6 +9,7 @@ import datetime
 import time
 import pdb
 from talib import abstract
+import numpy as np
 
 def StockDataFrame_validate(df,columns=['Close','Open','High','Low','Volume']):
 	for cc in columns:
@@ -77,18 +78,21 @@ def addindicators(df,cols):
 	}
 	for cc in cols:
 		if cc['colname'] not in df.columns:
-			if cc['name']=='CCI':
-				df[cc['colname']]=abstract.CCI(inputs, timeperiod=cc['timeperiod'])
+			try:
+				if cc['name']=='CCI':
+					df[cc['colname']]=abstract.CCI(inputs, timeperiod=cc['timeperiod'])
 
-			if cc['name']=='SMA':
-				df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).mean()
-			if cc['name']=='SMAstd':
-				df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).std()
-		
-			if cc['name']=='EMA':
-				df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).mean()
-			if cc['name']=='EMAstd':
-				df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).std(bias=False)
+				if cc['name']=='SMA':
+					df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).mean()
+				if cc['name']=='SMAstd':
+					df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).std()
+			
+				if cc['name']=='EMA':
+					df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).mean()
+				if cc['name']=='EMAstd':
+					df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).std(bias=False)
+			except:
+				df[cc['colname']]=np.nan
 
 	return df
 
