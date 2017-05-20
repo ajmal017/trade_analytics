@@ -76,6 +76,8 @@ def processfeatures(rerun=False):
 	
 	print "Starting up processors"
 
+	db.connections.close_all()
+	
 	P=[]
 	for i in range(6):
 		P.append(mp.Process(target=processfeatQ,args=(INQ,)) )

@@ -76,7 +76,8 @@ def processqueries(rerun=False):
 		INQ.put((stk.id,Trange))
 		time.sleep(0.01)
 
-
+	db.connections.close_all()
+	
 	P=[]
 	for i in range(6):
 		P.append(mp.Process(target=processqryQ,args=(INQ,)) )
