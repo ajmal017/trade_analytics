@@ -5,7 +5,7 @@ import stockapp.models as stkmd
 import queryapp.models as qrymd
 import stockapp.models as stkmd
 import dataapp.models as dtamd
-import featureapp.models as ftmd
+
 
 import itertools as itt
 import numpy as np
@@ -76,7 +76,7 @@ def processqueries(rerun=False):
 		INQ.put((stk.id,Trange))
 		time.sleep(0.01)
 
-		
+
 	P=[]
 	for i in range(6):
 		P.append(mp.Process(target=processqryQ,args=(INQ,)) )

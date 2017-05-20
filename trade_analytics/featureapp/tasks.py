@@ -69,7 +69,7 @@ def processfeatures(rerun=False):
 
 	print "Buildoing compute Q"
 	INQ=mp.Queue()
-	for stk in stocks[:100]:
+	for stk in stocks:
 		print " adding to Q ",stk.id,"\r,"
 		INQ.put((stk.id,Trange))
 		time.sleep(0.01)
