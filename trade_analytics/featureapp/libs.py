@@ -60,14 +60,14 @@ class registerfeature(object):
 			featmeta.Query=self.query
 			featmeta.Userfilename=self.filename
 			featmeta.save()
-			print "Updated feature ",featmeta
+			# print "Updated feature ",featmeta
 
 		else:
 			featmeta=ftmd.FeaturesMeta(Featurelabel=self.name,Featuredescription=self.doc,
 									Category=self.category,Returntype=self.returntype.__name__,
 									operators=self.operators,Query=self.query,Userfilename=self.filename)
 			featmeta.save()
-			print "Saving feature ",featmeta
+			# print "Saving feature ",featmeta
 
 	def __call__(self,func):
 		

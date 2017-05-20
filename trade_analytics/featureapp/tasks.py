@@ -46,10 +46,15 @@ def processfeatQ(Q):
 			comstat.Status='Success'
 			comstat.save()
 
+			print "Done on ",q[0]
+
 		except:
 			comstat=ftmd.ComputeStatus_Feature.objects.get(Status='Run',Symbol__id=q[0])
 			comstat.Status='Fail'
 			comstat.save()
+
+			print "Failed on ",q[0]
+
 
 def processfeatures(rerun=False):
 	stocks=stkmd.Stockmeta.objects.all()

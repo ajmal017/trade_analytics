@@ -4,6 +4,46 @@
 		"selected_items":
 		[
 			[
+				"Sym",
+				"Symbolid"
+			],
+			[
+				"class",
+				"classmethod\tdecorator"
+			],
+			[
+				"Comp",
+				"ComputeCode\tclass"
+			],
+			[
+				"F",
+				"Featurelabel\tstatement"
+			],
+			[
+				"T",
+				"True\tinstance"
+			],
+			[
+				"get",
+				"getfeaturelist\tfunction"
+			],
+			[
+				"For",
+				"ForeignKey\tclass"
+			],
+			[
+				"feat",
+				"featmeta\tstatement"
+			],
+			[
+				"Q",
+				"query\tstatement"
+			],
+			[
+				"return",
+				"returntype\tparam"
+			],
+			[
 				"L",
 				"Label\tclass"
 			],
@@ -92,10 +132,6 @@
 				"Stockmeta\tclass"
 			],
 			[
-				"class",
-				"classmethod\tclass"
-			],
-			[
 				"ser",
 				"serializer\tstatement"
 			],
@@ -122,10 +158,6 @@
 			[
 				"inp",
 				"inputtype\tparam"
-			],
-			[
-				"Sym",
-				"Symbols_ids\tparam"
 			],
 			[
 				"va",
@@ -269,10 +301,86 @@
 			}
 		},
 		{
-			"file": "trade_analytics/featureapp/dfcharter.html",
+			"file": "trade_analytics/utility/models.py",
 			"settings":
 			{
-				"buffer_size": 5238,
+				"buffer_size": 4328,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/featureapp/models.py",
+			"settings":
+			{
+				"buffer_size": 2191,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/dataapp/signals.py",
+			"settings":
+			{
+				"buffer_size": 440,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/featureapp/tasks.py",
+			"settings":
+			{
+				"buffer_size": 2124,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/queryapp/tasks.py",
+			"settings":
+			{
+				"buffer_size": 2061,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/databases/backupdb.sh",
+			"settings":
+			{
+				"buffer_size": 231,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": ".gitignore",
+			"settings":
+			{
+				"buffer_size": 124,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/utility/parallelcomputations.py",
+			"settings":
+			{
+				"buffer_size": 3834,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/dataapp/tasks.py",
+			"settings":
+			{
+				"buffer_size": 1358,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/featureapp/libs.py",
+			"settings":
+			{
+				"buffer_size": 6758,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -281,16 +389,34 @@
 			"file": "trade_analytics/featureapp/dfwebsocketmanager.py",
 			"settings":
 			{
-				"buffer_size": 11490,
+				"buffer_size": 15967,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
 		},
 		{
-			"file": "trade_analytics/datascience/models.py",
+			"file": "trade_analytics/queryapp/libs.py",
 			"settings":
 			{
-				"buffer_size": 533,
+				"buffer_size": 6280,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/featureapp/FeatureCodes/AnonymousUser.py",
+			"settings":
+			{
+				"buffer_size": 14635,
+				"encoding": "UTF-8",
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "trade_analytics/queryapp/QueryCodes/AnonymousUser.py",
+			"settings":
+			{
+				"buffer_size": 9869,
 				"encoding": "UTF-8",
 				"line_ending": "Unix"
 			}
@@ -495,22 +621,52 @@
 	[
 		"/home/venkat/Documents/repos/trade_analytics",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/datascience",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/featureapp",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/dataapp",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/databases",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/databases/backup",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/datascience/migrations",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/featureapp/FeatureCodes",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/featureapp/migrations",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/queryapp",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/scripts",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/trade_analytics"
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp/IndexCodes",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/utility"
 	],
 	"file_history":
 	[
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/queryapp/models.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/dataapp/tasks.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/scripts/compute_features_queries.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/datascience/models.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/queryapp/tasks.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/dataapp/libs.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/dataapp/apps.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp/models.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/scripts/downloadstockdata.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/scripts/computedownloadstatus.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/featureapp/dfwebsocketmanager.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/featureapp/dfcharter.html",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/featureapp/FeatureCodes/AnonymousUser.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/scripts/syncfiles2db.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/queryapp/AnonymousUser.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/dataapp/models.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp/libs.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp/tasks.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/featureapp/FeatureCodes/default.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/utility/codemanager.py",
+		"/home/venkat/Dropbox/GC material/CDC 2017 4/review.txt",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/trade_analytics/settings.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/utility/models.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/featureapp/migrations/0001_initial.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/datascience/migrations/0001_initial.py",
+		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/featureapp/FeatureCodes/__init__.py",
+		"/tmp/mozilla_venkat0/thinkorswim_installer.sh",
 		"/home/venkat/Documents/repos/trade_analytics/.gitignore",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/databases/backupdb.sh",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/featureapp/zeromqreq.py",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp/models.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/scripts/chartlabeling.py",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/trade_analytics/settings.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/trade_analytics/db_routers.py",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/scripts/computedownloadstatus.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/featureapp/models.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/featureapp/zeromqreply.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/featureapp/zeromqsubscriber.py",
@@ -524,16 +680,11 @@
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/index_A.html",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/seefeaturetemplate.html",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/featureapp/anotherplot.py",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/dataapp/libs.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/utility/parallelcomputations.py",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/dataapp/tasks.py",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/dataapp/models.py",
 		"/home/venkat/Documents/repos/CompTechAnalysis/trademaster/CTA/GenConfig.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp/IndexCodes/AnonymousUser.py",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp/libs.py",
 		"/home/venkat/Documents/repos/techan.js/examples/indicator/bollinger/data.csv",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/charts/models.py",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp/tasks.py",
 		"/home/venkat/Documents/repos/CompTechAnalysis/trademaster/CTA/PlotingManager.py",
 		"/home/venkat/Documents/repos/computervision/video_stream/tornadomjpeg.py",
 		"/home/venkat/Documents/repos/computervision/video_stream/untitled.py",
@@ -552,7 +703,6 @@
 		"/home/venkat/Downloads/spark-2.1.1-bin-hadoop2.7/NOTICE",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/dataapp/signals.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/trade_analytics/setupdb.sh",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/scripts/downloadstockdata.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/scripts/sync2db.py",
 		"/home/venkat/Documents/repos/techan.js/examples/indicator/bollinger/README.md",
 		"/home/venkat/Documents/repos/CompTechAnalysis/trademaster/charting/tasks.py",
@@ -563,13 +713,10 @@
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/trade_analytics/dbconf.json",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/dump.json",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/computeapp/models.py",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/utility/models.py",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/utility/codemanager.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/manage.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp/signals.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/utility.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp/apps.py",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/dataapp/apps.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp/__init__.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/dataapp/__init__.py",
 		"/home/venkat/Documents/repos/django/django/apps/config.py",
@@ -592,7 +739,6 @@
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp/admin.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp/forms.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/stockapp/tests.py",
-		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/queryapp/models.py",
 		"/home/venkat/Documents/repos/python_examples/Python_tutorials_and_design_patterns.md",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/home/urls.py",
 		"/home/venkat/Documents/repos/trade_analytics/trade_analytics/home/views.py",
@@ -616,21 +762,7 @@
 		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home/boostsb_theme/index.html",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/trade_analytics/settings.py",
 		"/home/venkat/Documents/trade_analytics/trade_analytics/computeapp/tests.py",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp/templates/stockapp/create_watchlist.html",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp/createfeature.html",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/urls.py",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp/pythonquery.html",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/templates/queryapp/createmongoquery.html",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/datascience/views.py",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/datascience/templates/datascience/createfeature.html",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp/bower_components/awesome-bootstrap-checkbox/README.md",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp/dist/js/query-builder.js",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp/dist/js/query-builder.standalone.js",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp/dist/js/query-builder.standalone.min.js",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/queryapp/static/queryapp/dist/js/query-builder.min.js",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/home/templates/home/boostsb_theme/base_generic.html",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp/templates/stockapp/view_watchlist.html",
-		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp/urls.py"
+		"/home/venkat/Documents/trade_analytics/trade_analytics/stockapp/templates/stockapp/create_watchlist.html"
 	],
 	"find":
 	{
@@ -657,6 +789,16 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"Qdf",
+			"featcols",
+			"Featuredata",
+			"featdata",
+			"ft",
+			"registerfeature",
+			"register init",
+			"registered",
+			"print",
+			"return",
 			"}}",
 			"...: ",
 			"sma0",
@@ -774,17 +916,7 @@
 			"Status_log",
 			"pdb",
 			"TTstr",
-			"DLin",
-			"profile",
-			"SQLqry",
-			"QCMF",
-			"SQ",
-			"dfgf",
-			"GenLinTrendsCustomFeats_chunks",
-			"static",
-			"slope_21",
-			"        ('",
-			"("
+			"DLin"
 		],
 		"highlight": true,
 		"in_selection": false,
@@ -792,6 +924,11 @@
 		"regex": false,
 		"replace_history":
 		[
+			"df",
+			"Querydata",
+			"qrydata",
+			"qry",
+			"registerquery",
 			"",
 			"'b'",
 			"'a'",
@@ -914,12 +1051,7 @@
 			"SMA: Return",
 			"SM-STD: Volume",
 			"EMA: Volume",
-			"SMA: Volume",
-			"EM-STD: Close",
-			"SM-STD: Close",
-			"EMA: Close",
-			"SMA",
-			"ddagg"
+			"SMA: Volume"
 		],
 		"reverse": false,
 		"show_context": true,
@@ -930,7 +1062,7 @@
 	"groups":
 	[
 		{
-			"selected": 2,
+			"selected": 5,
 			"sheets":
 			[
 				{
@@ -970,26 +1102,21 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
 								"bh_single_quote_close",
 								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
 								"bh_regex",
 								"bh_regex_center",
 								"bh_regex_open",
@@ -1000,16 +1127,11 @@
 								"bh_tag_open",
 								"bh_tag_close",
 								"bh_tag_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
@@ -1020,11 +1142,21 @@
 								"bh_curly_open",
 								"bh_curly_close",
 								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content"
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
 							],
 							"git_gutter_is_enabled": true,
 							"incomplete_sync": null,
@@ -1036,249 +1168,24 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 3,
+					"stack_index": 14,
 					"type": "text"
 				},
 				{
 					"buffer": 1,
-					"file": "trade_analytics/featureapp/dfcharter.html",
+					"file": "trade_analytics/utility/models.py",
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 5238,
+						"buffer_size": 4328,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								4727,
-								4727
-							]
-						],
-						"settings":
-						{
-							"bracket_highlighter.busy": false,
-							"bracket_highlighter.locations":
-							{
-								"close":
-								{
-								},
-								"icon":
-								{
-								},
-								"open":
-								{
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.regions":
-							[
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content"
-							],
-							"git_gutter_is_enabled": true,
-							"syntax": "Packages/Djaneiro/Syntaxes/HTML (Django).tmLanguage",
-							"tab_size": 2,
-							"translate_tabs_to_spaces": true
-						},
-						"translation.x": 0.0,
-						"translation.y": 1386.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 1,
-					"type": "text"
-				},
-				{
-					"buffer": 2,
-					"file": "trade_analytics/featureapp/dfwebsocketmanager.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 11490,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								10688,
-								10688
-							]
-						],
-						"settings":
-						{
-							"auto_complete_triggers":
-							[
-								{
-									"characters": ".",
-									"selector": "source.python - string - comment - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								},
-								{
-									"characters": ".",
-									"selector": "source.python - string - constant.numeric"
-								}
-							],
-							"bracket_highlighter.busy": false,
-							"bracket_highlighter.locations":
-							{
-								"close":
-								{
-								},
-								"icon":
-								{
-								},
-								"open":
-								{
-								},
-								"unmatched":
-								{
-								}
-							},
-							"bracket_highlighter.regions":
-							[
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
-								"bh_single_quote",
-								"bh_single_quote_center",
-								"bh_single_quote_open",
-								"bh_single_quote_close",
-								"bh_single_quote_content",
-								"bh_regex",
-								"bh_regex_center",
-								"bh_regex_open",
-								"bh_regex_close",
-								"bh_regex_content",
-								"bh_tag",
-								"bh_tag_center",
-								"bh_tag_open",
-								"bh_tag_close",
-								"bh_tag_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
-								"bh_square",
-								"bh_square_center",
-								"bh_square_open",
-								"bh_square_close",
-								"bh_square_content",
-								"bh_curly",
-								"bh_curly_center",
-								"bh_curly_open",
-								"bh_curly_close",
-								"bh_curly_content",
-								"bh_c_define",
-								"bh_c_define_center",
-								"bh_c_define_open",
-								"bh_c_define_close",
-								"bh_c_define_content"
-							],
-							"git_gutter_is_enabled": true,
-							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
-							"tab_size": 4,
-							"translate_tabs_to_spaces": false
-						},
-						"translation.x": 0.0,
-						"translation.y": 4550.0,
-						"zoom_level": 1.0
-					},
-					"stack_index": 0,
-					"type": "text"
-				},
-				{
-					"buffer": 3,
-					"file": "trade_analytics/datascience/models.py",
-					"semi_transient": false,
-					"settings":
-					{
-						"buffer_size": 533,
-						"regions":
-						{
-						},
-						"selection":
-						[
-							[
-								251,
-								251
+								1231,
+								1231
 							]
 						],
 						"settings":
@@ -1301,8 +1208,8 @@
 								{
 									"1":
 									[
-										250,
-										251
+										1230,
+										1231
 									]
 								},
 								"icon":
@@ -1317,8 +1224,8 @@
 								{
 									"1":
 									[
-										235,
-										236
+										1223,
+										1224
 									]
 								},
 								"unmatched":
@@ -1327,26 +1234,21 @@
 							},
 							"bracket_highlighter.regions":
 							[
-								"bh_unmatched",
-								"bh_unmatched_center",
-								"bh_unmatched_open",
-								"bh_unmatched_close",
-								"bh_unmatched_content",
-								"bh_round",
-								"bh_round_center",
-								"bh_round_open",
-								"bh_round_close",
-								"bh_round_content",
-								"bh_default",
-								"bh_default_center",
-								"bh_default_open",
-								"bh_default_close",
-								"bh_default_content",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
 								"bh_single_quote",
 								"bh_single_quote_center",
 								"bh_single_quote_open",
 								"bh_single_quote_close",
 								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
 								"bh_regex",
 								"bh_regex_center",
 								"bh_regex_open",
@@ -1357,16 +1259,11 @@
 								"bh_tag_open",
 								"bh_tag_close",
 								"bh_tag_content",
-								"bh_double_quote",
-								"bh_double_quote_center",
-								"bh_double_quote_open",
-								"bh_double_quote_close",
-								"bh_double_quote_content",
-								"bh_angle",
-								"bh_angle_center",
-								"bh_angle_open",
-								"bh_angle_close",
-								"bh_angle_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
 								"bh_square",
 								"bh_square_center",
 								"bh_square_open",
@@ -1377,20 +1274,1505 @@
 								"bh_curly_open",
 								"bh_curly_close",
 								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 504.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 13,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "trade_analytics/featureapp/models.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2191,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1689,
+								1689
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
 								"bh_c_define",
 								"bh_c_define_center",
 								"bh_c_define_open",
 								"bh_c_define_close",
-								"bh_c_define_content"
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
 							],
 							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 294.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "trade_analytics/dataapp/signals.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 440,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
 							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage"
 						},
 						"translation.x": 0.0,
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "trade_analytics/featureapp/tasks.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2124,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1983,
+								1957
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"git_gutter_is_enabled": true,
+							"open_with_edit": true,
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 630.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 5,
+					"file": "trade_analytics/queryapp/tasks.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2061,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								964,
+								964
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 588.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "trade_analytics/databases/backupdb.sh",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 231,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/ShellScript/Shell-Unix-Generic.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": ".gitignore",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 124,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Text/Plain text.tmLanguage"
+						},
+						"translation.x": 0.0,
+						"translation.y": 168.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "trade_analytics/utility/parallelcomputations.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3834,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 1260.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 9,
+					"file": "trade_analytics/dataapp/tasks.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1358,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1171,
+								1171
+							]
+						],
+						"settings":
+						{
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										1219,
+										1220
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/round_bracket.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										1218,
+										1219
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
 					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 10,
+					"file": "trade_analytics/featureapp/libs.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6758,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3749,
+								3749
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										3753,
+										3754
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/round_bracket.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										3749,
+										3750
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"git_gutter_is_enabled": true,
+							"open_with_edit": true,
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 2898.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 10,
+					"type": "text"
+				},
+				{
+					"buffer": 11,
+					"file": "trade_analytics/featureapp/dfwebsocketmanager.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 15967,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								10042,
+								10042
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 5314.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 12,
+					"type": "text"
+				},
+				{
+					"buffer": 12,
+					"file": "trade_analytics/queryapp/libs.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 6280,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								3968,
+								3968
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"git_gutter_is_enabled": true,
+							"open_with_edit": true,
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1946.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				},
+				{
+					"buffer": 13,
+					"file": "trade_analytics/featureapp/FeatureCodes/AnonymousUser.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 14635,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								14499,
+								14499
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+									"1":
+									[
+										14499,
+										14500
+									]
+								},
+								"icon":
+								{
+									"1":
+									[
+										"Packages/BracketHighlighter/icons/single_quote.png",
+										"brackethighlighter.default"
+									]
+								},
+								"open":
+								{
+									"1":
+									[
+										14485,
+										14486
+									]
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 5650.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 11,
+					"type": "text"
+				},
+				{
+					"buffer": 14,
+					"file": "trade_analytics/queryapp/QueryCodes/AnonymousUser.py",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9869,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1202,
+								1202
+							]
+						],
+						"settings":
+						{
+							"auto_complete_triggers":
+							[
+								{
+									"characters": ".",
+									"selector": "source.python - string - comment - constant.numeric"
+								},
+								{
+									"characters": ".",
+									"selector": "source.python - string - constant.numeric"
+								}
+							],
+							"bracket_highlighter.busy": false,
+							"bracket_highlighter.locations":
+							{
+								"close":
+								{
+								},
+								"icon":
+								{
+								},
+								"open":
+								{
+								},
+								"unmatched":
+								{
+								}
+							},
+							"bracket_highlighter.regions":
+							[
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_angle_content",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_single_quote_content",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_default_content",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_regex_content",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_tag_content",
+								"bh_c_define",
+								"bh_c_define_center",
+								"bh_c_define_open",
+								"bh_c_define_close",
+								"bh_c_define_content",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_square_content",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_curly_content",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_round_content",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_double_quote_content",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_unmatched_content"
+							],
+							"git_gutter_is_enabled": true,
+							"syntax": "Packages/Djaneiro/Syntaxes/Python Django.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 294.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 9,
 					"type": "text"
 				}
 			]
@@ -1509,7 +2891,7 @@
 	"show_open_files": true,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 268.0,
+	"side_bar_width": 399.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{
