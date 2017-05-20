@@ -37,7 +37,7 @@ def processqryQ(Q):
 
 def processqueries(rerun=False):
 	stocks=stkmd.Stockmeta.objects.all()
-	Fromdate=pd.datetime(2008,1,1)
+	Fromdate=pd.datetime(2012,1,1)
 	Todate=pd.datetime.today()
 	Trange=pd.date_range(Fromdate,Todate)
 	Trange=[T.date() for T in Trange if T.weekday()<=4]
