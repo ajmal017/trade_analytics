@@ -15,8 +15,12 @@ from utility import maintenance as mnt
 import logging
 logger = logging.getLogger(__name__)
 
-def GetFeature(Symbolids,Trange=[T.date() for T in pd.date_range(pd.datetime(2002,1,1),pd.datetime.today()) if T.weekday()<=4]):
-	if type(Symbolids)!=list or type(Symbolids)!=tuple:
+@mnt.logperf(__name__,printit=True)
+def GetFeature(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetime(2002,1,1),pd.datetime.today()) if T.weekday()<=4]):
+	if Symbolids==None:
+		Symbolids=stkmd.Stockmeta.objects.all().values_list('id',flat=True)
+
+	if type(Symbolids)!=list and type(Symbolids)!=tuple:
 		Symbolids=list((Symbolids))
 
 	df1=pd.DataFrame(list( ftmd.FeaturesData.objects.filter(Symbol__id__in=Symbolids,T__in=Trange).values('T','Featuredata') ) )

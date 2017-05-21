@@ -284,6 +284,10 @@ LOGGING = {
             'handlers': ['console','debugfile','errorfile'],
             'propagate': True,
         },
+        'django-extensions': {
+            'handlers': ['console','debugfile','errorfile'],
+            'propagate': True,
+        },
     }
 
 }
