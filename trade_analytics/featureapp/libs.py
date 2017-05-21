@@ -10,9 +10,10 @@ import featureapp.models as ftmd
 import stockapp.models as stkmd
 import dataapp.models as dtamd
 import dataapp.libs as dtalibs
-
-
-
+import functools
+from utility import maintenance as mnt
+import logging
+logger = logging.getLogger(__name__)
 
 def GetFeature(Symbolids,Trange=[T.date() for T in pd.date_range(pd.datetime(2002,1,1),pd.datetime.today()) if T.weekday()<=4]):
 	if type(Symbolids)!=list or type(Symbolids)!=tuple:
@@ -81,6 +82,7 @@ class registerfeature(object):
 
 		self.registry[self.name]={'doc':self.doc}
 		
+		@functools.wraps(func)
 		def func2(*args,**kwargs):
 			
 
@@ -103,6 +105,8 @@ class registerfeature(object):
 		
 		return func2
 
+
+
 class featuremodel(object):
 
 
@@ -115,10 +119,21 @@ class featuremodel(object):
 		self.Todate=Trange[-1]
 		self.stk=stkmd.Stockmeta.objects.get(id=Symbolid)
 
+		self.preprocessing()
+		self.stockTrange=set(self.df.index)
+		self.Trange=[T for T in self.Trange if T in self.stockTrange]
+
 		self.featcache={}
+
+	def __del__(self):
+		if hasattr(self,'df'):
+			del df
 
 	def GetStockData(self,*args,**kwargs):
 		return dtalibs.GetStockData(*args,**kwargs)
+
+	
+
 	def addindicators(self,*args,**kwargs):
 		return dtalibs.addindicators(*args,**kwargs)
 
@@ -161,30 +176,42 @@ class featuremodel(object):
 				ftmd.FeaturesMeta.objects.filter(Featurelabel=ft).delete()
 
 
+
+
+	@mnt.logexception(__name__,appendmsg='featuremodel',printit=True)
+	@mnt.logperf(__name__,appendmsg='featuremodel',printit=True)
+	def computefeature(self,ft,T):
+		return self.getfeaturefunc(ft)(T)
+
 	def computeall(self,skipdone=True):
 		featurelist=self.getfeaturelist()	
 		# print featurelist
 		self.ComputedFeatures={}
 		for ft in featurelist:
-			self.ComputedFeatures[ft]={}
-			for T in self.Trange:
-				self.ComputedFeatures[ft][T]=self.getfeaturefunc(ft)(T)
+			self.ComputedFeatures[ft]=self.computefeature(ft,self.Trange)
 
 		print "Done compute"
 
 		return self.ComputedFeatures
 	
 
+	def postprocessing(self):
+		self.df = self.df.where((pd.notnull(self.df)), None)
+		for cc in self.df.columns:
+			if type(self.df[cc].iloc[-1])==list or type(self.df[cc].iloc[-1])==tuple  or type(self.df[cc].iloc[-1])==dict:
+				self.df[cc]=self.df[cc].apply(lambda x: mnt.replaceNaN2None(x))
+				
 		
+	@mnt.logperf(__name__,appendmsg='saveallfeatures',printit=True)
+	def saveall(self,mode='rerun'):
+		self.postprocessing()
 
-	def saveall(self):
 
 		for T in self.Trange:
 			if ftmd.FeaturesData.objects.filter(Symbol=self.stk,T=T).exists():
 				featdata=ftmd.FeaturesData.objects.get(Symbol=self.stk,T=T)
 			else:
 				featdata=ftmd.FeaturesData(Symbol=self.stk,T=T)
-				featdata.save()
 
 			for ft in self.ComputedFeatures.keys():
 				v=self.ComputedFeatures[ft][T]

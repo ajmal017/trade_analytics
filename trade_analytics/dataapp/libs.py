@@ -10,10 +10,12 @@ import time
 import pdb
 from talib import abstract
 import numpy as np
+from utility import maintenance as mnt
 
 import logging
-logger = logging.getLogger(__name__)
+logger=logging.getLogger(__name__)
 
+import time
 
 def StockDataFrame_validate(df,columns=['Close','Open','High','Low','Volume']):
 	for cc in columns:
@@ -72,6 +74,7 @@ def StockDataFrame_sanitize(df,standardize=False):
 
 	return df
 
+@mnt.logperf(__name__,printit=True)
 def addindicators(df,cols):
 	inputs = {
     'open': df['Open'].values,
@@ -104,6 +107,7 @@ def addindicators(df,cols):
 	return df
 
 
+@mnt.logperf(__name__,printit=True)
 def GetStockData(Symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None):
 	if type(Symbolids)==list:
 		Symbolids=list(Symbolids)
@@ -127,10 +131,8 @@ def GetStockData(Symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datet
 		sqlquery="SELECT * FROM dataapp_stockprice as dsp WHERE dsp.\"Symbol_id\" IN %(ids)s AND dsp.\"Date\" BETWEEN '%(fromdate)s' AND '%(todate)s';"
 		sqlQ=sqlquery%{'ids':str(tuple(Symbolids)),'fromdate':Fromdate.strftime("%Y-%m-%d"),'todate':Todate.strftime("%Y-%m-%d")}
 
-	starttime=time.time()
 	df=pd.read_sql(sqlQ,connections[dtamd.Stockprice._DATABASE])
 	df=StockDataFrame_sanitize(df,standardize=standardize)
-	print " Time for GetStockData = ",time.time()-starttime
 
 
 	if format=='list':
@@ -143,7 +145,6 @@ def GetStockData(Symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datet
 		return L
 
 	elif format=='dict':
-		starttime=time.time()
 		D={}
 		for symbid in Symbolids:
 			dp=df[df['Symbol_id']==symbid].copy()
