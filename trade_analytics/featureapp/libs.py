@@ -13,9 +13,9 @@ import dataapp.libs as dtalibs
 import functools
 from utility import maintenance as mnt
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('debug')
 
-@mnt.logperf(__name__,printit=True)
+@mnt.logperf('debug',printit=True)
 def GetFeature(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetime(2002,1,1),pd.datetime.today()) if T.weekday()<=4]):
 	if Symbolids==None:
 		Symbolids=stkmd.Stockmeta.objects.all().values_list('id',flat=True)
@@ -23,14 +23,20 @@ def GetFeature(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetim
 	if type(Symbolids)!=list and type(Symbolids)!=tuple:
 		Symbolids=list((Symbolids))
 
-	df1=pd.DataFrame(list( ftmd.FeaturesData.objects.filter(Symbol__id__in=Symbolids,T__in=Trange).values('T','Featuredata') ) )
+	df1=pd.DataFrame(list( ftmd.FeaturesData.objects.filter(Symbol__id__in=Symbolids,T__in=Trange).values('T','Symbol__id','Symbol__Symbol','Featuredata') ) )
 
-	df2=pd.DataFrame(df1['Featuredata'].tolist())
+	if 'Featuredata' in df1.columns:
+		df2=pd.DataFrame(df1['Featuredata'].tolist())
+	else:
+		df2=pd.DataFrame()
+
 	df3=pd.concat([df1, df2], axis=1)
 	del df1
 	del df2
 	df3.index=df3['T'].copy()
-	df3.drop(['Featuredata','T'],axis=1,inplace=True)
+	if 'Featuredata' in df3.columns:
+		df3.drop(['Featuredata'],axis=1,inplace=True)
+
 	df3.sort_index(inplace=True)
 	
 	
@@ -40,7 +46,7 @@ def GetFeature(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetim
 
 class registerfeature(object):
 	
-	def __init__(self,filename=None,category=None,returntype=None,query=True,operators=None,null=False,cache=False):
+	def __init__(self,filename=None,category=None,required=[],returntype=None,query=True,operators=None,null=False,cache=False):
 		
 		self.category=category
 		self.query=query
@@ -131,7 +137,7 @@ class featuremodel(object):
 
 	def __del__(self):
 		if hasattr(self,'df'):
-			del df
+			del self.df
 
 	def GetStockData(self,*args,**kwargs):
 		return dtalibs.GetStockData(*args,**kwargs)
@@ -182,52 +188,53 @@ class featuremodel(object):
 
 
 
-	@mnt.logexception(__name__,appendmsg='featuremodel',printit=True)
-	@mnt.logperf(__name__,appendmsg='featuremodel',printit=True)
+	@mnt.logexception('debug',appendmsg='featuremodel',printit=True)
+	@mnt.logperf('debug',appendmsg='featuremodel',printit=True)
 	def computefeature(self,ft,T):
 		return self.getfeaturefunc(ft)(T)
 
 	def computeall(self,skipdone=True):
 		featurelist=self.getfeaturelist()	
 		# print featurelist
-		self.ComputedFeatures={}
 		for ft in featurelist:
-			self.ComputedFeatures[ft]=self.computefeature(ft,self.Trange)
+			self.computefeature(ft,self.Trange)
 
 		print "Done compute"
 
-		return self.ComputedFeatures
 	
 
 	def postprocessing(self):
 		self.df = self.df.where((pd.notnull(self.df)), None)
 		for cc in self.df.columns:
-			if type(self.df[cc].iloc[-1])==list or type(self.df[cc].iloc[-1])==tuple  or type(self.df[cc].iloc[-1])==dict:
-				self.df[cc]=self.df[cc].apply(lambda x: mnt.replaceNaN2None(x))
-				
+			if ftmd.FeaturesMeta.objects.filter(Featurelabel=cc).exists():
+				rettype=ftmd.FeaturesMeta.objects.get(Featurelabel=cc).Returntype
+				if rettype=='json':
+					self.df[cc]=self.df[cc].apply(lambda x: mnt.replaceNaN2None(x))
+				else:
+					self.df[cc]=self.df[cc].astype(eval(rettype))
+
+			elif cc in ['Close','Open','High','Low']:
+				self.df[cc]=self.df[cc].astype(float)				
+
 		
-	@mnt.logperf(__name__,appendmsg='saveallfeatures',printit=True)
+	@mnt.logperf('debug',appendmsg='saveallfeatures',printit=True)
 	def saveall(self,mode='rerun'):
 		self.postprocessing()
 
+		if mode=='rerun':
+			ftmd.FeaturesData.objects.filter(Symbol=self.stk,T__in=self.Trange).delete()
 
-		for T in self.Trange:
-			if ftmd.FeaturesData.objects.filter(Symbol=self.stk,T=T).exists():
-				featdata=ftmd.FeaturesData.objects.get(Symbol=self.stk,T=T)
-			else:
+		featurelist=self.getfeaturelist()
+		for Tind in self.df.index:
+			if mode=='rerun':
 				featdata=ftmd.FeaturesData(Symbol=self.stk,T=T)
 
-			for ft in self.ComputedFeatures.keys():
-				v=self.ComputedFeatures[ft][T]
-				try:
-					if pd.isnull(v) :
-						featdata.Featuredata[ft]=None
-					else:
-						featdata.Featuredata[ft]=v
-				except:
-					print type(v)
+			for ft in featurelist:
+				featdata.Featuredata[ft]=mnt.replaceNaN2None( self.df.loc[Tind,ft] )
 
 			featdata.save()
+
+
 		print "Done save"
 
 	def chartfeatures(self,addpricecols=(),addfeatcols=(),ip=5558):

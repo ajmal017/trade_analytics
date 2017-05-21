@@ -2,6 +2,7 @@ import time
 import functools
 import logging
 import pandas as pd
+import sys,traceback
 
 def replaceNaN2None(x):
 	if type(x)==list:
@@ -39,7 +40,7 @@ class logperf(object):
 			starttime=time.clock()
 			c=func(*args,**kwargs)
 			t=time.clock()-starttime
-			msg="TIMING : "+func.__name__+str(t)+" on "+time.strftime("%Y-%m-%d %I:%M:%S")+" with args: (%s,%s)"%(args,kwargs)+" "+self.appendmsg 
+			msg="TIMING : "+func.__name__+" time = "+str(t)+" on "+time.strftime("%Y-%m-%d %I:%M:%S")+" with args: (%s,%s)"%(str(args)[0:100],str(kwargs)[0:100])+" "+self.appendmsg 
 			self.logger.info(msg)
 			if self.printit:
 				print msg
@@ -63,7 +64,23 @@ class logexception(object):
 				c=func(*args,**kwargs)
 				return c
 			except Exception as ex:
-				msg="EXCEPTION : "+func.__name__+" on "+time.strftime("%Y-%m-%d %I:%M:%S")+" with args: (%s,%s)"%(args,kwargs)+" "+self.appendmsg +" "+ex.__name__+" "+str(ex)
+				exc_type, exc_value, exc_traceback = sys.exc_info()
+				traceback.print_tb(exc_traceback, limit=1, file=sys.stdout)
+				traceback.print_exception(exc_type, exc_value, exc_traceback,limit=2, file=sys.stdout)
+				traceback.print_exc()
+				formatted_lines = traceback.format_exc().splitlines()
+				print formatted_lines[0]
+				print formatted_lines[-1]
+				print "*** format_exception:"
+				print repr(traceback.format_exception(exc_type, exc_value,
+													  exc_traceback))
+				print "*** extract_tb:"
+				print repr(traceback.extract_tb(exc_traceback))
+				print "*** format_tb:"
+				print repr(traceback.format_tb(exc_traceback))
+				print "*** tb_lineno:", exc_traceback.tb_lineno
+
+				msg="EXCEPTION : "+func.__name__+" on "+time.strftime("%Y-%m-%d %I:%M:%S")+" with args: (%s,%s)"%(str(args)[0:100],str(kwargs)[0:100])+" "+self.appendmsg +" "+ex.__name__+" "+str(ex)
 				self.logger.error(msg)
 				self.logger.exception(msg)
 				if self.printit:

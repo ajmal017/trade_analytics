@@ -38,7 +38,7 @@ class features(featuremodel):
 			
 
 
-	@registerfeature(filename=filename,category='Momentum',required=[],returntype='json',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@registerfeature(filename=filename,category='Momentum',required=[],returntype=json,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def SMALowPoly2win4Fit(self,Tvec):
 		"""
 		HasCherries
@@ -61,7 +61,7 @@ class features(featuremodel):
 
 		self.df.loc[Tvec,'SMALowPoly2win4Fit'] 
 		
-	@registerfeature(filename=filename,category='Momentum',required=[],returntype='json',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@registerfeature(filename=filename,category='Momentum',required=[],returntype=json,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def EMALowPoly2win4Fit(self,Tvec):
 		"""
 		HasCherries

@@ -14,7 +14,7 @@ import pandas as pd
 from django import db
 
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('debug')
 
 def computefeatuers(stkid,Trange):
 	featurecodes=ftmd.FeatureComputeCode.objects.all()
@@ -23,6 +23,8 @@ def computefeatuers(stkid,Trange):
 		CC=computeclass(stkid,Trange)
 		CC.computeall(skipdone=True)
 		CC.saveall()
+		del CC
+
 
 
 def processfeatQ(Q):
@@ -78,7 +80,12 @@ def processfeatures(rerun=False):
 
 	print "Buildoing compute Q"
 	INQ=mp.Queue()
+	i=0
 	for stk in stocks:
+		if i<100:
+			i=i+1
+			continue
+
 		print " adding to Q ",stk.id,"\r,"
 		INQ.put((stk.id,Trange))
 		time.sleep(0.01)

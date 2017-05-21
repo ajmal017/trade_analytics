@@ -259,7 +259,7 @@ LOGGING = {
 
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'ERROR',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
@@ -284,8 +284,9 @@ LOGGING = {
             'handlers': ['console','debugfile','errorfile'],
             'propagate': True,
         },
-        'django-extensions': {
+        'debug': {
             'handlers': ['console','debugfile','errorfile'],
+            'level': 'DEBUG',
             'propagate': True,
         },
     }
