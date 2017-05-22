@@ -15,15 +15,19 @@ from utility import maintenance as mnt
 import logging
 logger = logging.getLogger('debug')
 
-@mnt.logperf('debug',printit=True)
-def GetFeature(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetime(2002,1,1),pd.datetime.today()) if T.weekday()<=4]):
-	if Symbolids==None:
-		Symbolids=stkmd.Stockmeta.objects.all().values_list('id',flat=True)
 
-	if type(Symbolids)!=list and type(Symbolids)!=tuple:
-		Symbolids=list((Symbolids))
+def standardizefeaturedata(Qrysets):
+	df1=pd.DataFrame(list( Qrysets ) )
+	df1.rename(columns={'Symbol__id':'Symbolid','Symbol__Symbol':'Symbol'},inplace=True)
+	df1['T']=df1['T'].apply(lambda x: pd.to_datetime(x))
+	for cc in df1.columns:
+		if ftmd.FeaturesMeta.objects.filter(Featurelabel=cc).exists():
+			rettype=ftmd.FeaturesMeta.objects.get(Featurelabel=cc).Returntype
+			if rettype!='json':
+				df1[cc]=df1[cc].astype(eval(rettype))
 
-	df1=pd.DataFrame(list( ftmd.FeaturesData.objects.filter(Symbol__id__in=Symbolids,T__in=Trange).values('T','Symbol__id','Symbol__Symbol','Featuredata') ) )
+		elif cc in ['Close','Open','High','Low']:
+			df1[cc]=df1[cc].astype(float)
 
 	if 'Featuredata' in df1.columns:
 		df2=pd.DataFrame(df1['Featuredata'].tolist())
@@ -34,13 +38,35 @@ def GetFeature(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetim
 	del df1
 	del df2
 	df3.index=df3['T'].copy()
+	
 	if 'Featuredata' in df3.columns:
 		df3.drop(['Featuredata'],axis=1,inplace=True)
 
 	df3.sort_index(inplace=True)
-	
-	
+
 	return df3
+
+@mnt.logperf('debug',printit=True)
+def GetFeature(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetime(2002,1,1),pd.datetime.today()) if T.weekday()<=4]):
+	if Symbolids==None:
+		Symbolids=stkmd.Stockmeta.objects.all().values_list('id',flat=True)
+
+	if type(Symbolids)!=list and type(Symbolids)!=tuple:
+		Symbolids=list((Symbolids))
+
+	Qrysets=ftmd.FeaturesData.objects.filter(Symbol__id__in=Symbolids,T__in=Trange).values('T','Symbol__id','Symbol__Symbol','Featuredata')
+	return standardizefeaturedata(Qrysets)
+	
+	
+def GetFeature_iterator(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetime(2002,1,1),pd.datetime.today()) if T.weekday()<=4],chunksize=10000):
+	if Symbolids==None:
+		Symbolids=stkmd.Stockmeta.objects.all().values_list('id',flat=True)
+
+	if type(Symbolids)!=list and type(Symbolids)!=tuple:
+		Symbolids=list((Symbolids))
+
+	for sid in Symbolids:
+		yield GetFeature(Symbolids=[sid],Trange=Trange)
 
 
 
@@ -227,7 +253,7 @@ class featuremodel(object):
 		featurelist=self.getfeaturelist()
 		for Tind in self.df.index:
 			if mode=='rerun':
-				featdata=ftmd.FeaturesData(Symbol=self.stk,T=T)
+				featdata=ftmd.FeaturesData(Symbol=self.stk,T=Tind)
 
 			for ft in featurelist:
 				featdata.Featuredata[ft]=mnt.replaceNaN2None( self.df.loc[Tind,ft] )

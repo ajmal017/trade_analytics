@@ -88,16 +88,24 @@ def addindicators(df,cols):
 			try:
 				if cc['name']=='CCI':
 					df[cc['colname']]=abstract.CCI(inputs, timeperiod=cc['timeperiod'])
+					df[cc['colname']]=df[cc['colname']].astype(float)
 
 				if cc['name']=='SMA':
 					df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).mean()
+					df[cc['colname']]=df[cc['colname']].astype(float)
+
 				if cc['name']=='SMAstd':
 					df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).std()
 			
 				if cc['name']=='EMA':
 					df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).mean()
+					df[cc['colname']]=df[cc['colname']].astype(float)
+
 				if cc['name']=='EMAstd':
 					df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).std(bias=False)
+					df[cc['colname']]=df[cc['colname']].astype(float)
+
+					
 			except Exception as e:
 				df[cc['colname']]=np.nan
 				print "error adding indicator ",cc['colname']
