@@ -17,8 +17,13 @@ logger = logging.getLogger('debug')
 
 
 def standardizefeaturedata(Qrysets):
+	if Qrysets.count()==0:
+		return pd.DataFrame()
+
 	df1=pd.DataFrame(list( Qrysets ) )
 	df1.rename(columns={'Symbol__id':'Symbolid','Symbol__Symbol':'Symbol'},inplace=True)
+	df1['Symbol']=df1['Symbol'].astype(str)
+
 	df1['T']=df1['T'].apply(lambda x: pd.to_datetime(x))
 	for cc in df1.columns:
 		if ftmd.FeaturesMeta.objects.filter(Featurelabel=cc).exists():
@@ -42,6 +47,7 @@ def standardizefeaturedata(Qrysets):
 	if 'Featuredata' in df3.columns:
 		df3.drop(['Featuredata'],axis=1,inplace=True)
 
+	df3 = df3.where((pd.notnull(df3)), np.nan)
 	df3.sort_index(inplace=True)
 
 	return df3
@@ -58,7 +64,7 @@ def GetFeature(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetim
 	return standardizefeaturedata(Qrysets)
 	
 	
-def GetFeature_iterator(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetime(2002,1,1),pd.datetime.today()) if T.weekday()<=4],chunksize=10000):
+def GetFeature_iterator(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetime(2002,1,1),pd.datetime.today()) if T.weekday()<=4] ):
 	if Symbolids==None:
 		Symbolids=stkmd.Stockmeta.objects.all().values_list('id',flat=True)
 
