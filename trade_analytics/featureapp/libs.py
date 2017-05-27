@@ -24,7 +24,8 @@ def standardizefeaturedata(Qrysets):
 	df1.rename(columns={'Symbol__id':'Symbolid','Symbol__Symbol':'Symbol'},inplace=True)
 	df1['Symbol']=df1['Symbol'].astype(str)
 
-	df1['T']=df1['T'].apply(lambda x: pd.to_datetime(x))
+	df1['T']=df1['T'].apply(lambda x: pd.to_datetime(x).date())
+	
 	for cc in df1.columns:
 		if ftmd.FeaturesMeta.objects.filter(Featurelabel=cc).exists():
 			rettype=ftmd.FeaturesMeta.objects.get(Featurelabel=cc).Returntype
@@ -72,7 +73,7 @@ def GetFeature_iterator(Symbolids=None,Trange=[T.date() for T in pd.date_range(p
 		Symbolids=list((Symbolids))
 
 	for sid in Symbolids:
-		yield GetFeature(Symbolids=[sid],Trange=Trange)
+		yield ( stkmd.Stockmeta.objects.get(id=sid),GetFeature(Symbolids=[sid],Trange=Trange) )
 
 
 
