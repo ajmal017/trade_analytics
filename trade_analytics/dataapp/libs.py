@@ -13,7 +13,7 @@ import numpy as np
 from utility import maintenance as mnt
 
 import logging
-logger=logging.getLogger(__name__)
+logger=logging.getLogger('debug')
 
 import time
 
@@ -74,7 +74,7 @@ def StockDataFrame_sanitize(df,standardize=False):
 
 	return df
 
-@mnt.logperf(__name__,printit=True)
+@mnt.logperf('debug',printit=True)
 def addindicators(df,cols):
 	inputs = {
     'open': df['Open'].values,
@@ -90,21 +90,22 @@ def addindicators(df,cols):
 					df[cc['colname']]=abstract.CCI(inputs, timeperiod=cc['timeperiod'])
 					df[cc['colname']]=df[cc['colname']].astype(float)
 
-				if cc['name']=='SMA':
+				elif cc['name']=='SMA':
 					df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).mean()
 					df[cc['colname']]=df[cc['colname']].astype(float)
 
-				if cc['name']=='SMAstd':
+				elif cc['name']=='SMAstd':
 					df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).std()
 			
-				if cc['name']=='EMA':
+				elif cc['name']=='EMA':
 					df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).mean()
 					df[cc['colname']]=df[cc['colname']].astype(float)
 
-				if cc['name']=='EMAstd':
+				elif cc['name']=='EMAstd':
 					df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).std(bias=False)
 					df[cc['colname']]=df[cc['colname']].astype(float)
-
+				else:
+					print "Indicator not available"
 					
 			except Exception as e:
 				df[cc['colname']]=np.nan
@@ -115,7 +116,7 @@ def addindicators(df,cols):
 	return df
 
 
-@mnt.logperf(__name__,printit=True)
+@mnt.logperf('debug',printit=True)
 def GetStockData(Symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None):
 	if type(Symbolids)==list:
 		Symbolids=list(Symbolids)

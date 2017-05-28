@@ -100,6 +100,14 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'trade_analytics.wsgi.application'
 
+
+## --------------------- BIGDATA_DIR ---------------------------------------------------------------##
+## ---------------------------------------------------------------------------------------------##
+
+BIGDATA_DIR=os.path.join(BASE_DIR,'BIGDATA')
+if os.path.isdir(BIGDATA_DIR)==False:
+    os.mkdir(BIGDATA_DIR)
+
 ## --------------------- DATABSE ---------------------------------------------------------------##
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases

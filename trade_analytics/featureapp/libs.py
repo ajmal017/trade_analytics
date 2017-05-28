@@ -54,7 +54,7 @@ def standardizefeaturedata(Qrysets):
 	return df3
 
 @mnt.logperf('debug',printit=True)
-def GetFeature(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetime(2002,1,1),pd.datetime.today()) if T.weekday()<=4]):
+def GetFeature(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetime(2002,1,1),pd.datetime.today()) if T.weekday()<=4],dfmain=None):
 	if Symbolids==None:
 		Symbolids=stkmd.Stockmeta.objects.all().values_list('id',flat=True)
 
@@ -62,8 +62,11 @@ def GetFeature(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetim
 		Symbolids=list((Symbolids))
 
 	Qrysets=ftmd.FeaturesData.objects.filter(Symbol__id__in=Symbolids,T__in=Trange).values('T','Symbol__id','Symbol__Symbol','Featuredata')
-	return standardizefeaturedata(Qrysets)
-	
+	if dfmain == None:
+		return standardizefeaturedata(Qrysets)
+	else:
+		df=standardizefeaturedata(Qrysets)
+		return pd.concat([dfmain, df], axis=1, join_axes=[dfmain.index])
 	
 def GetFeature_iterator(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetime(2002,1,1),pd.datetime.today()) if T.weekday()<=4] ):
 	if Symbolids==None:
