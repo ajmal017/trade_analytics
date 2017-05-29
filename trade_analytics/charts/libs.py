@@ -26,7 +26,7 @@ import time
 
 
 
-def MakeChart_1(df,pricecols,querycols,featcols):
+def MakeChart_1(dF,pricecols,querycols,featcols):
 	"""
 	pricecols are additional columns that have same range as close
 	querycols are true/false snapped to close price
@@ -42,7 +42,7 @@ def MakeChart_1(df,pricecols,querycols,featcols):
 	"""
 #     df=dF[T0:T].copy()
 #     dfperf=dF[T:(T+pd.DateOffset(360)).date()].copy()
-	
+	df=dF.copy()
 	df['datenum']=date2num(df.index)
 	autodate=AutoDateLocator()
 	mondays = WeekdayLocator(MONDAY)        # major ticks on the mondays
@@ -55,6 +55,7 @@ def MakeChart_1(df,pricecols,querycols,featcols):
 #     plt.figure(num=None, figsize=(30, 10), dpi=80, facecolor='w', edgecolor='k')
 #     fig.subplots_adjust(bottom=0.2)
 	ax1 = plt.subplot2grid((2+Nsubplots, 1), (0, 0), rowspan=2)
+	
 	axft=[]
 	for i in range(Nsubplots):
 		axft.append(plt.subplot2grid((2+Nsubplots, 1), (2+i, 0),sharex=ax1))
@@ -94,7 +95,17 @@ def MakeChart_1(df,pricecols,querycols,featcols):
 	ax12 = ax1.twinx()
 	ax12.set_ylim(df['Low'].min()*0.9,df['High'].max()*1.1)
 	ax12.grid()
-	
+
+	T0=df.index[0]
+	TF=df.index[-1]
+	# if 'Symbol' in df.columns:
+	# 	Symbol=df['Symbol'].iloc[0]
+	# 	ax12.set_title(Symbol+T0.strftime('%Y-%m-%d')+" "+TF.strftime('%Y-%m-%d'))
+	# else:
+	# 	ax12.set_title(T0.strftime('%Y-%m-%d')+" "+TF.strftime('%Y-%m-%d'))
+
+
+
 	plt.setp(ax1.get_xticklabels(), rotation=45, horizontalalignment='left')
 		
 	for i in range(len(featcols)):
@@ -127,6 +138,17 @@ def MakeChart_1(df,pricecols,querycols,featcols):
 		else:
 			axft[i].get_xaxis().set_visible(False)
 
+
+	if 'Symbol' in df.columns:
+		Symbol=df['Symbol'].values[0][0]
+		txt=Symbol+"    "+T0.strftime('%Y-%m-%d')+"   "+TF.strftime('%Y-%m-%d')
+	else:
+		txt=T0.strftime('%Y-%m-%d')+"   "+TF.strftime('%Y-%m-%d')
+
+	ax12.text(0.85, 0.93, txt,
+        verticalalignment='bottom', horizontalalignment='right',
+        transform=ax12.transAxes,
+        color='black', fontsize=15,bbox={'facecolor':'red', 'alpha':0.5, 'pad':10})
 
 	figfile = StringIO()
 	fig.savefig(figfile,bbox_inches='tight',format='png')
@@ -173,4 +195,4 @@ def CurrentByFutureChart_bydb(T0,TF,Symbol,indicatorlist=(),pricecols=(),queryco
 
 	img1=MakeChart_1(df[T0:TF],pricecols,querycols,featcols)
 	img2=MakeChart_1(df[TF:(TF+pd.DateOffset(180)).date()],pricecols,querycols,featcols)
-	return {'T0':T0,'TF':TF,'image':[img1,img2]}
+	return {'T0':T0,'TF':TF,'image':{'imageLeft':img1,'imageRight':img2} } 

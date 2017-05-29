@@ -43,12 +43,36 @@ import os
 
 pd.set_option('max_colwidth', 150)
 
+context = zmq.Context()
+socket = context.socket(zmq.REP)
+for websocketip in range(1000,2000):
+	try:
+		socket.bind("tcp://*:%s"%websocketip)
+		break
+	except:
+		print websocketip," port already in use"
 
+socket.close()
 
 context = zmq.Context()
 socket = context.socket(zmq.REP)
-socket.bind("tcp://*:6662")
-websocketip=2126
+for ip in range(5000,9000):
+	try:
+		socket.bind("tcp://*:%s"%ip)
+		break
+	except:
+		print ip," port already in use"
+
+print "---------------------------------------------------------"
+print "---------------------------------------------------------"
+print "---------------------------------------------------------"
+print "connect to port = ",ip
+print "---------------------------------------------------------"
+print "---------------------------------------------------------"
+print "---------------------------------------------------------"
+
+
+
 
 
 
@@ -62,7 +86,7 @@ def webinterface(entries_list,indicatorlist,pricecols,querycols,featcols,ip):
 	
 	class IndexHandler(web.RequestHandler):
 		def get(self):
-			self.render('df_charter.html',ip=ip)
+			self.render('genlist_charter.html',ip=ip)
 
 	class SocketHandler(websocket.WebSocketHandler):
 		def open(self):
@@ -115,7 +139,7 @@ def webinterface(entries_list,indicatorlist,pricecols,querycols,featcols,ip):
 
 		def showlogs(self):
 			entry=self.curr_state
-			logs=pd.DataFrame( list( dtscmd.Label.objects.filter(Symbol=entry['Symbol'],T__range=[entry['T0'],entry['TF']]).values('id','Symbol','window','T','label') ) )
+			logs=pd.DataFrame( list( dtscmd.Label.objects.filter(Symbol=entry['Symbol'],T__range=[entry['T0'],entry['TF']]).order_by('-T').values('id','Symbol','window','T','label') ) )
 			if not logs.empty:
 				logs['idstr']=logs['id'].apply(lambda x: str(x))
 				logs['delete']="<input type='submit' id='del_"+logs['idstr']+"' value='Delete' onclick=\"return deletelog('"+ logs['idstr'] +"');\" >"
@@ -124,7 +148,8 @@ def webinterface(entries_list,indicatorlist,pricecols,querycols,featcols,ip):
 				self.write_message(json.dumps({'logs': '' }))
 
 		def AddChartSequence(self):
-			
+			self.chartscompute.clearQs()
+
 			# first add N entries
 			if self.dir=='next':
 				k=self.curr_entry
@@ -134,19 +159,19 @@ def webinterface(entries_list,indicatorlist,pricecols,querycols,featcols,ip):
 						Symbol=entry['Symbol']
 						T0=entry['T0']
 						TF=entry['TF']
-						print Symbol,T0,TF
+						print "next ",Symbol,T0,TF
 						self.chartscompute.append2Q({'args':(T0,TF,Symbol)})
 
 
 			if self.dir=='prev':
 				k=self.curr_entry
 				for i in range(10):
-					if k-i>0:
+					if k-i>=0:
 						entry=self.entries[ k-i ]
 						Symbol=entry['Symbol']
 						T0=entry['T0']
 						TF=entry['TF']
-						print Symbol,T0,TF
+						print "prev ",Symbol,T0,TF
 						self.chartscompute.append2Q({'args':(T0,TF,Symbol)})
 
 			if self.dir =='right':
@@ -207,7 +232,7 @@ def webinterface(entries_list,indicatorlist,pricecols,querycols,featcols,ip):
 					
 					self.dir='next'
 					self.curr_state=self.entries[ self.curr_entry ]
-
+					print self.curr_entry,self.curr_state
 
 				if message['cmnd']=='preventry':
 					if self.dir !='prev':
@@ -219,7 +244,7 @@ def webinterface(entries_list,indicatorlist,pricecols,querycols,featcols,ip):
 
 					self.dir='prev'
 					self.curr_state=self.entries[ self.curr_entry ]
-
+					print self.curr_entry,self.curr_state
 
 			if message.get('para',None):
 				if message['para'].get('moveby',None):
@@ -242,10 +267,10 @@ def webinterface(entries_list,indicatorlist,pricecols,querycols,featcols,ip):
 
 
 				elif message['para'].get('addlabel',None):
-					if not dtscmd.Label.objects.filter(label=message['para']['addlabel']['label'],Symbol=self.curr_state['Symbol'],T=message['para']['addlabel']['T'],window=self.window).exists():
-						resp=dtscmd.Label(label=message['para']['addlabel']['label'],Symbol=self.curr_state['Symbol'],T=message['para']['addlabel']['T'],window=self.window)	
+					if not dtscmd.Label.objects.filter(label=message['para']['addlabel']['label'],Symbol=self.curr_state['Symbol'],T=self.curr_state['TF'],window=self.window).exists():
+						resp=dtscmd.Label(label=message['para']['addlabel']['label'],Symbol=self.curr_state['Symbol'],T=self.curr_state['TF'],window=self.window)	
 						resp.save()
-						self.write_message(json.dumps({'info': "recoreded "+message['para']['addlabel']['label'] }))                        
+						self.write_message(json.dumps({'info': "recoreded "+message['para']['addlabel']['label']+'for '+ self.curr_state['Symbol']+" " +self.curr_state['TF'].strftime('%Y-%m-%d') }))                        
 						self.showlogs()
 					return
 
@@ -282,8 +307,9 @@ def webinterface(entries_list,indicatorlist,pricecols,querycols,featcols,ip):
 		(r'/ws', SocketHandler),
 	])
 	server=httpserver.HTTPServer(app)
-	
 	server.listen(ip)
+
+
 	webbrowser.open('http://localhost:%s'%str(ip),new=2)
 	# tornado.ioloop.IOLoop.clear_instance()
 	# tornado.ioloop.IOLoop.instance().install()
@@ -330,7 +356,8 @@ def main():
 				socket.send("received dataframe")
 
 		except zmq.Again as e:
-			print e
+			# print e
+			e
 			print "#df charts = ",len(P),time.time(),"\r",
 		
 		delP=[]

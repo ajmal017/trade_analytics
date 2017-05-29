@@ -287,36 +287,39 @@ class MPconsumer(object):
         while True:
             try:
                 self.inQ.get_nowait()
+                self.in_counter=self.in_counter-1
             except Queue.Empty:
                 break
             
             time.sleep(0.1)
         
 
-        if self.usecache:  
-            while True:
-                self.updatecache()
-                stillrunning=False
-                for ev in self.RunFlags:
-                    if ev.is_set():
-                        stillrunning=True
-                if stillrunning==False:
-                    break
+        while self.out_counter<self.in_counter:
+            self.getQ()
+        # if self.usecache:  
+        #     while True:
+        #         self.updatecache()
+        #         stillrunning=False
+        #         for ev in self.RunFlags:
+        #             if ev.is_set():
+        #                 stillrunning=True
+        #         if stillrunning==False:
+        #             break
 
-                time.sleep(0.5)
-        else:           
-            while True:
-                try:
-                    self.outQ.get_nowait()
-                except Queue.Empty:
-                    stillrunning=False
-                    for ev in self.RunFlags:
-                        if ev.is_set():
-                            stillrunning=True
-                    if stillrunning==False:
-                        break
+        #         time.sleep(0.5)
+        # else:           
+        #     while True:
+        #         try:
+        #             self.outQ.get_nowait()
+        #         except Queue.Empty:
+        #             stillrunning=False
+        #             for ev in self.RunFlags:
+        #                 if ev.is_set():
+        #                     stillrunning=True
+        #             if stillrunning==False:
+        #                 break
 
-                time.sleep(0.2)
+        #         time.sleep(0.2)
 
         # self.out_counter=0
         # self.in_counter=0
@@ -328,6 +331,7 @@ class MPconsumer(object):
         print "consumers started"
         
     def stop(self):
+        self.clearQs()
         self.event.set()
         for p in self.P:
             p.join()

@@ -5,12 +5,12 @@
     <style>
     table {
         border-collapse: collapse;
-        width: 100%;
+   /*     width: 100%;*/
     }
 
     th, td {
         text-align: left;
-        padding: 8px;
+        padding: 5px;
     }
 
     tr:nth-child(even){background-color: #f2f2f2}
@@ -158,30 +158,36 @@
       <td>Move by (days):  <input type="number" name="moveby" id="moveby" value="30">  <input type="submit" id="setshift" value="set shiftby"> </td>
     </tr>
 
+
+    <tr>
+      <td>
+      T0=<input type="text" id="T0" value="" readonly="readonly" />
+      TF=<input type="text" id="TF" value="" readonly="readonly" />
+      Symbol=<input type="text" id="Symbol" value="" readonly="readonly" />
+      <input type="submit" id="preventry" value="Previous Entry">  
+      <input type="submit" id="nextentry" value="Next Entry"> 
+      </td>
+    </tr>
+
+    
     <tr>
     <td> 
         <table>
           <tr>
-            <td><img id="imageLeft" src="" /> </td> <td><img id="imageRight" src="" /> </td>
+            <td><img id="imageLeft" src=""  /> </td> 
+            <td><img id="imageRight" src="" /> </td>
           </tr>
         </table>
     
     </td>
     </tr>
 
+
     <tr>
-
-    TF=<input type="text" id="TF" value="" readonly="readonly" />
-    T0=<input type="text" id="T0" value="" readonly="readonly" />
-    Symbol=<input type="text" id="Symbol" value="" readonly="readonly" />
-
-    <br>
       <td>
           <div align="center" > 
             <input type="submit" id="moveleft" value="Move left"> 
-            <input type="submit" id="preventry" value="Previous Entry">  
-            <input type="submit" id="nextentry" value="Next Entry">
-            <input type="submit" id="moveright" value="Move right"> 
+            <input type="submit" id="moveright" value="Move right">
           </div> 
       </td>
     </tr>

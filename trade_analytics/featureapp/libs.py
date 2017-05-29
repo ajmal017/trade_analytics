@@ -62,7 +62,7 @@ def GetFeature(Symbolids=None,Trange=[T.date() for T in pd.date_range(pd.datetim
 		Symbolids=list((Symbolids))
 
 	Qrysets=ftmd.FeaturesData.objects.filter(Symbol__id__in=Symbolids,T__in=Trange).values('T','Symbol__id','Symbol__Symbol','Featuredata')
-	if dfmain == None:
+	if dfmain is None:
 		return standardizefeaturedata(Qrysets)
 	else:
 		df=standardizefeaturedata(Qrysets)
