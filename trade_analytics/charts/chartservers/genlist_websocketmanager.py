@@ -70,17 +70,18 @@ def webinterface(entries_list,indicatorlist,pricecols,querycols,featcols,ip):
 			self.window=360
 			self.moveby=30
 			self.entries=entries_list
+			self.entry_symbols=[ss['Symbol'] for ss in self.entries]
+			self.curr_entry=0
+			self.curr_state=self.entries[self.curr_entry]
 			self.paras={'window':360,'moveby':30}
-			self.imageQ=Queue.Queue()
-			self.plotQ=Queue.Queue()
 			# self.event=threading.Event()
 			# self.event.clear()
 			# self.thrd=threading.Thread(target=precomputecharts,args=(df,pricecols,querycols,featcols,self.event,self.imageQ,self.plotQ))
 			# self.thrd.start()
-			self.chartscompute=utprll.MPconsumer(3,chlibs.CurrentByFutureChart,usecache=True,constarg=(),constkwarg={'indicatorlist':indicatorlist,'pricecols':pricecols,'querycols':querycols,'featcols':featcols})
+			self.chartscompute=utprll.MPconsumer(3,chlibs.CurrentByFutureChart_bydb,usecache=True,constarg=(),constkwarg={'indicatorlist':indicatorlist,'pricecols':pricecols,'querycols':querycols,'featcols':featcols})
 			self.chartscompute.start()
 
-			self.dir='right'
+			self.dir='next'
 			self.chartsinQ=[]
 
 			labelslist=list( set(dtscmd.Label.objects.all().values_list('label',flat=True)) )
@@ -113,7 +114,8 @@ def webinterface(entries_list,indicatorlist,pricecols,querycols,featcols,ip):
 		# 	self.chartsinQ=[]
 
 		def showlogs(self):
-			logs=pd.DataFrame( list( dtscmd.Label.objects.filter(Symbol=df['Symbol'].iloc[0],T__range=[self.T0,self.TF]).values('id','Symbol','window','T','label') ) )
+			entry=self.curr_state
+			logs=pd.DataFrame( list( dtscmd.Label.objects.filter(Symbol=entry['Symbol'],T__range=[entry['T0'],entry['TF']]).values('id','Symbol','window','T','label') ) )
 			if not logs.empty:
 				logs['idstr']=logs['id'].apply(lambda x: str(x))
 				logs['delete']="<input type='submit' id='del_"+logs['idstr']+"' value='Delete' onclick=\"return deletelog('"+ logs['idstr'] +"');\" >"
@@ -122,30 +124,52 @@ def webinterface(entries_list,indicatorlist,pricecols,querycols,featcols,ip):
 				self.write_message(json.dumps({'logs': '' }))
 
 		def AddChartSequence(self):
-			N=30
-			T0=self.T0
-			TF=self.TF
+			
+			# first add N entries
+			if self.dir=='next':
+				k=self.curr_entry
+				for i in range(10):
+					if k+i<len(self.entries):
+						entry=self.entries[ k+i ]
+						Symbol=entry['Symbol']
+						T0=entry['T0']
+						TF=entry['TF']
+						print Symbol,T0,TF
+						self.chartscompute.append2Q({'args':(T0,TF,Symbol)})
 
-			for i in range(N):
-				print T0,TF
-				self.chartscompute.append2Q({'args':(T0,TF)})
 
-				# if (T0,TF) not in self.chartsinQ:
-				# 	print T0,TF
-				# 	self.plotQ.put({'T0':T0,'TF':TF})
-				# 	self.chartsinQ.append((T0,TF))
-				# 	time.sleep(0.1)
+			if self.dir=='prev':
+				k=self.curr_entry
+				for i in range(10):
+					if k-i>0:
+						entry=self.entries[ k-i ]
+						Symbol=entry['Symbol']
+						T0=entry['T0']
+						TF=entry['TF']
+						print Symbol,T0,TF
+						self.chartscompute.append2Q({'args':(T0,TF,Symbol)})
 
-				if self.dir =='right':
-					if TF>df.index[-1]:
-						break
+			if self.dir =='right':
+				TF=self.curr_state['TF']
+				T0=self.curr_state['T0']
+				Symbol=self.curr_state['Symbol']
+				for i in range(10):
+					self.chartscompute.append2Q({'args':(T0,TF,Symbol)})
 					TF=(TF+pd.DateOffset(self.moveby)).date()
 					T0=(TF-pd.DateOffset(self.window)).date()
-				if self.dir =='left':
+
+
+			if self.dir =='left':
+				TF=self.curr_state['TF']
+				T0=self.curr_state['T0']
+				Symbol=self.curr_state['Symbol']
+				for i in range(10):
+					self.chartscompute.append2Q({'args':(T0,TF,Symbol)})
 					TF=(TF-pd.DateOffset(self.moveby)).date()
 					T0=(TF-pd.DateOffset(self.window)).date()
-					if T0<df.index[0]:
-						break
+
+
+
 
 		def on_message(self, message):
 			message=json.loads(message)
@@ -154,21 +178,48 @@ def webinterface(entries_list,indicatorlist,pricecols,querycols,featcols,ip):
 			if 'cmnd' in message:
 				if message['cmnd']=='quit':
 					self.close()
+
+
 				if message['cmnd']=='moveright':
-					if self.dir=='left':
+					if self.dir!='right':
 						self.chartscompute.clearQs()
 
 					self.dir='right'
-					self.TF=(self.TF+pd.DateOffset(self.moveby)).date()
-					self.T0=(self.TF-pd.DateOffset(self.window)).date()
+					self.curr_state['TF']=(self.curr_state['TF']+pd.DateOffset(self.moveby)).date()
+					self.curr_state['T0']=(self.curr_state['TF']-pd.DateOffset(self.window)).date()
+
 
 				if message['cmnd']=='moveleft':
-					if self.dir=='right':
+					if self.dir!='left':
 						self.chartscompute.clearQs()
 
 					self.dir='left'
-					self.TF=(self.TF-pd.DateOffset(self.moveby)).date()
-					self.T0=(self.TF-pd.DateOffset(self.window)).date()
+					self.curr_state['TF']=(self.curr_state['TF']-pd.DateOffset(self.moveby)).date()
+					self.curr_state['T0']=(self.curr_state['TF']-pd.DateOffset(self.window)).date()
+
+				if message['cmnd']=='nextentry':
+					if self.dir !='next':
+						self.chartscompute.clearQs()
+
+					self.curr_entry=self.curr_entry+1
+					if self.curr_entry==len(self.entries):
+						self.curr_entry=len(self.entries)-1
+					
+					self.dir='next'
+					self.curr_state=self.entries[ self.curr_entry ]
+
+
+				if message['cmnd']=='preventry':
+					if self.dir !='prev':
+						self.chartscompute.clearQs()
+
+					self.curr_entry=self.curr_entry-1
+					if self.curr_entry==-1:
+						self.curr_entry=0
+
+					self.dir='prev'
+					self.curr_state=self.entries[ self.curr_entry ]
+
 
 			if message.get('para',None):
 				if message['para'].get('moveby',None):
@@ -177,33 +228,36 @@ def webinterface(entries_list,indicatorlist,pricecols,querycols,featcols,ip):
 					self.write_message(json.dumps({'info':"moveby set"}))
 					return 
 					
-				if message['para'].get('window',None):
+				elif message['para'].get('window',None):
 					self.window=int( message['para']['window'] )
 					self.chartscompute.clearQs()
 					self.T0=(self.TF-pd.DateOffset(self.window)).date()
 					self.write_message(json.dumps({'info':"window set"}))
 
-				if message['para'].get('newlabel',None):
+				elif message['para'].get('newlabel',None):
 					if dtscmd.Label.objects.filter(label=message['para']['newlabel']).exists()==False:
 						labelslist=list(set( list( dtscmd.Label.objects.all().values_list('label',flat=True) )+[message['para']['newlabel']] ))
 						self.write_message(json.dumps({'labelslist':labelslist}))
 						return
 
 
-				if message['para'].get('addlabel',None):
-					if not dtscmd.Label.objects.filter(label=message['para']['addlabel']['label'],Symbol=df['Symbol'].iloc[0],T=message['para']['addlabel']['T'],window=self.window).exists():
-						resp=dtscmd.Label(label=message['para']['addlabel']['label'],Symbol=df['Symbol'].iloc[0],T=message['para']['addlabel']['T'],window=self.window)	
+				elif message['para'].get('addlabel',None):
+					if not dtscmd.Label.objects.filter(label=message['para']['addlabel']['label'],Symbol=self.curr_state['Symbol'],T=message['para']['addlabel']['T'],window=self.window).exists():
+						resp=dtscmd.Label(label=message['para']['addlabel']['label'],Symbol=self.curr_state['Symbol'],T=message['para']['addlabel']['T'],window=self.window)	
 						resp.save()
 						self.write_message(json.dumps({'info': "recoreded "+message['para']['addlabel']['label'] }))                        
 						self.showlogs()
 					return
 
-				if message['para'].get('deletelog',None):
+				elif message['para'].get('deletelog',None):
 					id=int(message['para']['deletelog']['logid'])
 					dtscmd.Label.objects.filter(id=id).delete()
 					self.write_message(json.dumps({'info': "log entry deleted" }))                        
 					self.showlogs()
 					return
+
+				else:
+					print "paramemter optoion not implemented"
 
 			self.showlogs()
 
@@ -212,13 +266,13 @@ def webinterface(entries_list,indicatorlist,pricecols,querycols,featcols,ip):
 				self.AddChartSequence()
 
 				print "getting img from queue"
+
 				qimg=self.chartscompute.getQ()
-				if qimg is not None:
-					self.TF=qimg['TF']
-					self.T0=qimg['T0']
-					print "got it from queue"
-					st=json.dumps({'image':qimg['image'],'T':self.TF.strftime("%Y-%m-%d")})
-					self.write_message(st)
+				entry=self.curr_state
+
+				print "got it from queue"
+				st=json.dumps({'image':qimg['image'],'Symbol':entry['Symbol'],'T0':entry['T0'].strftime("%Y-%m-%d"),'TF':entry['TF'].strftime("%Y-%m-%d") })
+				self.write_message(st)
 
 			except WebSocketClosedError:
 				print "closed websocket error "
@@ -282,11 +336,6 @@ def main():
 		delP=[]
 		for p in P:
 			p[0].join(0.2)
-			# if time.time()-p[1]>10000:
-			# 	p[0].terminate()
-			# 	time.sleep(0.5)
-
-			
 			if not p[0].is_alive():
 				delP.append(p)
 

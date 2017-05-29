@@ -140,7 +140,7 @@ def MakeChart_1(df,pricecols,querycols,featcols):
 
 def CurrentByFutureChart_bydf(T0,TF,pricecols=(),querycols=(),featcols=(),df=pd.DataFrame()):
 	if df.empty:
-		return None
+		return {'T0':T0,'TF':TF,'image':['','']}
 
 	img1=MakeChart_1(df[T0:TF],pricecols,querycols,featcols)
 	img2=MakeChart_1(df[TF:(TF+pd.DateOffset(180)).date()],pricecols,querycols,featcols)
@@ -149,9 +149,16 @@ def CurrentByFutureChart_bydf(T0,TF,pricecols=(),querycols=(),featcols=(),df=pd.
 def CurrentByFutureChart_bydb(T0,TF,Symbol,indicatorlist=(),pricecols=(),querycols=(),featcols=()):
 	stk=stkmd.Stockmeta.objects.get(Symbol=Symbol)
 	df=dtalibs.GetStockData([stk.id])
+	if df.empty:
+		return {'T0':T0,'TF':TF,'image':['','']}
+	
+	if len(df[T0:TF])<30:
+		return {'T0':T0,'TF':TF,'image':['','']}
+	
 	df=dtalibs.addindicators(df,indicatorlist)
 
 	df=ftlibs.GetFeature(Symbolids=[stk.id],dfmain=df)
+	
 	for prcl in pricecols:
 		if prcl['colname'] not in df.columns:
 			df[prcl['colname'] ]=np.nan

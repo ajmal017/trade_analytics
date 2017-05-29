@@ -291,11 +291,11 @@ class MPconsumer(object):
                 break
             
             time.sleep(0.1)
-            
-        while True:
-            try:
-                self.outQ.get_nowait()
-            except Queue.Empty:
+        
+
+        if self.usecache:  
+            while True:
+                self.updatecache()
                 stillrunning=False
                 for ev in self.RunFlags:
                     if ev.is_set():
@@ -303,9 +303,23 @@ class MPconsumer(object):
                 if stillrunning==False:
                     break
 
-            time.sleep(0.2)
+                time.sleep(0.5)
+        else:           
+            while True:
+                try:
+                    self.outQ.get_nowait()
+                except Queue.Empty:
+                    stillrunning=False
+                    for ev in self.RunFlags:
+                        if ev.is_set():
+                            stillrunning=True
+                    if stillrunning==False:
+                        break
 
+                time.sleep(0.2)
 
+        # self.out_counter=0
+        # self.in_counter=0
                 
                 
     def start(self):

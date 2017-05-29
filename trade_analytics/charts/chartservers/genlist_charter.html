@@ -61,9 +61,16 @@
                 $("#imageLeft").attr('src', 'data:image/png;base64,' + returnmsg['image']['imageLeft']);
                 $("#imageRight").attr('src', 'data:image/png;base64,' + returnmsg['image']['imageRight']);
                }
-               if(("T" in returnmsg)){
-                document.getElementById("T").value=returnmsg['T'];
+               if(("TF" in returnmsg)){
+                document.getElementById("TF").value=returnmsg['TF'];
                }
+               if(("T0" in returnmsg)){
+                document.getElementById("T0").value=returnmsg['T0'];
+               }
+               if(("Symbol" in returnmsg)){
+                document.getElementById("Symbol").value=returnmsg['Symbol'];
+               }
+
                if(("info" in returnmsg)){
                 var div = document.getElementById('info');
                 div.innerHTML = returnmsg['info'];
@@ -98,6 +105,12 @@
             });
             $("#moveright").click(function(evt) {
                 ws.send(JSON.stringify({ 'cmnd':'moveright'}) );
+            });
+            $("#nextentry").click(function(evt) {
+                ws.send(JSON.stringify({ 'cmnd':'nextentry'}) );
+            });
+            $("#preventry").click(function(evt) {
+                ws.send(JSON.stringify({ 'cmnd':'preventry'}) );
             });
             $("#setshift").click(function(evt) {
                 ws.send( JSON.stringify(  {'para':{ 'moveby':$("#moveby").val() }} ) );
@@ -157,9 +170,20 @@
     </tr>
 
     <tr>
-    T=<input type="text" id="T" value="" readonly="readonly" />
+
+    TF=<input type="text" id="TF" value="" readonly="readonly" />
+    T0=<input type="text" id="T0" value="" readonly="readonly" />
+    Symbol=<input type="text" id="Symbol" value="" readonly="readonly" />
+
     <br>
-      <td><div align="center" > <input type="submit" id="moveleft" value="Move left">  <input type="submit" id="moveright" value="Move right"> </div> </td>
+      <td>
+          <div align="center" > 
+            <input type="submit" id="moveleft" value="Move left"> 
+            <input type="submit" id="preventry" value="Previous Entry">  
+            <input type="submit" id="nextentry" value="Next Entry">
+            <input type="submit" id="moveright" value="Move right"> 
+          </div> 
+      </td>
     </tr>
     <tr>
       <td>
