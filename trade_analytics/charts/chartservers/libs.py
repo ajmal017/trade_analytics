@@ -27,7 +27,7 @@ pricecols_std=[
 ]
 
 
-def request_db_charts(entries,ip,indicatorlist=indicatorlist_std,pricecols=pricecols_std,querycols=(),featcols=(),window=360):
+def request_dbcharts(entries,ip,indicatorlist=indicatorlist_std,pricecols=pricecols_std,querycols=(),featcols=(),window=360):
 	if type(entries)==pd.DataFrame:
 		if 'T' in entries.columns:
 			df=entries[['Symbol','T']].copy()
