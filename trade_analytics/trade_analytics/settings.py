@@ -104,7 +104,7 @@ WSGI_APPLICATION = 'trade_analytics.wsgi.application'
 ## --------------------- BIGDATA_DIR ---------------------------------------------------------------##
 ## ---------------------------------------------------------------------------------------------##
 
-BIGDATA_DIR=os.path.join(BASE_DIR,'BIGDATA')
+BIGDATA_DIR=os.path.join(BASE_DIR,'bigdata')
 if os.path.isdir(BIGDATA_DIR)==False:
     os.mkdir(BIGDATA_DIR)
 
