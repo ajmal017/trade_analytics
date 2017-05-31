@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.fields import JSONField
+
 # Create your models here.
 
 
@@ -21,7 +22,7 @@ class Label(models.Model):
 
 class Project(models.Model):
 	Name=models.CharField(max_length=200)
-	Info=JSONField()
+	Misc=JSONField()
 
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
@@ -48,20 +49,28 @@ class Data(models.Model):
 	"""
 	In the description, please mention the way the data is to be read
 	ProjectName--> Data --> Raw --> DataName --> files
+	Datashards have infor such as shardname: sample_shape, #smaples, # samples in each class 
 	"""
 	Project=models.ForeignKey(Project,on_delete=models.CASCADE)
 	ParentData=models.ForeignKey('self',on_delete=models.CASCADE,null=True)
 
-	Name=models.CharField(max_length=200)
-	Info=JSONField()
-	
-	data_choices=[('Raw','Raw'),('Derived','Derived'),('Train','Train'),('Validation','Validation'),('Test','Test')]
+	GroupName=models.CharField(max_length=200)
+	Misc=JSONField(default={})
+
+	# tags that are sane, are kind of pairs
+	tag=models.CharField(max_length=200)
+
+	model_types=[('Classification','Classification'),('Regression','Regression')]
+	Modeltype=models.CharField(choices=model_types,max_length=20)
+
+	data_choices=[('Raw','Raw'),('RawProcessed','RawProcessed'),('Derived','Derived'),('Train','Train'),('Validation','Validation'),('Test','Test')]
 	Datatype=models.CharField(choices=data_choices,max_length=20)
 
-	data_format=[('npz','npz'),('dataFrame','dataFrame'),('pkl','pkl')]
+	data_format=[('npz','npz'),('h5','h5'),('pkl','pkl'),('joblib','joblib')]
 	Dataformat=models.CharField(choices=data_format,max_length=30)
 
-	Datashards=ArrayField( models.CharField(max_length=50, blank=True) )
+	Datashards=JSONField(default={})
+	
 	
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
@@ -77,14 +86,20 @@ class Data(models.Model):
 
 	def newshardpath(self,name=None,tag=''):
 		if name is None:
-			name=tag+'_'+str(len(self.Datashards))
+			name=tag+str(len(self.Datashards))
 
 		self.Datashards.append(name)
 		self.save()
 
 		path=os.path.join(self.datapath(),name)
 
-		return path
+		self.Misc['ShardInfo']={ name: {'#samples': 0 } }
+
+
+		return (name,path)
+
+	def gen_readshard(self):
+		pass
 
 
 
@@ -97,13 +112,17 @@ class MLmodels(models.Model):
 	Data=models.ForeignKey(Data,on_delete=models.CASCADE)
 
 	Name=models.CharField(max_length=200,unique=True)
-	Info=JSONField()
+	Misc=JSONField()
 	
+	status_choices=[('Trained','Trained'),('UnTrained','UnTrained')]
+	Status=models.CharField(choices=status_choices,max_length=30)
+
+
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
 	def modelpath(self):
-		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Project.Name,"Models",self.Name)
+		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Project.Name,"Models",str(self.id)+"_"+self.Name)
 
 	def initialize(self):
 		# make the model path
