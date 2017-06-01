@@ -22,10 +22,12 @@ class Label(models.Model):
 
 class Project(models.Model):
 	Name=models.CharField(max_length=200)
-	Misc=JSONField()
+	Misc=JSONField(default={})
 
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
+	def __str__(self):
+		return self.Name
 
 	def bigdatapath(self):
 		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Name)
@@ -69,14 +71,17 @@ class Data(models.Model):
 	data_format=[('npz','npz'),('h5','h5'),('pkl','pkl'),('joblib','joblib')]
 	Dataformat=models.CharField(choices=data_format,max_length=30)
 
-	Datashards=JSONField(default={})
-	
+	# Datashards=JSONField(default={})
+	ShardInfo=JSONField(default={})
 	
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
+	def __str__(self):
+		return " ".join( map(lambda x: str(x),[self.Project, self.GroupName,self.tag, self.Modeltype, self.Datatype, self.Dataformat ]) )
+
 	def datapath(self):
-		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Project.Name,"Data",self.Datatype,self.Name)
+		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Project.Name,"Data",self.Datatype,self.GroupName+"_"+self.tag)
 
 	def initialize(self):
 		# make the data path
@@ -86,15 +91,13 @@ class Data(models.Model):
 
 	def newshardpath(self,name=None,tag=''):
 		if name is None:
-			name=tag+str(len(self.Datashards))
+			name='shard'+"_"+tag+"_"+str(len(self.ShardInfo))
 
-		self.Datashards.append(name)
+
+		path=os.path.join(self.datapath(),name+"."+self.Dataformat)
+
+		self.ShardInfo[name] ={'#samples': 0 } 
 		self.save()
-
-		path=os.path.join(self.datapath(),name)
-
-		self.Misc['ShardInfo']={ name: {'#samples': 0 } }
-
 
 		return (name,path)
 
@@ -112,17 +115,20 @@ class MLmodels(models.Model):
 	Data=models.ForeignKey(Data,on_delete=models.CASCADE)
 
 	Name=models.CharField(max_length=200,unique=True)
-	Misc=JSONField()
+	Misc=JSONField(default={})
 	
 	status_choices=[('Trained','Trained'),('UnTrained','UnTrained')]
 	Status=models.CharField(choices=status_choices,max_length=30)
 
+	
+	save_format=[('npz','npz'),('h5','h5'),('pkl','pkl'),('joblib','joblib')]
+	saveformat=models.CharField(choices=save_format,max_length=30)
 
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
 	def modelpath(self):
-		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Project.Name,"Models",str(self.id)+"_"+self.Name)
+		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Project.Name,"Models",str(self.id)+"_"+self.Name+"."+self.saveformat)
 
 	def initialize(self):
 		# make the model path

@@ -48,11 +48,11 @@ def get_train_test_from_RawProcessed(InputData,shardgroupby=default_shardgroupby
 			
 			shardname,shardpath=TrainData.newshardpath()
 			df_train.to_hdf(shardpath,'table')
-			TrainData.Misc['ShardInfo'][shardname]['#samples'] =len(df_train)
+			TrainData.ShardInfo[shardname]['#samples'] =len(df_train)
 
 			shardname,shardpath=ValidationData.newshardpath()
 			df_test.to_hdf(shardpath,'table')
-			ValidationData.Misc['ShardInfo'][shardname]['#samples'] =len(df_test)
+			ValidationData.ShardInfo[shardname]['#samples'] =len(df_test)
 
 
 	for split in range(5,25):
@@ -70,6 +70,6 @@ def get_train_test_from_RawProcessed(InputData,shardgroupby=default_shardgroupby
 			
 			shardname,shardpath=ValidationData.newshardpath()
 			df_test.to_hdf(shardpath,'table')
-			ValidationData.Misc['ShardInfo'][shardname]['#samples'] =len(df_test)
+			ValidationData.ShardInfo[shardname]['#samples'] =len(df_test)
 			
 

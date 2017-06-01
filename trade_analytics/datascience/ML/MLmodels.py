@@ -11,7 +11,7 @@ import os
 import json
 from scipy.sparse import coo_matrix, hstack ,vstack
 import copy
-
+import datascience.ML.MLmodels as MLmd
 
 np.random.seed(1337)  # for reproducibility
 
@@ -168,6 +168,14 @@ class BaseClassificationModel(object):
 		C.modelsinfo[modelname]=modelinfo
 		C.modelspara[modelname]=modelpara
 
+	@classmethod
+	def loadmodel_db(cls,model):
+		if cls.savetype=='joblib':
+			clf=joblib.load(model.modelpath())
+		C=cls()
+		C.models[modelname]=clf
+		C.modelsinfo[modelname]=modelinfo
+		C.modelspara[modelname]=modelpara
 
 	def savemodel(self,modelname,path):
 		clf=self.models[modelname]
@@ -180,7 +188,7 @@ class BaseClassificationModel(object):
 		max_features=self.modelslist[modelname]['max_features']
 		max_depth=self.modelslist[modelname]['max_depth']
 
-		clf=RandomForestClassifier(n_estimators=n_estimators, n_jobs=7,max_depth=max_depth,max_features=max_features)
+		
 
 		clf.fit(self.X_train,self.y_train)
 		self.models[modelname] =self.postprocess_model(clf)
@@ -233,25 +241,21 @@ class XGBOOSTmodels(BaseClassificationModel):
 ###################################################################
 class RandomForrestmodels(BaseClassificationModel):
 	name='RandomForrest'
-	savetype='joblib'
+	saveformat='joblib'
 
-	def preprocessing_train(self,X_train,y_train):
-		self.X_train = X_train
-		self.y_train = y_train
-
-	def preprocessing_test(self,X_test,y_test):
-		self.X_test = X_test
-		self.y_test=y_test
-
-	def postprocess_model(self,clf):
-		return clf
-
-	def GenModels(self):
+	@classmethod
+	def GenModels(cls,Project,data):
 		N=0
 		for n_estimators in [10,100,250,500]:
 			for max_depth in [10,100,250,500]:
 				for max_features in [30,40,50,60]:
-					self.modelslist[self.name+'_'+str(N)]= {'n_estimators':n_estimators,'max_depth':max_depth ,'max_features':max_features}
+					clf=RandomForestClassifier(n_estimators=n_estimators, n_jobs=5,max_depth=max_depth,max_features=max_features)
+					modelparas={'n_estimators':n_estimators, 'n_jobs':5,'max_depth':max_depth,'max_features':max_features}
+					model=MLmd.MLmodels(Project=Project,Data=data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+					model.save()
+					model.initialize()
+					filename=model.modelpath()
+					joblib.dump(clf, filename)
 					N=N+1
 
 	

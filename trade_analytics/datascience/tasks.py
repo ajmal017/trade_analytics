@@ -23,8 +23,6 @@ def TrainAllmodels():
 	MLmodels=dtscmd.MLmodels.objects.filter(Status='UnTrained')
 	for model in MLmodels:
 
-		X_train,y_train,X_test,y_test=model.Data.get_train_test(randomstate=33+i)
-
 		modelpath=model.modelpath()
 		modelname=model.Name
 		modelinfo=model.Misc['modelinfo']
@@ -33,6 +31,7 @@ def TrainAllmodels():
 		ModelCLass=MLmd.GetModelClass(model.Info['ModelClass'])
 		
 		MCL=ModelCLass.loadmodel(modelpath,modelname,modelinfo,modelpara)
+		
 		MCL.preprocessing_train(X_train,y_train)
 		MCL.trainmodel(modelname)
 		MCL.postprocess_model(modelname)
