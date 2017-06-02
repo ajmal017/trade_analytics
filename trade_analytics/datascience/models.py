@@ -6,6 +6,10 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.fields import JSONField
 
+import pandas as pd
+import numpy as np
+import joblib
+
 # Create your models here.
 
 
@@ -101,9 +105,30 @@ class Data(models.Model):
 
 		return (name,path)
 
-	def gen_readshard(self):
-		pass
+	def gen_shard(self):
+		for name in self.ShardInfo.keys():
+			path=os.path.join(self.datapath(),name+"."+self.Dataformat)
+			if self.Dataformat=='joblib':
+				with open(path,'r') as F:
+					D=joblib.load(F)
+				yield D
 
+	def full_data(self):
+		X=None
+		Y=None
+		for name in self.ShardInfo.keys():
+			path=os.path.join(self.datapath(),name+"."+self.Dataformat)
+			if self.Dataformat=='joblib':
+				with open(path,'r') as F:
+					D=joblib.load(F)
+				if X is None:
+					X=D['X']
+					Y=D['Y']
+				else:
+					X=np.vstack((X,D['X']))
+					Y=np.vstack((Y,D['Y']))
+
+		return (X,Y)
 
 
 class MLmodels(models.Model):
@@ -136,4 +161,10 @@ class MLmodels(models.Model):
 		if not os.path.isdir(path):
 			os.makedirs(path)
 
+	def loadmodel(self):
+		path=self.modelpath()
+		if self.saveformat=='joblib':
+			with open(path,'r') as F:
+				clf=joblib.load(F)
 
+		return clf

@@ -130,79 +130,92 @@ class BaseClassificationModel(object):
 	name=None
 	savetype='joblib'
 
-	def __init__(self):
-		self.modelspara={}
-		self.models={}
-		self.modelsinfo={}
-
-	def preprocessing_train(self,X_train,y_train):
-		pass
-
-	def preprocessing_test(self,X_test,y_test):
-		pass
-
-	def postprocess_model(self,modelname):
-		pass
-
-	def GenModels(self):
-		pass
-
-	def getmetrics(self,modelname):
-		clf=self.models[modelname]
-		Ypred = clf.predict(self.dtest)
-
-		logloss=log_loss(self.y_test, Ypred, eps=1e-15, normalize=True)
-		avgprec= average_precision_score(self.y_test, Ypred)
-		acc= accuracy_score(self.y_test, Ypred )
-		recallscore= recall_score(self.y_test, Ypred,average='micro' )
-		precisionscore= precision_score(self.y_test, Ypred ,average='micro' )
-
-		return {'logloss':logloss, 'avgprec':avgprec, 'acc':acc, 'recallscore':recallscore , 'precisionscore':precisionscore }
+	def __init__(self,model):
+		self.model=model
+		self.clf=self.model.loadmodel()
+		if 'validation_metrics' not in self.model.Misc:
+			self.model.Misc['validation_metrics']={}
 
 	@classmethod
-	def loadmodel(cls,modelpath,modelname,modelinfo,modelpara):
-		if cls.savetype=='joblib':
-			clf=joblib.load(modelpath)
-		C=cls()
-		C.models[modelname]=clf
-		C.modelsinfo[modelname]=modelinfo
-		C.modelspara[modelname]=modelpara
+	def GenModels(cls,Project,data):
+		pass
 
-	@classmethod
-	def loadmodel_db(cls,model):
-		if cls.savetype=='joblib':
-			clf=joblib.load(model.modelpath())
-		C=cls()
-		C.models[modelname]=clf
-		C.modelsinfo[modelname]=modelinfo
-		C.modelspara[modelname]=modelpara
+	def loaddata(self):
+		if self.model.Data.Datatype!='Train':
+			raise Exception("Need Training Data For model")
+		self.validation_datasets=self.model.Data.ParentData.objects.filter(Datatype='Validation')
+		self.train_data=self.model.Data 
 
-	def savemodel(self,modelname,path):
-		clf=self.models[modelname]
-		if clf.savetype=='joblib':
-			joblib.dump(clf, os.path.join(path, modelname) )
+	def pre_processing_train(self):
+		"""
+		Load the data and pre process it and then send it
+		"""
+		X,Y=self.train_data.full_data()
+		return (X,Y)
 
-	def trainmodel(self,modelname):
+	def pre_processing_validation(self,validation_data):
+		"""
+		Load the data and pre process it and then send it
+		"""
+		X,Y=validation_data.gen_shard()
+		return (X,Y)
 
-		n_estimators = self.modelslist[modelname]['n_estimators']
-		max_features=self.modelslist[modelname]['max_features']
-		max_depth=self.modelslist[modelname]['max_depth']
+	def post_process_model(self):
+		pass
+
+	def train(self):
+		X,Y=self.pre_processing_train()
+
+		self.clf.fit(X,Y)
+
+		self.post_process_model()
+
+	def predict(self,X):
+		return self.clf.predict(X)
+
+	def Run_validation(self,validation_data):
+		Ypred=None
+		Yvalid=None
+		for X,Y in self.pre_processing_validation(validation_data):
+			if Ypred is None:
+				Ypred=self.predict(X)
+				Yvalid=Y
+			else:
+				Ypred=np.vstack((Ypred, self.clf.predict(X) ))
+				Yvalid=np.vstack((Yvalid, Y ))
+
+		model_metrics=self.getmetrics(Ypred,Yvalid)
+		self.model.Misc['validation_metrics'][validation_data.id]=model_metrics
+		self.model.save()
+
+
+	def Run_validation_all(self):
+		for validation_data in self.validation_datasets:
+			self.Run_validation(validation_data)
+
+		self.model.Status='Trained'
+		self.model.save()
+
+	def getmetrics(self,Ypred,Yvalid):
+
+		logloss=log_loss(Yvalid ,Ypred, eps=1e-15, normalize=True)
+		avgprec= average_precision_score(Yvalid, Ypred)
+		acc= accuracy_score(Yvalid, Ypred )
+		recallscore= recall_score(Yvalid, Ypred,average='micro' )
+		precisionscore= precision_score(Yvalid, Ypred ,average='micro' )
+
+		model_metrics={'logloss':logloss, 'avgprec':avgprec, 'acc':acc, 'recallscore':recallscore , 'precisionscore':precisionscore }
+		return model_metrics
+
+
+	def savemodel(self):
+		if self.model.saveformat=='joblib':
+			joblib.dump(self.clf, self.model.modelpath())
+
+		self.model.save()
+
 
 		
-
-		clf.fit(self.X_train,self.y_train)
-		self.models[modelname] =self.postprocess_model(clf)
-
-
-
-		param = self.modelslist[modelname]['param']
-		num_round = self.modelslist[modelname]['num_round']
-		early_stopping_rounds=self.modelslist[modelname]['early_stopping_rounds']
-
-		watchlist  = [(self.dtrain,'train')]
-
-		clf = xgb.train(param, self.dtrain, num_round, watchlist,early_stopping_rounds=early_stopping_rounds,verbose_eval = False)
-		self.models[modelname] =self.postprocess_model(clf)
 
 
 ###################################################################
@@ -210,7 +223,7 @@ class BaseClassificationModel(object):
 ###################################################################
 class XGBOOSTmodels(BaseClassificationModel):
 	name='XGBOOST'
-	savetype='joblib'
+	saveformat='joblib'
 
 	def preprocessing_train(self,X_train,y_train):
 		self.dtrain = xgb.DMatrix(X_train, label=y_train.reshape(-1,1))
@@ -244,14 +257,17 @@ class RandomForrestmodels(BaseClassificationModel):
 	saveformat='joblib'
 
 	@classmethod
-	def GenModels(cls,Project,data):
+	def GenModels(cls,Project,Data):
+		if Data.Datatype!='Train':
+			raise Exception("Need Training Data For model")
+
 		N=0
 		for n_estimators in [10,100,250,500]:
 			for max_depth in [10,100,250,500]:
 				for max_features in [30,40,50,60]:
 					clf=RandomForestClassifier(n_estimators=n_estimators, n_jobs=5,max_depth=max_depth,max_features=max_features)
 					modelparas={'n_estimators':n_estimators, 'n_jobs':5,'max_depth':max_depth,'max_features':max_features}
-					model=MLmd.MLmodels(Project=Project,Data=data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+					model=MLmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
 					model.save()
 					model.initialize()
 					filename=model.modelpath()
@@ -265,51 +281,56 @@ class RandomForrestmodels(BaseClassificationModel):
 ###################################################################
 class LinearSVCmodels(BaseClassificationModel):
 	name='LinearSVC'
-	savetype='joblib'
+	saveformat='joblib'
 
-	def preprocessing_train(self,X_train,y_train):
-		self.X_train = X_train
-		self.y_train = y_train
+	@classmethod
+	def GenModels(cls,Project,Data):
+		if Data.Datatype!='Train':
+			raise Exception("Need Training Data For model")
 
-	def preprocessing_test(self,X_test,y_test):
-		self.X_test = X_test
-		self.y_test=y_test
-
-	def postprocess_model(self,clf):
-		return clf
-
-	def GenModels(self):
 		N=0
 		for C in [1, 10, 100, 1000,10000]:
-			C = self.modelslist[modelname]['C']
 			clf=LinearSVC(C=C)
-			clf.fit(self.X_train,self.y_train)
-			self.models[modelname] =self.postprocess_model(clf)
-
-			self.modelslist[self.name+'_'+str(N)]= {'C':C}
+			modelparas={'C':C}
+			model=MLmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+			model.save()
+			model.initialize()
+			filename=model.modelpath()
+			joblib.dump(clf, filename)
 			N=N+1
 
+###################################################################
+####################   QuadraticDiscriminantAnalysis  ###############
+###################################################################
+class QuadraticDiscriminantAnalysismodels(BaseClassificationModel):
+	name='QuadraticDiscriminantAnalysis'
+	saveformat='joblib'
 
+	@classmethod
+	def GenModels(cls,Project,Data):
+		if Data.Datatype!='Train':
+			raise Exception("Need Training Data For model")
+
+		N=0
+		for reg_param in [1, 10, 100, 1000,10000]:
+			clf=QuadraticDiscriminantAnalysis(reg_param=reg_param)
+			modelparas={'reg_param':reg_param}
+			model=MLmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+			model.save()
+			model.initialize()
+			filename=model.modelpath()
+			joblib.dump(clf, filename)
+			N=N+1
 
 ###################################################################
 ####################   NN  #####################################
 ###################################################################
 class NNmodels(BaseClassificationModel):
 	name='NN'
-	savetype='joblib'
+	saveformat='joblib'
 
-	def preprocessing_train(self,X_train,y_train):
-		self.X_train = X_train
-		self.y_train = y_train
-
-	def preprocessing_test(self,X_test,y_test):
-		self.X_test = X_test
-		self.y_test=y_test
-
-	def postprocess_model(self,clf):
-		return clf
-
-	def GenModels(self):
+	@classmethod
+	def GenModels(cls,Project,Data):
 		N=0
 		batch_size = 500
 		nb_epoch = 100
@@ -340,20 +361,10 @@ class NNmodels(BaseClassificationModel):
 ###################################################################
 class CNN1Dmodels(BaseClassificationModel):
 	name='CNN1D'
-	savetype='joblib'
+	saveformat='joblib'
 
-	def preprocessing_train(self,X_train,y_train):
-		self.X_train = X_train
-		self.y_train = y_train
-
-	def preprocessing_test(self,X_test,y_test):
-		self.X_test = X_test
-		self.y_test=y_test
-
-	def postprocess_model(self,clf):
-		return clf
-
-	def GenModels(self):
+	@classmethod
+	def GenModels(cls,Project,Data):
 		N=0
 		batch_size = 16
 		nb_epoch = 20
