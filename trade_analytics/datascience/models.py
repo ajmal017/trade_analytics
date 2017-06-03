@@ -72,8 +72,14 @@ class Data(models.Model):
 	data_choices=[('Raw','Raw'),('RawProcessed','RawProcessed'),('Derived','Derived'),('Train','Train'),('Validation','Validation'),('Test','Test')]
 	Datatype=models.CharField(choices=data_choices,max_length=20)
 
-	data_format=[('npz','npz'),('h5','h5'),('pkl','pkl'),('joblib','joblib')]
+	data_format=[('npz','npz'),('h5','h5'),('pkl','pkl'),('joblib','joblib'),('json','json')]
 	Dataformat=models.CharField(choices=data_format,max_length=30)
+
+
+	# Binary is always 0/1, classes are labelled by integers 0,1,2,...
+	# binary 1 is the important class i.e. like fraud==1 , nofraud==0
+	ouput_choices=[('binary','binary'),('multiclass','multiclass'),('continuous','continuous')]
+	ouput_type=models.CharField(choices=data_format,max_length=30)
 
 	# Datashards=JSONField(default={})
 	ShardInfo=JSONField(default={})
@@ -113,6 +119,14 @@ class Data(models.Model):
 					D=joblib.load(F)
 				yield D
 
+	def gen_one_shard(self):
+		name = self.ShardInfo.keys()[0]
+		path=os.path.join(self.datapath(),name+"."+self.Dataformat)
+		if self.Dataformat=='joblib':
+			with open(path,'r') as F:
+				D=joblib.load(F)
+			yield D
+
 	def full_data(self):
 		X=None
 		Y=None
@@ -142,11 +156,11 @@ class MLmodels(models.Model):
 	Name=models.CharField(max_length=200,unique=True)
 	Misc=JSONField(default={})
 	
-	status_choices=[('Trained','Trained'),('UnTrained','UnTrained')]
+	status_choices=[('Validated','Validated'),('Trained','Trained'),('UnTrained','UnTrained')]
 	Status=models.CharField(choices=status_choices,max_length=30)
 
 	
-	save_format=[('npz','npz'),('h5','h5'),('pkl','pkl'),('joblib','joblib')]
+	save_format=[('npz','npz'),('h5','h5'),('pkl','pkl'),('joblib','joblib'),('xgboost','xgboost'),('keras','keras')]
 	saveformat=models.CharField(choices=save_format,max_length=30)
 
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
@@ -161,10 +175,4 @@ class MLmodels(models.Model):
 		if not os.path.isdir(path):
 			os.makedirs(path)
 
-	def loadmodel(self):
-		path=self.modelpath()
-		if self.saveformat=='joblib':
-			with open(path,'r') as F:
-				clf=joblib.load(F)
-
-		return clf
+	

@@ -4,7 +4,7 @@ import stockapp.models as stkmd
 import dataapp.models as dtamd
 import featureapp.models as ftmd
 import datascience.models as dtscmd
-import datascience.MLmodels as MLmd
+import datascience.ML.MLmodels as MLmd
 
 import itertools as itt
 import numpy as np
@@ -20,23 +20,19 @@ logger = logging.getLogger('debug')
 
 
 def TrainAllmodels():
-	MLmodels=dtscmd.MLmodels.objects.filter(Status='UnTrained')
-	for model in MLmodels:
+	TData=MLmd.Data.objects.filter(Datatype='Train')
+	for Data in TData:
+		MLmodels=dtscmd.MLmodels.objects.filter(Data=Data,Status='UnTrained')
+		for model in MLmodels:
+			
 
-		modelpath=model.modelpath()
-		modelname=model.Name
-		modelinfo=model.Misc['modelinfo']
-		modelpara=model.Misc['modelpara']
+			ModelCLass=MLmd.ModelFactory(model)
+			
+			MCL=ModelCLass(model)
+			MCL.loadmodel()
+			MCL.loaddata()
+			MCL.train()
+			MCL.Run_validation_all()
+			MCL.savemodel()
 
-		ModelCLass=MLmd.GetModelClass(model.Info['ModelClass'])
-		
-		MCL=ModelCLass.loadmodel(modelpath,modelname,modelinfo,modelpara)
-		
-		MCL.preprocessing_train(X_train,y_train)
-		MCL.trainmodel(modelname)
-		MCL.postprocess_model(modelname)
-		MCL.savemodel(modelname,modelpath)
-		MCL.preprocessing_test(X_test,y_test)
-		metrics=MCL.getmetrics(modelname)
-		model.Misc['metrics']=metrics
-		model.save()
+

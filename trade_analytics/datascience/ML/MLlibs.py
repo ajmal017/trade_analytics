@@ -27,7 +27,7 @@ def get_train_test_from_RawProcessed(InputData,shardgroupby=default_shardgroupby
 	if InputData.Datatype!='RawProcessed':
 		print "Data has to have Datatype as  RawProcessed"
 		return False
-	
+
 
 	for split in range(5):
 		s=time.time()
