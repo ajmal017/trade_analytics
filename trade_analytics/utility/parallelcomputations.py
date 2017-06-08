@@ -223,7 +223,11 @@ class MPconsumer(object):
         self.inQ.put(q)
         time.sleep(0.1)
         return True
-    
+
+    def cntdiff(self):
+        return self.in_counter-self.out_counter
+
+
     def readresultcache(self):
         cnt=self.out_counter
         self.out_counter=self.out_counter+1
@@ -337,3 +341,5 @@ class MPconsumer(object):
             p.join()
             time.sleep(0.2)
         print "consumers closed"    
+
+

@@ -46,7 +46,7 @@ class Project(models.Model):
 			os.makedirs(path)
 
 		# save the
-		path=self.ProjectPath()
+		path=self.projectpath()
 		if not os.path.isdir(path):
 			os.makedirs(path)
 
@@ -99,6 +99,7 @@ class Data(models.Model):
 		if not os.path.isdir(path):
 			os.makedirs(path)
 
+
 	def newshardpath(self,name=None,tag=''):
 		if name is None:
 			name='shard'+"_"+tag+"_"+str(len(self.ShardInfo))
@@ -111,21 +112,27 @@ class Data(models.Model):
 
 		return (name,path)
 
-	def gen_shard(self):
-		for name in self.ShardInfo.keys():
-			path=os.path.join(self.datapath(),name+"."+self.Dataformat)
-			if self.Dataformat=='joblib':
-				with open(path,'r') as F:
-					D=joblib.load(F)
-				yield D
+	def get_shardnames(self):
+		return self.ShardInfo.keys()
 
-	def gen_one_shard(self):
-		name = self.ShardInfo.keys()[0]
+		
+	def getshard_dict(self,name):
 		path=os.path.join(self.datapath(),name+"."+self.Dataformat)
 		if self.Dataformat=='joblib':
 			with open(path,'r') as F:
-				D=joblib.load(F)
-			yield D
+				return joblib.load(F)
+		elif self.Dataformat=='npz':
+			np.load(path)
+
+	def gen_shard(self):
+		for name in self.ShardInfo.keys():
+			yield self.getshard_dict(name)
+			
+
+	def get_first_shard(self):
+		name = self.ShardInfo.keys()[0]
+		return self.getshard_dict(name)
+
 
 	def full_data(self):
 		X=None
@@ -176,3 +183,7 @@ class MLmodels(models.Model):
 			os.makedirs(path)
 
 	
+class ModelMetrics(models.Model):
+	Data=models.ForeignKey(Data,on_delete=models.CASCADE)
+	MLmodel=models.ForeignKey(MLmodels,on_delete=models.CASCADE)	
+	Metrics=JSONField(default={})

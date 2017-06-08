@@ -11,7 +11,7 @@ import os
 import json
 from scipy.sparse import coo_matrix, hstack ,vstack
 import copy
-import datascience.ML.MLmodels as MLmd
+import datascience.models as dtscmd
 
 np.random.seed(1337)  # for reproducibility
 
@@ -198,8 +198,11 @@ class BaseClassificationModel(object):
 				Yvalid=np.vstack((Yvalid, Y ))
 
 		model_metrics=self.getmetrics(Ypred,Yvalid)
-		self.model.Misc['validation_metrics'][validation_data.id]=model_metrics
-		self.model.save()
+		obj, created = dtscmd.ModelMetrics.objects.get_or_create(Data=validation_data,MLmodel=self.model)
+		obj.Metrics=model_metrics
+		obj.save()
+
+
 
 
 	def Run_validation_all(self):
@@ -208,6 +211,12 @@ class BaseClassificationModel(object):
 
 		self.model.Status='Validated'
 		self.model.save()
+
+	def Run_validation_id(self,validationid):
+		validation_data = self.validation_datasets.get(id=validationid)
+		self.Run_validation(validation_data)
+
+
 
 	def getmetrics(self,Ypred,Yvalid):
 
@@ -309,7 +318,7 @@ class XGBOOSTmodels(BaseClassificationModel):
 
 							modelparas={'param':param,'plst':plst,'num_round':num_round,'early_stopping_rounds':early_stopping_rounds}
 
-							model=MLmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+							model=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
 							model.save()
 							model.initialize()
 							filename=model.modelpath()
@@ -338,7 +347,7 @@ class XGBOOSTmodels(BaseClassificationModel):
 
 							modelparas={'param':param,'plst':plst,'num_round':num_round,'early_stopping_rounds':early_stopping_rounds}
 
-							model=MLmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+							model=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
 							model.save()
 							model.initialize()
 							filename=model.modelpath()
@@ -368,7 +377,7 @@ class RandomForrestmodels(BaseClassificationModel):
 					for  class_weight in ['balanced_subsample',None]:
 						clf=RandomForestClassifier(n_estimators=n_estimators, n_jobs=5,max_depth=max_depth,max_features=max_features,class_weight=class_weight)
 						modelparas={'n_estimators':n_estimators, 'n_jobs':5,'max_depth':max_depth,'max_features':max_features}
-						model=MLmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+						model=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
 						model.save()
 						model.initialize()
 						filename=model.modelpath()
@@ -393,7 +402,7 @@ class LinearSVCmodels(BaseClassificationModel):
 		for C in [1, 10, 100, 1000,10000]:
 			clf=LinearSVC(C=C)
 			modelparas={'C':C}
-			model=MLmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+			model=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
 			model.save()
 			model.initialize()
 			filename=model.modelpath()
@@ -416,7 +425,7 @@ class QDAmodels(BaseClassificationModel):
 		for reg_param in [1, 10, 100, 1000,10000]:
 			clf=QuadraticDiscriminantAnalysis(reg_param=reg_param)
 			modelparas={'reg_param':reg_param}
-			model=MLmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+			model=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
 			model.save()
 			model.initialize()
 			filename=model.modelpath()
@@ -466,7 +475,7 @@ class NNmodels(BaseClassificationModel):
 		model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
 		
 		modelparas={}
-		dbmodel=MLmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+		dbmodel=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
 		dbmodel.save()
 		dbmodel.initialize()
 		filename=dbmodel.modelpath()
@@ -516,7 +525,7 @@ class CNN1Dmodels(BaseClassificationModel):
 		model.compile(optimizer=sgd, loss='categorical_crossentropy')
 
 		modelparas={}
-		dbmodel=MLmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+		dbmodel=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
 		dbmodel.save()
 		dbmodel.initialize()
 		filename=dbmodel.modelpath()
