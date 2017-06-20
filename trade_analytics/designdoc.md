@@ -33,7 +33,8 @@
 
 
 
-
+# Design of stockapp
+1. 
 
 
 

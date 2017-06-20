@@ -54,6 +54,7 @@ INSTALLED_APPS = [
     'stockapp',
     'queryapp',
     'dataapp',
+    'featureapp',
     'computeapp',
     
 ]
@@ -99,14 +100,63 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'trade_analytics.wsgi.application'
 
+
+## --------------------- BIGDATA_DIR ---------------------------------------------------------------##
+## ---------------------------------------------------------------------------------------------##
+
+BIGDATA_DIR=os.path.join(BASE_DIR,'bigdata')
+if os.path.isdir(BIGDATA_DIR)==False:
+    os.mkdir(BIGDATA_DIR)
+
 ## --------------------- DATABSE ---------------------------------------------------------------##
 # Database
 # https://docs.djangoproject.com/en/1.10/ref/settings/#databases
 ## ---------------------------------------------------------------------------------------------##
+
+
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'databases','db.sqlite3'),
+#         'DESCRIPTION': "Primary and default router",
+#     },
+#     'initialization': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'databases', 'initialize.sqlite3'),
+#         'DESCRIPTION': "This is an initial data base for initialization (to upload to github)",
+
+#     },
+#     'stockpricedata': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR,'databases', 'stockpricedata.sqlite3'),
+#         'DESCRIPTION': "Save the large stock price data separately",
+
+#     },
+#     'featuredata': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR,'databases', 'featuredata.sqlite3'),
+#         'DESCRIPTION': "Save Feature Data separately",
+
+#     },
+#     'datascience': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'databases' ,'datascience.sqlite3'),
+#         'DESCRIPTION': "Independent Data sets for machine learning",
+#     }
+# }
+
+
+    #--------------------------POSTGRES --------------
+IP='192.168.1.106'
+PORT='5432'
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'databases','db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'trade_analytics',
+        'USER': os.getenv('DBUSER'),
+        'PASSWORD': os.getenv('DBPASS'),
+        'HOST': IP,
+        'PORT': PORT,
         'DESCRIPTION': "Primary and default router",
     },
     'initialization': {
@@ -116,20 +166,42 @@ DATABASES = {
 
     },
     'stockpricedata': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR,'databases', 'stockpricedata.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'stockpricedata',
+        'USER': os.getenv('DBUSER'),
+        'PASSWORD': os.getenv('DBPASS'),
+        'HOST': IP,
+        'PORT': PORT,
         'DESCRIPTION': "Save the large stock price data separately",
 
     },
-    'datascience': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'databases' ,'datascience.sqlite3'),
-        'DESCRIPTION': "Independent Data sets for machine learning",
-    }
+    # 'featuredata': {
+    #     'ENGINE': 'django.db.backends.postgresql_psycopg2',
+    #     'NAME': 'featuredata',
+    #     'USER': os.getenv('DBUSER'),
+    #     'PASSWORD': os.getenv('DBPASS'),
+    #     'HOST': IP,
+    #     'PORT': PORT,
+    #     'DESCRIPTION': "Save Feature Data separately",
+
+    # },
+    # 'datascience': {
+    #     'ENGINE': 'django.db.backends.sqlite3',
+    #     'NAME': os.path.join(BASE_DIR, 'databases' ,'datascience.sqlite3'),
+    #     'DESCRIPTION': "Independent Data sets for machine learning",
+    # }
 }
 
-DATABASE_ROUTERS = ['trade_analytics.db_routers.StockPriceRouter', ]
 
+
+DATABASE_ROUTERS = ['trade_analytics.db_routers.StockPriceRouter']
+# dont forget to run
+# python manage.py makemigrations
+# python manage.py migrate
+# python manage.py migrate  --database=stockpricedata
+# python manage.py migrate  --database=datascience
+
+    
 ## --------------------- PASSWORD ---------------------------------------------------------------##
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -195,21 +267,34 @@ LOGGING = {
 
     'handlers': {
         'console': {
-            'level': 'DEBUG',
+            'level': 'ERROR',
             'class': 'logging.StreamHandler',
             'formatter': 'verbose'
         },
-        'file': {
+        'debugfile': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
             'filename': os.path.join('logs','debug_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
             'formatter': 'verbose',
         },
+        
+        'errorfile': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join('logs','error_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
+            'formatter': 'verbose',
+        },
+
     },
     
     'loggers': {
         'django': {
-            'handlers': ['console','file'],
+            'handlers': ['console','debugfile','errorfile'],
+            'propagate': True,
+        },
+        'debug': {
+            'handlers': ['console','debugfile','errorfile'],
+            'level': 'DEBUG',
             'propagate': True,
         },
     }

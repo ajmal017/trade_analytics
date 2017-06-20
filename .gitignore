@@ -4,9 +4,11 @@ djangolog
 celerylog
 *.pid
 dbconf.json
+stockpricedata.backup
 *.out
 *.csv
-*.json
 logs
 StockData.h5
 stockpricedata.sqlite3
+bigdata/
+*.backup
