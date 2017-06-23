@@ -12,7 +12,9 @@ import joblib
 
 # Create your models here.
 
-
+"""
+Create Custom labels for the data
+"""
 class Label(models.Model):
 	label=models.CharField(max_length=100)
 	Symbol=models.CharField(max_length=100)
@@ -23,10 +25,42 @@ class Label(models.Model):
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
 
+"""
+#########################################################################
+####################  Machine learning Structure ########################
+#########################################################################
+
+|- ComputeFunc: Serializable Functions used for parallelization
+
+|- Project
+	|- Data: Datasets stored as shards
+	|- MLmodels: Each Dataset has a model associated
+	|- MLmetrics: Each model and each validation set has a metric
+
+
+"""
+
+
+class ComputeFunc(models.Model):
+	"""
+	Load the imports
+	Load all functions from a group
+	"""
+	Name=models.CharField(max_length=200)
+	Group=models.CharField(max_length=200,null=True)
+	RequiredImports=ArrayField()
+
+	Meta=JSONField(default={})
+	PklCode=models.TextField()
+	SrcCode=models.TextField()
+
+	created_at = models.DateTimeField(auto_now_add=True,null=True)
+	updated_at = models.DateTimeField(auto_now=True,null=True)
+
 
 class Project(models.Model):
 	Name=models.CharField(max_length=200)
-	Misc=JSONField(default={})
+	Meta=JSONField(default={})
 
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
@@ -55,13 +89,13 @@ class Data(models.Model):
 	"""
 	In the description, please mention the way the data is to be read
 	ProjectName--> Data --> Raw --> DataName --> files
-	Datashards have infor such as shardname: sample_shape, #smaples, # samples in each class 
+	Datashards have infor such as shardname: sample_shape, #smaples, # samples in each class
 	"""
 	Project=models.ForeignKey(Project,on_delete=models.CASCADE)
 	ParentData=models.ForeignKey('self',on_delete=models.CASCADE,null=True)
 
 	GroupName=models.CharField(max_length=200)
-	Misc=JSONField(default={})
+	Meta=JSONField(default={})
 
 	# tags that are sane, are kind of pairs
 	tag=models.CharField(max_length=200)
@@ -69,7 +103,7 @@ class Data(models.Model):
 	model_types=[('Classification','Classification'),('Regression','Regression')]
 	Modeltype=models.CharField(choices=model_types,max_length=20)
 
-	data_choices=[('Raw','Raw'),('RawProcessed','RawProcessed'),('Derived','Derived'),('Train','Train'),('Validation','Validation'),('Test','Test')]
+	data_choices=[('Raw','Raw'),('RawProcessed','RawProcessed'),('Train','Train'),('Validation','Validation'),('Test','Test')]
 	Datatype=models.CharField(choices=data_choices,max_length=20)
 
 	data_format=[('npz','npz'),('h5','h5'),('pkl','pkl'),('joblib','joblib'),('json','json')]
@@ -83,7 +117,7 @@ class Data(models.Model):
 
 	# Datashards=JSONField(default={})
 	ShardInfo=JSONField(default={})
-	
+
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
@@ -107,7 +141,7 @@ class Data(models.Model):
 
 		path=os.path.join(self.datapath(),name+"."+self.Dataformat)
 
-		self.ShardInfo[name] ={'#samples': 0 } 
+		self.ShardInfo[name] ={'#samples': 0 }
 		self.save()
 
 		return (name,path)
@@ -115,7 +149,7 @@ class Data(models.Model):
 	def get_shardnames(self):
 		return self.ShardInfo.keys()
 
-		
+
 	def getshard_dict(self,name):
 		path=os.path.join(self.datapath(),name+"."+self.Dataformat)
 		if self.Dataformat=='joblib':
@@ -127,7 +161,7 @@ class Data(models.Model):
 	def gen_shard(self):
 		for name in self.ShardInfo.keys():
 			yield self.getshard_dict(name)
-			
+
 
 	def get_first_shard(self):
 		name = self.ShardInfo.keys()[0]
@@ -161,12 +195,12 @@ class MLmodels(models.Model):
 	Data=models.ForeignKey(Data,on_delete=models.CASCADE)
 
 	Name=models.CharField(max_length=200,unique=True)
-	Misc=JSONField(default={})
-	
+	Meta=JSONField(default={})
+
 	status_choices=[('Validated','Validated'),('Trained','Trained'),('UnTrained','UnTrained')]
 	Status=models.CharField(choices=status_choices,max_length=30)
 
-	
+
 	save_format=[('npz','npz'),('h5','h5'),('pkl','pkl'),('joblib','joblib'),('xgboost','xgboost'),('keras','keras')]
 	saveformat=models.CharField(choices=save_format,max_length=30)
 
@@ -182,8 +216,8 @@ class MLmodels(models.Model):
 		if not os.path.isdir(path):
 			os.makedirs(path)
 
-	
+
 class ModelMetrics(models.Model):
 	Data=models.ForeignKey(Data,on_delete=models.CASCADE)
-	MLmodel=models.ForeignKey(MLmodels,on_delete=models.CASCADE)	
+	MLmodel=models.ForeignKey(MLmodels,on_delete=models.CASCADE)
 	Metrics=JSONField(default={})

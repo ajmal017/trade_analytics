@@ -105,7 +105,7 @@ import xgboost as xgb
 ####################   BASE MODELS  #####################################
 ###################################################################
 
-def ModelFactory(model):
+def ModelFactory(ModelClassName):
 	if ModelClassName=='XGBOOST':
 		return XGBOOSTmodels
 

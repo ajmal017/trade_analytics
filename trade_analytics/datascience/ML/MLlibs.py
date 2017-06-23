@@ -8,16 +8,12 @@ import threading
 from sklearn.model_selection import train_test_split
 
 
-def default_shardgroupby(df,maxsize=100):
-	size=df.memory_usage(index=True).sum()/1000000
-	if size<=maxsize:
-		yield (df,'full')
 
-def Compute_ShardMisc(Dataid,shardname):
+def GetShardInfo(Dataid,shardname):
 	Data=dtascmd.Data.objects.get(id=Dataid)
 	data=Data.getshard_dict(shardname)
 	ShardInfo=Data.ShardInfo['shardname']
-	
+
 	ShardInfo['Y_shape']=data['Y'].shape
 	ShardInfo['X_shape']=data['X'].shape
 	ShardInfo['N_samples']=data['X'].shape[0]
@@ -28,10 +24,10 @@ def Compute_ShardMisc(Dataid,shardname):
 		for cl in ShardInfo['classes']:
 			Y=data['Y']
 			ShardInfo['samples_per_class'][cl]=Y[Y==cl].shape[0]
-		
+
 	return ShardInfo
 
-def Compute_DataMisc(ShardsInfo):
+def GetDataInfo(ShardsInfo):
 	Y_shape=[]
 	X_shape=[]
 	N_samples=[]
@@ -44,12 +40,12 @@ def Compute_DataMisc(ShardsInfo):
 
 def get_train_test_from_RawProcessed(InputData,shardgroupby=default_shardgroupby):
 	"""
-	- Make 5 sets of training and test data 70:30 splits 
-	- Make additional 20  30% slits 
+	- Make 5 sets of training and test data 70:30 splits
+	- Make additional 20  30% slits
 
-	- Make 5 sets of Balanced training and test data 70:30 splits 
-	- Make additional 20  30% slits 
-	
+	- Make 5 sets of Balanced training and test data 70:30 splits
+	- Make additional 20  30% slits
+
 	- Start a thread, and monitor the size of the numpy array and then make a separate shard
 	"""
 	if InputData.Datatype!='RawProcessed':
@@ -71,9 +67,9 @@ def get_train_test_from_RawProcessed(InputData,shardgroupby=default_shardgroupby
 		ValidationData.initialize()
 
 		for df in InputData.gen_readshard():
-			  
+
 			df_train, df_test, y_train, y_test = train_test_split(df, df.index, test_size=0.33, random_state=N)
-			
+
 			shardname,shardpath=TrainData.newshardpath()
 			df_train.to_hdf(shardpath,'table')
 			TrainData.ShardInfo[shardname]['#samples'] =len(df_train)
@@ -93,11 +89,9 @@ def get_train_test_from_RawProcessed(InputData,shardgroupby=default_shardgroupby
 		ValidationData.initialize()
 
 		for df in InputData.gen_readshard():
-			  
+
 			df_train, df_test, y_train, y_test = train_test_split(df, df.index, test_size=0.33, random_state=N)
-			
+
 			shardname,shardpath=ValidationData.newshardpath()
 			df_test.to_hdf(shardpath,'table')
 			ValidationData.ShardInfo[shardname]['#samples'] =len(df_test)
-			
-

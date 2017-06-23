@@ -24,7 +24,7 @@ django-filter
 jinja2
 pymongo
 django-multiselectfield
-
+cloudpickle
 
 
 
