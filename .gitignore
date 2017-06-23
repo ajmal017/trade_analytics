@@ -1,5 +1,6 @@
 *.pyc
 *.h5
+*.pkl
 djangolog
 celerylog
 *.pid
