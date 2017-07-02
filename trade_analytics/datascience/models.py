@@ -48,19 +48,22 @@ class ComputeFunc(models.Model):
 	"""
 	Name=models.CharField(max_length=200)
 	Group=models.CharField(max_length=200,null=True)
-	RequiredImports=ArrayField()
+	RequiredImports=JSONField(default={})
 
-	Meta=JSONField(default={})
+	Info=JSONField(default={})
 	PklCode=models.TextField()
 	SrcCode=models.TextField()
 
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
+	def getfunc(self):
+		import cloudpickle as cldpkl
+		return cldpkl.loads(self.PklCode)
 
 class Project(models.Model):
 	Name=models.CharField(max_length=200)
-	Meta=JSONField(default={})
+	Info=JSONField(default={})
 
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
@@ -95,9 +98,9 @@ class Data(models.Model):
 	ParentData=models.ForeignKey('self',on_delete=models.CASCADE,null=True)
 
 	GroupName=models.CharField(max_length=200)
-	Meta=JSONField(default={})
+	Info=JSONField(default={})
 
-	# tags that are sane, are kind of pairs
+	# tags that are same, are kind of pairs
 	tag=models.CharField(max_length=200)
 
 	model_types=[('Classification','Classification'),('Regression','Regression')]
@@ -195,9 +198,9 @@ class MLmodels(models.Model):
 	Data=models.ForeignKey(Data,on_delete=models.CASCADE)
 
 	Name=models.CharField(max_length=200,unique=True)
-	Meta=JSONField(default={})
+	Info=JSONField(default={})
 
-	status_choices=[('Validated','Validated'),('Trained','Trained'),('UnTrained','UnTrained')]
+	status_choices=[('Validated','Validated'),('Trained','Trained'),('UnTrained','UnTrained'),('Running','Running')]
 	Status=models.CharField(choices=status_choices,max_length=30)
 
 
@@ -221,3 +224,4 @@ class ModelMetrics(models.Model):
 	Data=models.ForeignKey(Data,on_delete=models.CASCADE)
 	MLmodel=models.ForeignKey(MLmodels,on_delete=models.CASCADE)
 	Metrics=JSONField(default={})
+	Info=JSONField(default={})

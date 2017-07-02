@@ -29,7 +29,7 @@ def StockDataFrame_validate(df,columns=['Close','Open','High','Low','Volume']):
 def StockDataFrame_sanitize(df,standardize=False):
 	if len(df)==0:
 		return df
-			
+
 	df['Close']=df['Close'].astype(float)
 	df['Open']=df['Open'].astype(float)
 	df['High']=df['High'].astype(float)
@@ -42,11 +42,11 @@ def StockDataFrame_sanitize(df,standardize=False):
 		if type(x)==datetime.datetime or type(x)==pd.datetime or type(x)==pd.Timestamp:
 			return x.date()
 		return x
-	
+
 	if 'Date' in df.columns:
 		df['Date']=df['Date'].apply(setdate)
 		df.sort_values(by=['Date'],inplace=True)
-		
+
 	index_is_datetype=False
 	if isinstance(df.index[0],basestring):
 		try:
@@ -96,7 +96,7 @@ def addindicators(df,cols):
 
 				elif cc['name']=='SMAstd':
 					df[cc['colname']]=df['Close'].rolling(window=cc['timeperiod']).std()
-			
+
 				elif cc['name']=='EMA':
 					df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).mean()
 					df[cc['colname']]=df[cc['colname']].astype(float)
@@ -106,7 +106,7 @@ def addindicators(df,cols):
 					df[cc['colname']]=df[cc['colname']].astype(float)
 				else:
 					print "Indicator not available"
-					
+
 			except Exception as e:
 				df[cc['colname']]=np.nan
 				print "error adding indicator ",cc['colname']
@@ -126,7 +126,7 @@ def GetStockData(Symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datet
 
 	elif type(Symbolids)==int or isinstance(Symbolids,basestring)==True:
 		Symbolids=list([Symbolids])
-	
+
 	if isinstance(Symbolids[0],basestring)==True:
 		for i in range(len(Symbolids)):
 			Symbolids[i]=stkmd.Stockmeta.objects.get(Symbol=Symbolids[i]).id
@@ -159,15 +159,39 @@ def GetStockData(Symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datet
 			dp=df[df['Symbol_id']==symbid].copy()
 			if addcols is not None:
 				dp=addindicators(dp,addcols)
-			D[symbid]=dp 
-		return D		
-	
+			D[symbid]=dp
+		return D
+
 
 	elif format=='concat':
 		return df
-	
 
 
+def Getbatchdata(dfinstants):
+	"""
+	DataFrame input as
+	dfinstants= [ (Symbol, T0,TF), ... ]
+	return in same order
+	"""
+	dfinstants.index=range(len(dfinstants))
+	D={}
+	for Symbol,dfsymb in dfinstants.groupby("Symbol"):
+		ds=GetStockData([Symbol])
+		for ind in dfsymb.index:
+			T0=dfsymb.loc[ind,'T0']
+			TF=dfsymb.loc[ind,'TF']
+			window=dfsymb.loc[ind,'window']
+			D[ind]=ds[T0:TF].copy()
+
+	X=None
+	for ind in dfinstants.index:
+		Y=np.expand_dims(D[ind].values,axis=0)
+		if X is None:
+			X=Y
+		else:
+			X=np.vstack((X,Y))
+	Meta={'shape':X.shape,'dfinstants':dfinstants}
+	return X,Meta
 
 def predownloadcheck(stk):
 	Todate=pd.datetime.today().date()
@@ -196,7 +220,7 @@ def predownloadcheck(stk):
 		return {'status':'Run','Todate':Todate,'Fromdate':Fromdate}
 
 
-	
+
 def DownloadData(Symbol, Fromdate,Todate):
 	try:
 		df=web.DataReader(Symbol, 'yahoo', Fromdate,Todate)
@@ -223,7 +247,7 @@ def ComputeIndex(stk,Fromdate,Todate):
 		df=CC.getvalue(stkind.IndexLabel)
 		return {'df':df,'status':'Success'}
 	except:
-		print "error computing index ",stk, " for input dates ",Fromdate,Todate	
+		print "error computing index ",stk, " for input dates ",Fromdate,Todate
 		return {'df':None,'status':'Fail'}
 
 def postdownloadcheck(stk,dfStartdate,dfLastdate):
@@ -238,7 +262,7 @@ def postdownloadcheck(stk,dfStartdate,dfLastdate):
 			return {'status':'Run'}
 	else:
 		return {'status':'Run'}
-		
+
 def UpdatePriceData(Symbols_ids,*args,**kwargs):
 	"""Update stock price data for given symbol ids
 
@@ -277,7 +301,7 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 		else:
 			Fromdate=UpCk['Fromdate']
 			Todate=UpCk['Todate']
-		
+
 
 
 		if stk.Derived:
@@ -303,17 +327,17 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 			stk.save()
 			comstat.Status='Success'
 			comstat.save()
-			continue	
+			continue
 		elif UpCk['status']=='Overlap':
 			df=df[df.index>stk.Lastdate]
-		
+
 
 		objs=[]
 		for ind in df.index:
 			objs.append( dtamd.Stockprice(Close=df.loc[ind,'Close'], Open=df.loc[ind,'Open'] ,
 										 High=df.loc[ind,'High'],Low=df.loc[ind,'Low'],
 										 Volume=df.loc[ind,'Volume'],Date=ind,Symbol=stk.Symbol,Symbol_id=stk.id)  )
-		
+
 
 		# use a lock/semaphore if required
 		if kwargs.get('lock',None):
@@ -321,7 +345,7 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 				dtamd.Stockprice.objects.bulk_create(objs)
 		else:
 			dtamd.Stockprice.objects.bulk_create(objs)
-						
+
 		stk.LastPriceUpdate=pd.datetime.today().date()
 
 		if stk.Startdate is None:
@@ -346,4 +370,3 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 
 	if semaphore:
 		semaphore.release()
-

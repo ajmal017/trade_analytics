@@ -2,6 +2,7 @@ from __future__ import division
 from celery import shared_task
 import stockapp.models as stkmd
 import dataapp.models as dtamd
+import dataapp.libs as dtalibs
 import featureapp.models as ftmd
 import datascience.models as dtscmd
 import datascience.ML.MLmodels as MLmd
@@ -18,6 +19,12 @@ from django import db
 import logging
 logger = logging.getLogger('debug')
 
+## Create Stock Datasets ##################
+@shared_task
+def CreateStockShards_bySymbol(Tfs,Symbol,path):
+	N=len(Tfs)
+	dfinstants=pd.DataFrame({'T0':map(lambda x: x[0],Tfs),'TF':map(lambda x: x[1],Tfs),'Symbol':[Symbol]*N})
+	X,Meta=dtalibs.Getbatchdata(dfinstants)
 
 ## Update Data Meta ########################
 
@@ -38,6 +45,21 @@ def Compute_DataMisc(Dataid):
 	Data.save()
 
 
+
+
+## Compute Function Mapper ####################
+@shared_task
+def applyfunc(Func_id,arg):
+	"""
+	arg is tuple of arguments
+	"""
+	Func=dtscmd.ComputeFunc.objects.get(id=Func_id).getfunc()
+	return Func(arg)
+
+@shared_task
+def Mapper(Func_id,args):
+	for i in range(len(args)):
+		applyfunc(Func_id,args[i])
 
 ### Do ML #######################
 

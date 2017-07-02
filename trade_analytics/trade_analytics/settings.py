@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'dataapp',
     'featureapp',
     'computeapp',
-    
+
 ]
 
 
@@ -147,7 +147,7 @@ if os.path.isdir(BIGDATA_DIR)==False:
 
 
     #--------------------------POSTGRES --------------
-IP='192.168.1.106'
+IP='172.18.65.75'
 PORT='5432'
 DATABASES = {
     'default': {
@@ -201,7 +201,7 @@ DATABASE_ROUTERS = ['trade_analytics.db_routers.StockPriceRouter']
 # python manage.py migrate  --database=stockpricedata
 # python manage.py migrate  --database=datascience
 
-    
+
 ## --------------------- PASSWORD ---------------------------------------------------------------##
 # Password validation
 # https://docs.djangoproject.com/en/1.10/ref/settings/#auth-password-validators
@@ -249,12 +249,12 @@ STATIC_URL = '/static/'
 ## ---------------------------------------------------------------------------------------------##
 if not os.path.isdir('logs'):
     os.mkdir('logs')
-    
+
 LOGGING = {
     'version': 1,
-    
+
     'disable_existing_loggers': False,
-    
+
     'formatters': {
         'verbose': {
             'format': '%(levelname)s, %(asctime)s, %(module)s, %(filename)s, %(funcName)s, %(lineno)d, %(process)d, %(thread)d, %(message)s'
@@ -277,7 +277,7 @@ LOGGING = {
             'filename': os.path.join('logs','debug_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
             'formatter': 'verbose',
         },
-        
+
         'errorfile': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
@@ -286,7 +286,7 @@ LOGGING = {
         },
 
     },
-    
+
     'loggers': {
         'django': {
             'handlers': ['console','debugfile','errorfile'],
@@ -346,7 +346,7 @@ REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
     ],
-    
+
     'PAGE_SIZE': 10,
 
 }
