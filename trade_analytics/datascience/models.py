@@ -119,7 +119,6 @@ class Data(models.Model):
 	ouput_type=models.CharField(choices=data_format,max_length=30)
 
 	# Datashards=JSONField(default={})
-	ShardInfo=JSONField(default={})
 
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
@@ -135,19 +134,6 @@ class Data(models.Model):
 		path=self.datapath()
 		if not os.path.isdir(path):
 			os.makedirs(path)
-
-
-	def newshardpath(self,name=None,tag=''):
-		if name is None:
-			name='shard'+"_"+tag+"_"+str(len(self.ShardInfo))
-
-
-		path=os.path.join(self.datapath(),name+"."+self.Dataformat)
-
-		self.ShardInfo[name] ={'#samples': 0 }
-		self.save()
-
-		return (name,path)
 
 	def get_shardnames(self):
 		return self.ShardInfo.keys()
@@ -187,6 +173,22 @@ class Data(models.Model):
 					Y=np.vstack((Y,D['Y']))
 
 		return (X,Y)
+
+class DataShard(models.Model):
+	Data=models.ForeignKey(Data,on_delete=models.CASCADE)
+	ShardInfo=JSONField(default={})
+
+	created_at = models.DateTimeField(auto_now_add=True,null=True)
+	updated_at = models.DateTimeField(auto_now=True,null=True)
+
+	def __str__(self):
+		return " ".join( map(lambda x: str(x),[self.Data.Project, self.Data.GroupName,self.Data.tag, self.Data.Modeltype, self.Data.Datatype, self.Data.Dataformat,str(self.id) ]) )
+
+	def shardpath(self):
+		# return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Project.Name,"Data",self.Datatype,self.GroupName+"_"+self.tag)
+		name='shard'+"_"+self.Data.tag+"_"+str(self.id)
+		path=os.path.join(self.Data.datapath(),name+"."+self.Data.Dataformat)
+		return (name,path)
 
 
 class MLmodels(models.Model):
