@@ -1,0 +1,192 @@
+{% extends "homepage/base.html" %} 
+
+{% block tabtitle %}  View Charts  {% endblock%}
+
+{% block title %}View Charts {% endblock %}
+
+
+{% block pagetitle %} View Charts {% endblock %}
+
+{% block head %} 
+<script type="text/javascript" src="/my_admin/jsi18n/"></script>
+<script type="text/javascript" src="/media/admin/js/core.js"></script>
+
+<link rel="stylesheet" type="text/css" href="/media/admin/css/forms.css"/>
+<link rel="stylesheet" type="text/css" href="/media/admin/css/base.css"/>
+<link rel="stylesheet" type="text/css" href="/media/admin/css/global.css"/>
+<link rel="stylesheet" type="text/css" href="/media/admin/css/widgets.css"/>
+
+{% endblock %}
+
+
+
+{% block pagemain %} 
+
+{% if user.is_authenticated %}
+    <p>Welcome, {{ user.get_username }}.</p>
+{% else %}
+    <!-- <p>Welcome, new user. Please <a href="{% url 'homepage:login' %}">log in</a></p> -->
+    <a href="{% url 'homepage:login' %}?next={{request.path}}">Login</a>
+{% endif %}
+
+<p>
+<font color="red">{{error|default_if_none:""}}</font>
+</p>
+
+
+
+  <form action="{% url 'charting:viewcharts' %}" method="post">
+      {% csrf_token %}
+      {{ chartprop.watchlist.errors}}
+      {{ viewchartform.watchlist.errors}}
+
+      <p>
+        <h2> Create Chart Properties </h2>
+        {% comment "Optional note" %}
+        {% endcomment %}
+
+          
+          <table border=1 style="border-collapse: collapse;">
+          <tr><th colspan="5">Price</th></tr>
+            <tr>
+            {% for field in chartprop %}
+            {% if field.html_name in chartprop.props_ci %}
+                <td align="right">{{field.label}} : {{field}} </td>
+                {% if forloop.counter|divisibleby:"5" %}
+                  </tr><tr>
+               {% endif %}
+
+              {% endif %}
+            {%endfor%}
+            </tr>
+          </table>
+          
+          <table border=1 style="border-collapse: collapse;">
+          
+            <tr>
+              <td>
+                  <table border=1 style="border-collapse: collapse;">
+                  <tr><th colspan="3">Volume</th></tr>
+                    <tr>
+                    {% for field in chartprop %}
+                    {% if field.html_name in chartprop.props_vi %}
+                       {% if forloop.counter|divisibleby:"3" %}
+                          </tr><tr>
+                       {% endif %}
+                        <td align="right">{{field.label}}: {{field}} </td>
+                      {% endif %}
+                    {%endfor%}
+                    </tr>
+                  </table>
+              </td>
+
+              <td rowspan="2">
+                 {% for field in chartprop %}
+                  {% if field.label == "Select multiple Candle Patterns" %}
+                    <table> <tr> <th align="center"> <p>{{field.label}}</p></th></tr>  <tr> <td align="center"><p>{{field}}</p></td></tr> </table>
+                  {% endif%}
+                  {% endfor %}
+              </td>
+            </tr>
+
+            <tr>
+              <td>
+                <table border=1 style="border-collapse: collapse;">
+                <tr><th colspan="3">Indicators</th></tr>
+                  <tr>
+                  {% for field in chartprop %}
+                  {% if field.html_name in chartprop.props_i %}
+                     {% if forloop.counter|divisibleby:"3" %}
+                        </tr><tr>
+                     {% endif %}
+                      <td align="right">{{field.label}}: {{field}} </td>
+                    {% endif %}
+                  {%endfor%}
+                  </tr>
+                </table>
+              </td>
+              <td >
+                Select Channels
+                <p>
+                <table>
+                {{chartprop.channels}}
+                </table>
+                </p>
+              </td>
+              <td >
+                Select Linear Trends
+                <p>
+                <table>
+                {{chartprop.linear_trends}}
+                </table>
+                </p>
+              </td>
+
+            </tr>
+
+          </table>
+      </p>
+
+      <p align="right"> <input type="submit" class="btn" name="save_chartprop" value="Save Chart Properties as" /> {{chartprop.chartstylename}} </p>
+      
+      <h2> Select Chart Properties </h2>
+      <p>
+        Select a saved chart style: {{chartprop.saved_chartstyles}} 
+      </p>
+
+      <p>
+        <h2> Select Symbols to chart </h2>
+          <table border=1 style="border-collapse: collapse;">
+            <tr>
+                <td>{{ viewchartform.watchlist.label }} </td> <td align="center" valign="center"> {{ viewchartform.watchlist }}</td>
+            </tr>
+            <tr>
+                <td>{{ viewchartform.symbol.label }}</td> <td align="center" valign="center">{{ viewchartform.symbol }} </td>
+            </tr>
+          </table>
+      </p>
+
+      <p>
+        <h2> Select the time period for chart </h2>
+        <table border=1 style="border-collapse: collapse;">
+            <tr> <th>Select final end date </th> <th>Select starting date or window period </th> </tr>
+            <tr>
+              <td>
+                <table>
+                <tr>
+                  <td>{{ viewchartform.T.label }} : </td> <td> {{ viewchartform.T }} </td>
+                </tr>
+                <tr>
+                  <td>{{ viewchartform.Interval.label }} : </td> <td> {{ viewchartform.Interval }} </td>
+                </tr>
+                </table> 
+              </td>
+              <td><table>
+                      <tr><td>{{ viewchartform.T0.label }} : </td> <td> {{ viewchartform.T0 }} </td> </tr>
+                      <tr><td>{{ viewchartform.window.label }} : </td> <td> {{ viewchartform.window  }} </td> </tr>
+                  </table></td>
+            </tr>
+        </table>
+
+
+
+      </p>
+      
+        <p align="center"> <input type="submit" class="btn" name="view_charts" value="View Charts" /> </p>
+  </form>
+  {% for chart in viewchartform.charturls %}
+    <!-- <img class="lazy" data-original="{% url 'charting:quickchart' %}{{chart}}" style="width:600px;height:500px;"> -->
+    {{chart}}
+  {% endfor %}
+
+<br>
+
+
+{% endblock %}
+
+{% block footer %} 
+
+Copyright of Nagavenkat Adurthi
+
+ {% endblock %}
+
