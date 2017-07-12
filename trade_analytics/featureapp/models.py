@@ -2,7 +2,6 @@
 from __future__ import unicode_literals,division
 from django.contrib.auth.models import User
 from django.db import models
-import stockapp.models as stkmd
 from django.contrib.postgres.fields import ArrayField,JSONField
 import os
 import utility.models as utymd
@@ -35,7 +34,8 @@ class FeaturesMeta(models.Model):
 
 class FeaturesData(models.Model):
 	T=models.DateField()
-	Symbol = models.ForeignKey(stkmd.Stockmeta,on_delete=models.CASCADE)
+	Symbol=models.CharField(db_index=True,max_length=20,null=True,blank=True)
+	Symbol_id=models.IntegerField(null=True,db_index=True)
 	
 	Featuredata = JSONField(default={})
 
@@ -50,7 +50,10 @@ class FeaturesData(models.Model):
 class ComputeStatus_Feature(models.Model):
 	status_choices=(('ToDo','ToDo'),('Run','Run'),('Fail','Fail'),('Success','Success'))
 	Status=models.CharField(choices=status_choices,max_length=10)
-	Symbol=models.ForeignKey( stkmd.Stockmeta,on_delete=models.CASCADE)
+	
+	Symbol=models.CharField(db_index=True,max_length=20,null=True,blank=True)
+	Symbol_id=models.IntegerField(null=True,db_index=True)
+
 	created_at = models.DateField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 

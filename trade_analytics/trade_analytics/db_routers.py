@@ -120,7 +120,7 @@ class FeatureDataRouter(object):
         return None
 
 
-class DataScienceDataRouter(object):
+class QueryDataRouter(object):
     """
     A router to control all database operations on models in the
     auth application.
@@ -129,16 +129,17 @@ class DataScienceDataRouter(object):
         """
         Attempts to read auth models go to auth_db.
         """
-        if model._meta.app_label == 'datascience':
-            return 'datascience'
+        if model._meta.app_label == 'queryapp':
+            return 'querydata'
+
         return None
 
     def db_for_write(self, model, **hints):
         """
         Attempts to write auth models go to auth_db.
         """
-        if model._meta.app_label == 'datascience':
-            return 'datascience'
+        if model._meta.app_label == 'queryapp':
+            return 'querydata'
 
         return None
         # database = getattr(model, "_DATABASE", None)
@@ -149,8 +150,8 @@ class DataScienceDataRouter(object):
         """
         Allow relations if a model in the auth app is involved.
         """
-        if obj1._meta.app_label == 'datascience' or \
-           obj2._meta.app_label == 'datascience':
+        if obj1._meta.app_label == 'queryapp' or \
+           obj2._meta.app_label == 'queryapp':
            return True
         return None
 
@@ -162,18 +163,20 @@ class DataScienceDataRouter(object):
 
 
 
-        if db=='datascience':
-            if app_label == 'datascience':
+        if db=='querydata':
+            if app_label == 'queryapp':
                 return True
             else:
                 return False            
 
-        if app_label == 'datascience':
+        if app_label == 'queryapp':
             
-            if db == 'datascience':
+            if db == 'querydata':
                 return True
             else:
                 return False
             # return db == 'stockpricedata'
 
         return None
+
+
