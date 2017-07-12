@@ -57,7 +57,7 @@ class ComputeFunc(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
-	def getfunc(self):
+	def getfunc(self,getlatest=True):
 		import cloudpickle as cldpkl
 		return cldpkl.loads(self.PklCode)
 
@@ -93,6 +93,7 @@ class Data(models.Model):
 	In the description, please mention the way the data is to be read
 	ProjectName--> Data --> Raw --> DataName --> files
 	Datashards have infor such as shardname: sample_shape, #smaples, # samples in each class
+	bigdata/datascience/Projects/$ProjectName/Data/$Datatype/$GroupName_$tag
 	"""
 	Project=models.ForeignKey(Project,on_delete=models.CASCADE)
 	ParentData=models.ForeignKey('self',on_delete=models.CASCADE,null=True)

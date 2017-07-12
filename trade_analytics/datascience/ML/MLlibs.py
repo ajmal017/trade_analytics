@@ -38,7 +38,7 @@ def GetDataInfo(ShardsInfo):
 
 
 
-def get_train_test_from_RawProcessed(InputData,shardgroupby=default_shardgroupby):
+def get_train_test_from_RawProcessed(InputData):
 	"""
 	- Make 5 sets of training and test data 70:30 splits
 	- Make additional 20  30% slits
