@@ -2,7 +2,7 @@ import abc
 import json
 import os
 from django.db import models
-from django.contrib.auth.models import User
+# from django.contrib.auth.models import User
 import shutil
 import time
 import pandas as pd
@@ -15,7 +15,7 @@ class ComputeCode(models.Model):
 
 	Code=models.TextField(help_text='Code of all the features',null = True)
 	File=models.FilePathField(help_text='File of all the features',max_length=400,null = True)
-	User = models.ForeignKey(User,on_delete=models.CASCADE, blank = True, null = True)
+	Username = models.CharField(max_length=150,help_text="User ID from database",blank=True,null=True)
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
@@ -41,10 +41,10 @@ class ComputeCode(models.Model):
 
 
 	def getimportpath(self):
-		if not self.User:
+		if not self.Username:
 			username='AnonymousUser'
 		else:
-			username=self.User.username
+			username=self.Username
 		path = ".".join([self.module,self.codesfolder,username])
 		return path
 
@@ -59,10 +59,10 @@ class ComputeCode(models.Model):
 
 	def getfilepath(self):
 		from django.conf import settings
-		if not self.User:
+		if not self.Username:
 			username='AnonymousUser'
 		else:
-			username=self.User.username
+			username=self.Username
 		path = os.path.join(settings.BASE_DIR,self.module,self.codesfolder,username+'.py')
 		return path
 
