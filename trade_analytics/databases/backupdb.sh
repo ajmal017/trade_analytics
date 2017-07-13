@@ -1,5 +1,8 @@
-pg_dump trade_analytics > /home/venkat/GoogleDrive/repos/trade_analytics/trade_analytics/databases/backup/trade_analytics.backup
-pg_dump featuredata > /home/venkat/GoogleDrive/repos/trade_analytics/trade_analytics/databases/backup/featuredata.backup
-pg_dump querydata > /home/venkat/GoogleDrive/repos/trade_analytics/trade_analytics/databases/backup/querydata.backup
-pg_dump stockpricedata > /home/venkat/GoogleDrive/repos/trade_analytics/trade_analytics/databases/backup/stockpricedata.backup
+currdir=`pwd`;
+echo $currdir;
+
+pg_dump trade_analytics > $currdir/backup/trade_analytics.backup
+pg_dump featuredata > $currdir/backup/featuredata.backup
+pg_dump querydata > $currdir/backup/querydata.backup
+pg_dump stockpricedata > $currdir/backup/stockpricedata.backup
 
