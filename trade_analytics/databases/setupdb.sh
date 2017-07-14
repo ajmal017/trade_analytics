@@ -1,9 +1,24 @@
 #!/bin/zsh
 source ~/.zshrc
 
+
+
 #sudo su - postgres
 #psql
 # dumps are in /var/lib/postgresql/
+
+#edit 
+# /etc/postgresql/9.1/main/pg_hba.conf
+# to have 
+# local   all             postgres                                md5
+# then restart:
+# sudo service postgresql restart
+
+# edit:
+# /etc/postgresql/9.5/mainpostgresql.conf
+# to have 
+# listen_addresses='*'
+# sudo service postgresql restart
 
 sudo -i -u postgres psql -c "CREATE DATABASE trade_analytics;"
 sudo -i -u postgres psql -c "CREATE DATABASE stockpricedata;"
@@ -24,7 +39,6 @@ echo|sudo -i -u postgres psql -c "GRANT ALL PRIVILEGES ON DATABASE querydata TO 
 
 #\q
 #exit
-
 
 
 

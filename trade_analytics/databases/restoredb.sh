@@ -1,4 +1,8 @@
 #!/bin/bash
+# copy all dumps to /var/lib/postgresql/
+# run setupdb to create the databases
+# then do : sudo -i -u postgres
+# then do : psql stockpricedata < stockpricedata.backup
 
 currdir=`pwd`;
 echo "Delete existing databases and restore ** PLEASE BACKUP **, [yes/(no)]  "

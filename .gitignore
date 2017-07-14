@@ -13,3 +13,4 @@ StockData.h5
 stockpricedata.sqlite3
 bigdata/
 *.backup
+stockpricedata.backup

@@ -49,9 +49,10 @@ class ComputeFunc(models.Model):
 	Name=models.CharField(max_length=200)
 	Group=models.CharField(max_length=200,null=True)
 	RequiredImports=JSONField(default={})
+	RequiredGroup=JSONField(default={})
 
 	Info=JSONField(default={})
-	PklCode=models.TextField()
+	PklCode=models.BinaryField()
 	SrcCode=models.TextField()
 
 	created_at = models.DateTimeField(auto_now_add=True,null=True)

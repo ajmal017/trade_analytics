@@ -15,55 +15,77 @@ def register_dataset(project_Name,project_Info,Datatype,GroupName,tag,data_forma
 	# Modeltype='Regression',
 
 	if dtscmd.Project.objects.filter(Name=project_Name).exists()==True:
+		print "Project ",project_Name, " already exists"
+		project=dtscmd.Project.objects.get(Name=project_Name)
+
 		if use_project_ifexists:
-			project=dtscmd.Project.objects.get(Name=project_Name)
+			pass	
 		else:
-			raise Exception("project already exists")
-			return None
+			print "project already exists"
+			# return None
 
 	else:
 		project=dtscmd.Project(Name=project_Name,Info=project_Info)
 		project.save()
 
-	if dtscmd.Data.objects.filter(Project=project,GroupName=GroupName,tag=tag,Datatype=Datatype,data_format=data_format,Modeltype=Modeltype).exists():
-		raise Exception("The dataset already exists")
-		return None
+	if dtscmd.Data.objects.filter(Project=project,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype).exists():
+		data=dtscmd.Data.objects.get(Project=project,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype)
+		print "The dataset already exists"
+		# return None
 
 	else:
-		data=dtscmd.Data(Project=project,GroupName=GroupName,tag=tag,Datatype=Datatype,data_format=data_format,Modeltype=Modeltype)
+		data=dtscmd.Data(Project=project,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype)
 		data.save()
+		data.initialize()
 
-	data.initialize()
-
-	return data.id
+	print ("project id","data id")," : ",(project.id,data.id)
+	return project.id,data.id
 
 
 # @register_func(overwrite_if_exists=False)
 class registerfunc(object):
-	def __init__(self,Group,RequiredImports,overwrite_if_exists=False):
+	def __init__(self,Group='',RequiredGroup=[],RequiredImports=[],overwrite_if_exists=False):
 		self.Group=Group
 		self.RequiredImports=RequiredImports
+		self.RequiredGroup=RequiredGroup
 		self.overwrite_if_exists=overwrite_if_exists
    	def __call__(self,func):
    		func.id=None
 
    		if self.overwrite_if_exists:
    			if dtscmd.ComputeFunc.objects.filter(Name=func.__name__,Group=self.Group).exists():
+   				print "over writing previous function"
    				cf=dtscmd.ComputeFunc.objects.get(Name=func.__name__,Group=self.Group)
    			else:
+   				print "creating new func"
    				cf=dtscmd.ComputeFunc(Name=func.__name__,Group=self.Group)
    		else:
+   			print "creating new func"
 			cf=dtscmd.ComputeFunc(Name=func.__name__,Group=self.Group)
 
-   		cf.Info['doc']=func.__docstr__
+   		cf.Info['doc']=func.__doc__
    		cf.PklCode=cldpkl.dumps(func)
+   		cf.RequiredGroup['Group']=self.RequiredGroup
+   		cf.RequiredImports['import']=self.RequiredImports
+
+   		# cf.PklCode=cf.PklCode.replace('\0','#*0*')
+   		# cf.PklCode=''
+
    		try:
    			cf.SrcCode=getsource(func)
    		except:
    			cf.SrcCode=''
 
    		cf.save()
+   		print "saving function : ", cf.Name
 
    		func.id=cf.id
- 
+ 		print "function id = ",cf.id
    		return func
+
+
+# def getfunc(id):
+# 	funcObj=dtscmd.ComputeFunc.objects.get(id=id)
+# 	for imp in funcObj.RequiredImports['import']:
+# 		exec(imp)
+# 	func=cldpkl.loads(funcObj.PklCode)
