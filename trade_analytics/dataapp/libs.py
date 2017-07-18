@@ -228,6 +228,7 @@ def Getbatchdata(dfinstants_req,padding=None,returnAs='StackedMatrix'):
 		NT=0
 		for Symbol,dfsymb in dfinstants.groupby("Symbol"):
 			if Symbol not in ds.keys():
+				ds[Symbol]=GetStockData([Symbol])
 				ds[Symbol]=addindicators(ds[Symbol],addcols)
 
 			for ind in dfsymb.index:
