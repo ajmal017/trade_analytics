@@ -36,7 +36,7 @@ def delete_data_files(sender, instance, using, **kwargs):
 def delete_datashard_files(sender, instance, using, **kwargs):
     # print "Signal recieived to delete datashard for : ", str(instance.id)
 
-    path=instance.shardpath()
+    name,path=instance.shardpath()
     try:
 	    os.remove(path)
     except Exception as e:
