@@ -9,32 +9,6 @@ from sklearn.model_selection import train_test_split
 
 
 
-def GetShardInfo(Dataid,shardname):
-	Data=dtascmd.Data.objects.get(id=Dataid)
-	data=Data.getshard_dict(shardname)
-	ShardInfo=Data.ShardInfo['shardname']
-
-	ShardInfo['Y_shape']=data['Y'].shape
-	ShardInfo['X_shape']=data['X'].shape
-	ShardInfo['N_samples']=data['X'].shape[0]
-
-	if Data.Modeltype=='Classification':
-		ShardInfo['classes']=np.unique(data['Y'][:,0])
-		ShardInfo['samples_per_class']={}
-		for cl in ShardInfo['classes']:
-			Y=data['Y']
-			ShardInfo['samples_per_class'][cl]=Y[Y==cl].shape[0]
-
-	return ShardInfo
-
-def GetDataInfo(ShardsInfo):
-	Y_shape=[]
-	X_shape=[]
-	N_samples=[]
-	for shardname in ShardsInfo.keys():
-		Y_shape.append( ShardsInfo[shardname]['Y_shape'] )
- 		X_shape.append( ShardsInfo[shardname]['X_shape'] )
- 		N_samples.append( ShardsInfo[shardname]['N_samples'] )
 
 
 

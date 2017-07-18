@@ -296,6 +296,27 @@ LOGGING = {
             'formatter': 'verbose',
         },
 
+        'featureappfile': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join('logs','featureapp_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
+            'formatter': 'verbose',
+        },
+
+        'datasciencefile': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join('logs','datascience_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
+            'formatter': 'verbose',
+        },
+
+        'dataappfile': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': os.path.join('logs','dataapp_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
+            'formatter': 'verbose',
+        },
+
     },
 
     'loggers': {
@@ -303,11 +324,31 @@ LOGGING = {
             'handlers': ['console','debugfile','errorfile'],
             'propagate': True,
         },
+
         'debug': {
             'handlers': ['console','debugfile','errorfile'],
             'level': 'DEBUG',
             'propagate': True,
         },
+
+        'featureapp': {
+            'handlers': ['console','featureappfile','errorfile'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+
+        'datascience': {
+            'handlers': ['console','datasciencefile','errorfile'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+
+        'dataapp': {
+            'handlers': ['console','dataappfile','errorfile'],
+            'level': 'DEBUG',
+            'propagate': True,
+        },
+
     }
 
 }
@@ -318,9 +359,9 @@ LOGGING = {
 # --------------------------------------------------------------------#
 
 BROKER_URL = 'amqp://guest:guest@localhost:5672//'
-CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
+CELERY_ACCEPT_CONTENT = ['pickle']
+CELERY_TASK_SERIALIZER = 'pickle'
+CELERY_RESULT_SERIALIZER = 'pickle'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_TIMEZONE='US/Eastern'
 CELERY_ENABLE_UTC=True,
@@ -344,8 +385,10 @@ NOTEBOOK_ARGUMENTS = [
     # '--notebook-dir' , 'notebooks' ,
     '--debug',
 ]
-
-
+SHELL_PLUS_PRE_IMPORTS = [
+('datascience.models', 'DataShard'),
+    ('datascience', (('models','dtscmd')) ),
+]
 
 # --------------------------------------------------------------------#
 # REST API SETTINGS

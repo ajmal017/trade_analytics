@@ -5,9 +5,10 @@ import dataapp.models as dtamd
 import dataapp.libs as dtalibs
 import featureapp.models as ftmd
 import datascience.models as dtscmd
+import datascience.libs as dtsclibs
 import datascience.ML.MLmodels as MLmd
 import datascience.ML.MLlibs as MLlibs
-
+import pdb
 import itertools as itt
 import numpy as np
 import multiprocessing as mp
@@ -15,36 +16,11 @@ from Queue import Empty
 import time
 import pandas as pd
 from django import db
-
+from celery import group
+from celery.exceptions import TimeoutError 
+import time
 import logging
 logger = logging.getLogger('debug')
-
-## Create Stock Datasets ##################
-@shared_task
-def CreateStockShards_bySymbol(Tfs,Symbol,path):
-	N=len(Tfs)
-	dfinstants=pd.DataFrame({'T0':map(lambda x: x[0],Tfs),'TF':map(lambda x: x[1],Tfs),'Symbol':[Symbol]*N})
-	X,Meta=dtalibs.Getbatchdata(dfinstants)
-
-## Update Data Meta ########################
-
-@shared_task
-def Compute_ShardMisc(Dataid,shardname):
-	return MLlibs.GetShardInfo(Dataid,shardname)
-
-@shared_task
-def Compute_DataMisc(Dataid):
-	Data=dtscmd.Data.objects.get(id=Dataid)
-	shard_info={}
-	for shardname in Data.get_shardnames():
-		shard_info[shardname]=Compute_ShardMisc(Dataid,shardname)
-
-	for shardname in Data.get_shardnames():
-		Data.ShardInfo[shardname]=shard_info[shardname]
-
-	Data.save()
-
-
 
 
 ## Compute Function Mapper ####################
@@ -53,13 +29,118 @@ def applyfunc(Func_id,arg):
 	"""
 	arg is tuple of arguments
 	"""
-	Func=dtscmd.ComputeFunc.objects.get(id=Func_id).getfunc()
+	Func=dtscmd.ComputeFunc.objects.filter(id=Func_id).last().getfunc()
 	return Func(arg)
 
+
+
 @shared_task
-def Mapper(Func_id,args):
+def Mapper_wait(Func_id,args):
+	result=[]
 	for i in range(len(args)):
-		applyfunc(Func_id,args[i])
+		result.append( applyfunc.delay(Func_id,args[i]) )
+
+	# result=group(result)
+	time.sleep(1)
+	# M=[v for v in result.collect()]
+	M={}
+	cnt=len(result)-1
+	while 1:
+		try:
+			M[cnt]=result[cnt].get(timeout=2)
+		except TimeoutError:
+			pass
+
+		cnt=cnt-1
+		if cnt==-1:
+			cnt=len(result)-1
+		if len(M)==len(result):
+			break
+		print cnt,len(M),len(result)
+
+	return M
+
+@shared_task
+def Mapper_nowait(Func_id,args):
+	result=[]
+	for i in range(len(args)):
+		result.append( applyfunc.delay(Func_id,args[i]) )
+	return None
+
+## wirk on shards ##############
+
+@shared_task
+def applyfunc2data(funcId,dataId,wait=False):
+	"""
+	apply a Computefunc to a data shard
+	def func(shardId):
+		...
+
+	"""
+	shardIds=dtscmd.DataShard.objects.filter(Data__id=dataId).values_list('id',flat=True)
+	
+	if wait==True:
+		return Mapper_wait(funcId,shardIds)		
+	else:
+		return Mapper_nowait(funcId,shardIds)		
+
+
+## Create Raw Stock Datasets ##################
+
+@shared_task
+def CreateStockData_ShardsBySymbol(T0TF_dict_X,T0TF_dict_Y,Symbol,dataId):
+	T0TFSymbol_dict_X=[]
+	for pp in T0TF_dict_X:
+		pp['Symbol']=Symbol
+		T0TFSymbol_dict_X.append(pp)
+
+	T0TFSymbol_dict_Y=[]
+	for pp in T0TF_dict_Y:
+		pp['Symbol']=Symbol
+		T0TFSymbol_dict_Y.append(pp)
+
+	return dtsclibs.CreateStockData_ShardsBySymbol(T0TFSymbol_dict_X,T0TFSymbol_dict_Y,dataId)
+
+@shared_task
+def CreateStockData_1(T0TF_dict_X,T0TF_dict_Y,dataId,Symbols):
+	if Symbols is None:
+		Symbols=stkmd.Stockmeta.objects.all().values_list('Symbol',flat=True)
+	
+	for Symbol in Symbols:
+		CreateStockData_ShardsBySymbol(T0TF_dict_X,T0TF_dict_Y,Symbol,dataId)
+
+@shared_task
+def CreateStockData_2(window,window_fut,dataId,Symbols):
+	if Symbols is None:
+		Symbols=stkmd.Stockmeta.objects.all().values_list('Symbol',flat=True)
+	
+	T0TF_dict_X=map(lambda x: { 'T0':(x.date()-pd.DateOffset(window)).date(),'TF' :x.date(),'window':window },
+			pd.date_range(start=pd.datetime(2010,1,1),end=pd.datetime.today(),freq='W-MON') )
+
+	T0TF_dict_Y=map(lambda x: { 'T0':x.date(), 'TF' : (x.date()+pd.DateOffset(window_fut)).date(),'window':window_fut },
+			pd.date_range(start=pd.datetime(2010,1,1),end=pd.datetime.today(),freq='W-MON') )
+	
+	# pdb.set_trace()
+
+	for Symbol in Symbols:
+		print "Working on Symbol ", Symbol
+		CreateStockData_ShardsBySymbol.delay(T0TF_dict_X,T0TF_dict_Y,Symbol,dataId)
+
+### Do Data transformers ########################
+
+@shared_task
+def shardTransformer(shard0Id,dataId1):
+	return dtsclibs.shardTransformer(shard0Id,dataId1)
+
+@shared_task
+def Perform_TransformData(dataId1):
+	data1=dtscmd.Data.objects.get(id=dataId1)
+	data0=data1.ParentData
+	# funcId=data1.TransfomerFunc.id
+	shard0Ids=data0.objects.all().values_list('id',flat=True)
+	
+	for shard0Id in shard0Ids:
+		shardTransformer(shard0Id,dataId1)
 
 ### Do ML #######################
 

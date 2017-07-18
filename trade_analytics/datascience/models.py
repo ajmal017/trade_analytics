@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.fields import JSONField
+import utility.models as utymd
 
 import pandas as pd
 import numpy as np
@@ -40,6 +41,16 @@ class Label(models.Model):
 
 """
 
+class ModelCode(utymd.ComputeCode):
+
+	module='datascience'
+	codesfolder='ModelCodes'
+
+class DataCode(utymd.ComputeCode):
+
+	module='datascience'
+	codesfolder='DataCodes'
+
 
 class ComputeFunc(models.Model):
 	"""
@@ -51,7 +62,10 @@ class ComputeFunc(models.Model):
 	RequiredImports=JSONField(default={})
 	RequiredGroup=JSONField(default={})
 
+	Transformer=models.BooleanField(default=False)
+
 	Info=JSONField(default={})
+	
 	PklCode=models.BinaryField()
 	SrcCode=models.TextField()
 
@@ -61,6 +75,8 @@ class ComputeFunc(models.Model):
 	def getfunc(self,getlatest=True):
 		import cloudpickle as cldpkl
 		return cldpkl.loads(self.PklCode)
+
+
 
 class Project(models.Model):
 	Name=models.CharField(max_length=200)
@@ -74,8 +90,6 @@ class Project(models.Model):
 	def bigdatapath(self):
 		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Name)
 
-	def projectpath(self):
-		return os.path.join(settings.BASE_DIR,'datascience','Projects',self.Name)
 
 	def initialize(self):
 		# make the bigdata path, to store large data
@@ -83,10 +97,7 @@ class Project(models.Model):
 		if not os.path.isdir(path):
 			os.makedirs(path)
 
-		# save the
-		path=self.projectpath()
-		if not os.path.isdir(path):
-			os.makedirs(path)
+
 
 
 class Data(models.Model):
@@ -97,7 +108,9 @@ class Data(models.Model):
 	bigdata/datascience/Projects/$ProjectName/Data/$Datatype/$GroupName_$tag
 	"""
 	Project=models.ForeignKey(Project,on_delete=models.CASCADE)
+
 	ParentData=models.ForeignKey('self',on_delete=models.CASCADE,null=True)
+	TransfomerFunc=models.ForeignKey(ComputeFunc,on_delete=models.SET_NULL,null=True)
 
 	GroupName=models.CharField(max_length=200)
 	Info=JSONField(default={})
@@ -137,44 +150,7 @@ class Data(models.Model):
 		if not os.path.isdir(path):
 			os.makedirs(path)
 
-	def get_shardnames(self):
-		return self.ShardInfo.keys()
 
-
-	def getshard_dict(self,name):
-		path=os.path.join(self.datapath(),name+"."+self.Dataformat)
-		if self.Dataformat=='joblib':
-			with open(path,'r') as F:
-				return joblib.load(F)
-		elif self.Dataformat=='npz':
-			np.load(path)
-
-	def gen_shard(self):
-		for name in self.ShardInfo.keys():
-			yield self.getshard_dict(name)
-
-
-	def get_first_shard(self):
-		name = self.ShardInfo.keys()[0]
-		return self.getshard_dict(name)
-
-
-	def full_data(self):
-		X=None
-		Y=None
-		for name in self.ShardInfo.keys():
-			path=os.path.join(self.datapath(),name+"."+self.Dataformat)
-			if self.Dataformat=='joblib':
-				with open(path,'r') as F:
-					D=joblib.load(F)
-				if X is None:
-					X=D['X']
-					Y=D['Y']
-				else:
-					X=np.vstack((X,D['X']))
-					Y=np.vstack((Y,D['Y']))
-
-		return (X,Y)
 
 class DataShard(models.Model):
 	Data=models.ForeignKey(Data,on_delete=models.CASCADE)
@@ -192,14 +168,26 @@ class DataShard(models.Model):
 		path=os.path.join(self.Data.datapath(),name+"."+self.Data.Dataformat)
 		return (name,path)
 
+	def savedata(self,**kwargs):
+		name,path=self.shardpath()
+		if self.Data.Dataformat=='npz':
+			np.savez_compressed(path,**kwargs)
+
+	def getdata(self):
+		name,path=self.shardpath()
+		if self.Data.Dataformat=='npz':
+			data=np.load(path)
+		return ( data['X'], data['Y'], data['Meta'][()] )
+
+
 
 class MLmodels(models.Model):
 	"""
 	In the description, please mention the way the data is to be read
 	ProjectName--> Data --> Raw --> DataName --> files
 	"""
-	Project=models.ForeignKey(Project,on_delete=models.CASCADE)
-	Data=models.ForeignKey(Data,on_delete=models.CASCADE)
+	Project=models.ForeignKey(Project,on_delete=models.SET_NULL,null=True)
+	Data=models.ForeignKey(Data,on_delete=models.SET_NULL,null=True)
 
 	Name=models.CharField(max_length=200,unique=True)
 	Info=JSONField(default={})

@@ -12,10 +12,32 @@ from talib import abstract
 import numpy as np
 from utility import maintenance as mnt
 
+
+
 import logging
-logger=logging.getLogger('debug')
+logger=logging.getLogger('dataapp')
 
 import time
+
+def str2date(T):
+	"""
+	- Given a T, return the datetime object of type date
+	- if T is string, first convert it
+	- if T is datetime, convert to date
+	"""
+
+	if isinstance(T,basestring):
+		try:
+			TT=pd.to_datetime(T).date()
+			return TT
+		except:
+			return T
+	
+	elif type(T)==datetime.datetime or type(T)==pd.datetime: 
+		return T.date()
+
+	elif type(T)==pd.datetime.date or type(T)==datetime.date:
+		return T
 
 def StockDataFrame_validate(df,columns=['Close','Open','High','Low','Volume']):
 	for cc in columns:
@@ -74,7 +96,7 @@ def StockDataFrame_sanitize(df,standardize=False):
 
 	return df
 
-@mnt.logperf('debug',printit=True)
+@mnt.logperf('dataapp',printit=True)
 def addindicators(df,cols):
 	inputs = {
     'open': df['Open'].values,
@@ -116,7 +138,7 @@ def addindicators(df,cols):
 	return df
 
 
-@mnt.logperf('debug',printit=True)
+@mnt.logperf('dataapp',printit=True)
 def GetStockData(Symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None):
 	if type(Symbolids)==list:
 		Symbolids=list(Symbolids)
@@ -167,31 +189,77 @@ def GetStockData(Symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datet
 		return df
 
 
-def Getbatchdata(dfinstants):
+def Getbatchdata(dfinstants_req,padding=None,returnAs='StackedMatrix'):
 	"""
 	DataFrame input as
 	dfinstants= [ (Symbol, T0,TF), ... ]
 	return in same order
+	padding can be : ['OnTop','FromBottom']
 	"""
-	dfinstants.index=range(len(dfinstants))
-	D={}
-	for Symbol,dfsymb in dfinstants.groupby("Symbol"):
-		ds=GetStockData([Symbol])
-		for ind in dfsymb.index:
-			T0=dfsymb.loc[ind,'T0']
-			TF=dfsymb.loc[ind,'TF']
-			window=dfsymb.loc[ind,'window']
-			D[ind]=ds[T0:TF].copy()
+	if type(dfinstants_req)!=list:
+		dfinstants_req=[dfinstants_req]
 
-	X=None
-	for ind in dfinstants.index:
-		Y=np.expand_dims(D[ind].values,axis=0)
-		if X is None:
-			X=Y
-		else:
-			X=np.vstack((X,Y))
-	Meta={'shape':X.shape,'dfinstants':dfinstants}
-	return X,Meta
+	ReturnData=[]
+	ds={}
+	cols=None
+
+	for cnt in range(len(dfinstants_req)) :
+		dfinstants = dfinstants_req[cnt]
+
+		dfinstants.index=range(len(dfinstants))
+
+		D={}
+		
+		NT=0
+		for Symbol,dfsymb in dfinstants.groupby("Symbol"):
+			if Symbol not in ds.keys():
+				ds[Symbol]=GetStockData([Symbol])
+
+			for ind in dfsymb.index:
+				T0=str2date( dfsymb.loc[ind,'T0'] )
+				TF=str2date( dfsymb.loc[ind,'TF'] )
+				
+				window=dfsymb.loc[ind,'window']
+				NT=max([NT,window])
+				
+				D[ind]=ds[Symbol][T0:TF].copy()
+
+				if cols is None:
+					if len(D[ind].index)>0:
+						cols=D[ind].columns
+
+		# padding
+		for ind in dfinstants.index:
+			if len(D[ind])<NT:
+				d={}
+				Nd=NT-len(D[ind])
+				for cc in D[ind].columns:
+					d[cc]=[np.nan]*Nd
+
+				if padding[cnt]=='OnTop':
+					D[ind]=pd.concat([ pd.DataFrame(d) , D[ind] ])
+
+				elif padding[cnt]=='FromBottom':	
+					D[ind]=pd.concat([ D[ind], pd.DataFrame(d) ])
+
+
+		X=None
+		for ind in dfinstants.index:
+			Y=np.expand_dims(D[ind].values,axis=0)
+			# print Y.shape
+
+			if X is None:
+				X=Y
+			else:
+				X=np.vstack((X,Y))
+
+		Meta={'shape':X.shape,'dfinstants':dfinstants,'columns':cols}
+		ReturnData.append( (X,Meta) )
+	
+	if len(ReturnData)==1:
+		return ReturnData[0]
+	else:
+		return ReturnData
 
 def predownloadcheck(stk):
 	Todate=pd.datetime.today().date()
