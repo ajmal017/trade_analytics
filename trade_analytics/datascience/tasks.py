@@ -56,7 +56,11 @@ def Mapper_wait(Func_id,args):
 			cnt=len(result)-1
 		if len(M)==len(result):
 			break
+<<<<<<< HEAD
 		print cnt,len(M),len(result)
+=======
+		# print cnt,len(M),len(result)
+>>>>>>> 5df7f4ee359653bde577e52dea7430d6ee653363
 
 	return M
 
@@ -107,7 +111,11 @@ def CreateStockData_1(T0TF_dict_X,T0TF_dict_Y,dataId,Symbols):
 		Symbols=stkmd.Stockmeta.objects.all().values_list('Symbol',flat=True)
 	
 	for Symbol in Symbols:
+<<<<<<< HEAD
 		CreateStockData_ShardsBySymbol(T0TF_dict_X,T0TF_dict_Y,Symbol,dataId)
+=======
+		CreateStockData_ShardsBySymbol.delay(T0TF_dict_X,T0TF_dict_Y,Symbol,dataId)
+>>>>>>> 5df7f4ee359653bde577e52dea7430d6ee653363
 
 @shared_task
 def CreateStockData_2(window,window_fut,dataId,Symbols):

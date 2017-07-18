@@ -25,7 +25,7 @@ jinja2
 pymongo
 django-multiselectfield
 cloudpickle
-
+joblib
 
 
 #git clone git://repo.or.cz/docutils.git

@@ -126,6 +126,9 @@ def addindicators(df,cols):
 				elif cc['name']=='EMAstd':
 					df[cc['colname']]=df['Close'].ewm(span=cc['timeperiod']).std(bias=False)
 					df[cc['colname']]=df[cc['colname']].astype(float)
+				elif cc['name']=='VolSMA':
+					df[cc['colname']]=df['Volume'].rolling(window=cc['timeperiod']).mean()
+					df[cc['colname']]=df[cc['colname']].astype(float)
 				else:
 					print "Indicator not available"
 
@@ -203,6 +206,20 @@ def Getbatchdata(dfinstants_req,padding=None,returnAs='StackedMatrix'):
 	ds={}
 	cols=None
 
+<<<<<<< HEAD
+=======
+	addcols=[	{'name':'SMA','timeperiod':10,'colname':'SMA10'},
+        		{'name':'SMA','timeperiod':20,'colname':'SMA20'},
+        		{'name':'SMA','timeperiod':50,'colname':'SMA50'},
+        		{'name':'SMA','timeperiod':100,'colname':'SMA100'},
+        		{'name':'SMA','timeperiod':200,'colname':'SMA200'},
+        		{'name':'VolSMA','timeperiod':10,'colname':'VolSMA10'},
+        		{'name':'VolSMA','timeperiod':20,'colname':'VolSMA20'},
+        		{'name':'EMA','timeperiod':8,'colname':'EMA8'},
+        		{'name':'EMA','timeperiod':20,'colname':'EMA20'},
+        	]
+
+>>>>>>> 5df7f4ee359653bde577e52dea7430d6ee653363
 	for cnt in range(len(dfinstants_req)) :
 		dfinstants = dfinstants_req[cnt]
 
@@ -214,6 +231,10 @@ def Getbatchdata(dfinstants_req,padding=None,returnAs='StackedMatrix'):
 		for Symbol,dfsymb in dfinstants.groupby("Symbol"):
 			if Symbol not in ds.keys():
 				ds[Symbol]=GetStockData([Symbol])
+<<<<<<< HEAD
+=======
+				ds[Symbol]=addindicators(ds[Symbol],addcols)
+>>>>>>> 5df7f4ee359653bde577e52dea7430d6ee653363
 
 			for ind in dfsymb.index:
 				T0=str2date( dfsymb.loc[ind,'T0'] )
@@ -222,7 +243,11 @@ def Getbatchdata(dfinstants_req,padding=None,returnAs='StackedMatrix'):
 				window=dfsymb.loc[ind,'window']
 				NT=max([NT,window])
 				
+<<<<<<< HEAD
 				D[ind]=ds[Symbol][T0:TF].copy()
+=======
+				D[ind]=ds[Symbol][T0:TF]
+>>>>>>> 5df7f4ee359653bde577e52dea7430d6ee653363
 
 				if cols is None:
 					if len(D[ind].index)>0:
