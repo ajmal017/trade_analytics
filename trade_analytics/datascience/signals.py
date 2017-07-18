@@ -2,8 +2,7 @@ from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 import datascience.models as dtscmd
 import shutil
-<<<<<<< HEAD
-=======
+
 import os
 
 @receiver(pre_delete, sender=dtscmd.Project, dispatch_uid='project_delete_signal')
@@ -57,7 +56,7 @@ def delete_MLmodels_files(sender, instance, using, **kwargs):
 	    shutil.rmtree(path)
     except Exception as e:
     	print e
->>>>>>> 5df7f4ee359653bde577e52dea7430d6ee653363
+
 
 @receiver(pre_delete, sender=dtscmd.Project, dispatch_uid='project_delete_signal')
 def delete_project_files(sender, instance, using, **kwargs):
