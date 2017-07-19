@@ -252,16 +252,18 @@ def Getbatchdata(dfinstants_req,padding=None,returnAs='StackedMatrix'):
 				for cc in D[ind].columns:
 					d[cc]=[np.nan]*Nd
 
+				dummyfill=pd.DataFrame(d)
+				
 				if padding[cnt]=='OnTop':
-					D[ind]=pd.concat([ pd.DataFrame(d) , D[ind] ])
+					D[ind]=pd.concat([ dummyfill[cols] , D[ind][cols] ])
 
 				elif padding[cnt]=='FromBottom':	
-					D[ind]=pd.concat([ D[ind], pd.DataFrame(d) ])
+					D[ind]=pd.concat([ D[ind][cols], dummyfill[cols] ])
 
 
 		X=None
 		for ind in dfinstants.index:
-			Y=np.expand_dims(D[ind].values,axis=0)
+			Y=np.expand_dims(D[ind][cols].values,axis=0)
 			# print Y.shape
 
 			if X is None:
