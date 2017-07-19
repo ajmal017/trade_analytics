@@ -147,7 +147,7 @@ if os.path.isdir(BIGDATA_DIR)==False:
 
 
     #--------------------------POSTGRES --------------
-IP='192.168.103'
+IP='localhost'
 PORT='5432'
 DATABASES = {
     'default': {
