@@ -127,7 +127,7 @@ def CreateStockData_2(window,window_fut,dataId,Symbols):
 		print "Working on Symbol ", Symbol
 		CreateStockData_ShardsBySymbol.delay(T0TF_dict_X,T0TF_dict_Y,Symbol,dataId)
 
-### Do Data transformers ########################
+### Do DataSet transformers to new Datasets ########################
 
 @shared_task
 def shardTransformer(shard0Id,dataId1):
@@ -138,10 +138,10 @@ def Perform_TransformData(dataId1):
 	data1=dtscmd.Data.objects.get(id=dataId1)
 	data0=data1.ParentData
 	# funcId=data1.TransfomerFunc.id
-	shard0Ids=data0.objects.all().values_list('id',flat=True)
+	shard0Ids=dtscmd.DataShard.objects.filter(Data=data0).values_list('id',flat=True)
 	
 	for shard0Id in shard0Ids:
-		shardTransformer(shard0Id,dataId1)
+		shardTransformer.delay(shard0Id,dataId1)
 
 ### Do ML #######################
 

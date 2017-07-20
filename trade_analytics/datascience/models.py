@@ -113,7 +113,7 @@ class Data(models.Model):
 	TransfomerFunc=models.ForeignKey(ComputeFunc,on_delete=models.SET_NULL,null=True)
 
 	GroupName=models.CharField(max_length=200)
-	Info=JSONField(default={})
+	Info=JSONField(default={},null=True)
 
 	# tags that are same, are kind of pairs
 	tag=models.CharField(max_length=200)

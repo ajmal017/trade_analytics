@@ -7,10 +7,12 @@ import functools
 import pandas as pd
 from utility import maintenance as mnt
 import logging
+import pdb
+
 logger = logging.getLogger('datascience')
 
 
-def register_dataset(project_Name=None,project_Info=None,
+def register_dataset(project_Name=None,project_Info=None,DataInfo=None,
 					Datatype=None,GroupName=None,tag=None,data_format=None,Modeltype=None,
 					TransformedFromDataId=None,TransFuncId=None,use_project_ifexists=True ):
 
@@ -31,23 +33,20 @@ def register_dataset(project_Name=None,project_Info=None,
 		print "the pair (TransformedFromDataId,TransFuncId) both have to have a value or both None simultaneously"
 		return False
 
-	if not TransformedFromDataId and not TransFuncId:
+	if TransformedFromDataId and TransFuncId:
 		# check if function exists
 		if dtscmd.ComputeFunc.objects.filter(id=TransFuncId).exists()==False:
 			print "Transformer function does not exists"
 			return False
 			
-		# first get data0
+		# first get data0, if some shards exists for it
 		if dtscmd.DataShard.objects.filter(Data__id=TransformedFromDataId).exists():
-			data0=dtscmd.DataShard.objects.get(Data__id=TransformedFromDataId)
+			data0=dtscmd.Data.objects.get(id=TransformedFromDataId)
 		else:
 			print "TransformedFromDataId = ",TransformedFromDataId, "has no data"
 			return False
 
-		# if data0 has no shards then error
-		if dtscmd.DataShard.objects.filter(Data=data0).exists()==False:
-			print "Old dataset has no shards, failed "
-			return False
+		
 
 		if not project_Name:
 			project_Name=data0.Project.Name
@@ -68,7 +67,7 @@ def register_dataset(project_Name=None,project_Info=None,
 
 
 
-
+	
 
 	if dtscmd.Project.objects.filter(Name=project_Name).exists()==True:
 		print "Project ",project_Name, " already exists"
@@ -89,15 +88,24 @@ def register_dataset(project_Name=None,project_Info=None,
 	if dtscmd.Data.objects.filter(Project=project,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype).exists():
 		data=dtscmd.Data.objects.get(Project=project,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype)
 		print "The dataset already exists"
+		if DataInfo is not None:
+			data.Info=DataInfo
+			print "updating data info"
+		data.save()
+
 		data.initialize()
 
 	else:
-		data=dtscmd.Data(Project=project,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype)
+		data=dtscmd.Data(Project=project,Info=DataInfo,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype)
 		data.save()
 		data.initialize()
 
 
-	if not TransformedFromDataId and not TransFuncId:
+	if TransformedFromDataId and TransFuncId:
+		if dtscmd.DataShard.objects.filter(Data=data).exists():
+			print "the new dataset already has shard, trasnformation not possible, delete them first and run again"
+			return False
+
 		if data.id==data0.id:
 			print "Looks like you might over write the data, fail safe create a new dataset"
 			return False
@@ -106,7 +114,7 @@ def register_dataset(project_Name=None,project_Info=None,
 		data.TransfomerFunc=dtscmd.ComputeFunc.objects.get(id=TransFuncId)
 		data.save()
 		data.initialize()
-
+		print "saving transfoermer function to this dataset"
 	
 
 	print ("project id","data id")," : ",(project.id,data.id)
@@ -183,9 +191,8 @@ def shardTransformer(shardId0,dataId1):
 	Transform shardId0 to a new shard under dataId1
 	using the transformner function saved in dataId1
 	"""
-
-	shard1=dtscmd.DataShard(Data__id=dataId1)
-	shard1.save()
+	data1=dtscmd.Data.objects.get(id=dataId1)
+	
 	
 	shard0=dtscmd.DataShard.objects.get(id=shardId0)
 	X,Y,Meta=shard0.getdata()
@@ -194,7 +201,12 @@ def shardTransformer(shardId0,dataId1):
 	func=data1.TransfomerFunc.getfunc()	
 
 	X1,Y1,Meta1=func(X,Y,Meta)
+
+	shard1=dtscmd.DataShard(Data=data1)
+	shard1.save()
 	shard1.savedata(X=X1,Y=Y1,Meta=Meta1)
+	print "done transforming shardId0 ",shardId0," to new shardid = ",shard1.id
+
 
 
 
