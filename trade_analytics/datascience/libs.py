@@ -24,6 +24,52 @@ def register_dataset(project_Name=None,project_Info=None,
 	# data_format='npz',
 	# Modeltype='Regression',
 
+	# if you want to create a data set from another data make sure:
+	# - The new dataset has no shards
+	# - The old dataset that is being transformed has some shards	
+	if (not TransformedFromDataId and TransFuncId) or (TransformedFromDataId and not TransFuncId):
+		print "the pair (TransformedFromDataId,TransFuncId) both have to have a value or both None simultaneously"
+		return False
+
+	if not TransformedFromDataId and not TransFuncId:
+		# check if function exists
+		if dtscmd.ComputeFunc.objects.filter(id=TransFuncId).exists()==False:
+			print "Transformer function does not exists"
+			return False
+			
+		# first get data0
+		if dtscmd.DataShard.objects.filter(Data__id=TransformedFromDataId).exists():
+			data0=dtscmd.DataShard.objects.get(Data__id=TransformedFromDataId)
+		else:
+			print "TransformedFromDataId = ",TransformedFromDataId, "has no data"
+			return False
+
+		# if data0 has no shards then error
+		if dtscmd.DataShard.objects.filter(Data=data0).exists()==False:
+			print "Old dataset has no shards, failed "
+			return False
+
+		if not project_Name:
+			project_Name=data0.Project.Name
+		if not project_Info:	
+			project_Info=data0.Project.Name
+		if not Datatype:	
+			Datatype=data0.Datatype
+		if not GroupName:	
+			GroupName=data0.GroupName
+		if not tag:	
+			tag=data0.tag
+		if not data_format:	
+			data_format=data0.Dataformat
+		if not Modeltype:	
+			Modeltype=data0.Modeltype
+		if not data_format:	
+			data_format=data0.Dataformat
+
+
+
+
+
 	if dtscmd.Project.objects.filter(Name=project_Name).exists()==True:
 		print "Project ",project_Name, " already exists"
 		project=dtscmd.Project.objects.get(Name=project_Name)
@@ -43,16 +89,25 @@ def register_dataset(project_Name=None,project_Info=None,
 	if dtscmd.Data.objects.filter(Project=project,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype).exists():
 		data=dtscmd.Data.objects.get(Project=project,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype)
 		print "The dataset already exists"
-		# return None
+		data.initialize()
 
 	else:
 		data=dtscmd.Data(Project=project,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype)
-		if TransformedFromDataId:
-			data.ParentData=dtscmd.Data.objects.get(id=TransformedFromDataId)
-			data.TransfomerFunc=dtscmd.ComputeFunc.objects.get(id= TransFuncId)
 		data.save()
+		data.initialize()
+
+
+	if not TransformedFromDataId and not TransFuncId:
+		if data.id==data0.id:
+			print "Looks like you might over write the data, fail safe create a new dataset"
+			return False
+		
+		data.ParentData=data0;
+		data.TransfomerFunc=dtscmd.ComputeFunc.objects.get(id=TransFuncId)
+		data.save()
+		data.initialize()
+
 	
-	data.initialize()
 
 	print ("project id","data id")," : ",(project.id,data.id)
 	return project.id,data.id
