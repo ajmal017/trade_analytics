@@ -121,6 +121,9 @@ class Data(models.Model):
 	model_types=[('Classification','Classification'),('Regression','Regression')]
 	Modeltype=models.CharField(choices=model_types,max_length=20)
 
+	data_structures=[('Channels','Channels'),('Flattened','Flattened')]
+	DataStructure=models.CharField(choices=data_structures,max_length=20,default='Channels')
+
 	data_choices=[('Raw','Raw'),('RawProcessed','RawProcessed'),('Train','Train'),('Validation','Validation'),('Test','Test')]
 	Datatype=models.CharField(choices=data_choices,max_length=20)
 

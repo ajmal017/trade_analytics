@@ -208,6 +208,3 @@ def shardTransformer(shardId0,dataId1):
 	print "done transforming shardId0 ",shardId0," to new shardid = ",shard1.id
 
 
-
-
-
