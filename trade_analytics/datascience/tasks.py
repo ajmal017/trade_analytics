@@ -1,24 +1,14 @@
 from __future__ import division
 from celery import shared_task
 import stockapp.models as stkmd
-import dataapp.models as dtamd
-import dataapp.libs as dtalibs
-import featureapp.models as ftmd
+
 import datascience.models as dtscmd
 import datascience.libs as dtsclibs
 import datascience.ML.MLmodels as MLmd
-import datascience.ML.MLlibs as MLlibs
-import pdb
-import itertools as itt
-import numpy as np
-import multiprocessing as mp
-from Queue import Empty
+
 import time
 import pandas as pd
-from django import db
-from celery import group
 from celery.exceptions import TimeoutError 
-import time
 import logging
 logger = logging.getLogger('debug')
 
@@ -127,6 +117,8 @@ def CreateStockData_2(window,window_fut,dataId,Symbols):
 		print "Working on Symbol ", Symbol
 		CreateStockData_ShardsBySymbol.delay(T0TF_dict_X,T0TF_dict_Y,Symbol,dataId)
 
+
+
 ### Do DataSet transformers to new Datasets ########################
 
 @shared_task
@@ -142,6 +134,25 @@ def Perform_TransformData(dataId1):
 	
 	for shard0Id in shard0Ids:
 		shardTransformer.delay(shard0Id,dataId1)
+
+
+
+def train_valid_split(shard0Id,traindataId,validdataId,N):
+	from sklearn.model_selection import train_test_split
+	shard0=dtscmd.DataShard.objects.get(id=shard0Id)
+
+	X,Y,Meta=shard0.getdata()
+	X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, random_state=N)
+
+	if traindataId is not None:
+		shardt=dtscmd.DataShard(Data__id=traindataId)
+		shardt.save()
+		shardt.savedata(X=X_train,Y=y_train,Meta=Meta)
+
+	if validdataId is not None:
+		shardv=dtscmd.DataShard(Data__id=validdataId)
+		shardv.save()
+		shardv.savedata(X=X_test,Y=y_test,Meta=Meta)
 
 ### Do ML #######################
 

@@ -12,7 +12,7 @@ import pdb
 logger = logging.getLogger('datascience')
 
 
-def register_dataset(project_Name=None,project_Info=None,DataInfo=None,
+def register_dataset(project_Name=None,project_Info=None,ParentDataId=None,DataInfo=None,
 					Datatype=None,GroupName=None,tag=None,data_format=None,Modeltype=None,
 					TransformedFromDataId=None,TransFuncId=None,use_project_ifexists=True ):
 
@@ -29,6 +29,24 @@ def register_dataset(project_Name=None,project_Info=None,DataInfo=None,
 	# if you want to create a data set from another data make sure:
 	# - The new dataset has no shards
 	# - The old dataset that is being transformed has some shards	
+
+	if ParentDataId is not None:
+		ParentData=dtscmd.Data.objects.get(id=ParentDataId)
+		if not project_Name:
+			project_Name=ParentData.Project.Name
+		if not project_Info:	
+			project_Info=ParentData.Project.Name
+		if not Datatype:	
+			Datatype=ParentData.Datatype
+		if not GroupName:	
+			GroupName=ParentData.GroupName
+		if not tag:	
+			tag=ParentData.tag
+		if not data_format:	
+			data_format=ParentData.Dataformat
+		if not Modeltype:	
+			Modeltype=ParentData.Modeltype
+
 	if (not TransformedFromDataId and TransFuncId) or (TransformedFromDataId and not TransFuncId):
 		print "the pair (TransformedFromDataId,TransFuncId) both have to have a value or both None simultaneously"
 		return False
@@ -62,8 +80,7 @@ def register_dataset(project_Name=None,project_Info=None,DataInfo=None,
 			data_format=data0.Dataformat
 		if not Modeltype:	
 			Modeltype=data0.Modeltype
-		if not data_format:	
-			data_format=data0.Dataformat
+
 
 
 
@@ -87,6 +104,9 @@ def register_dataset(project_Name=None,project_Info=None,DataInfo=None,
 
 	if dtscmd.Data.objects.filter(Project=project,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype).exists():
 		data=dtscmd.Data.objects.get(Project=project,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype)
+		if ParentDataId is not None:
+			data.ParentData=dtscmd.Data.objects.get(id=ParentDataId)
+
 		print "The dataset already exists"
 		if DataInfo is not None:
 			data.Info=DataInfo
@@ -97,6 +117,9 @@ def register_dataset(project_Name=None,project_Info=None,DataInfo=None,
 
 	else:
 		data=dtscmd.Data(Project=project,Info=DataInfo,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype)
+		if ParentDataId is not None:
+			data.ParentData=dtscmd.Data.objects.get(id=ParentDataId)
+
 		data.save()
 		data.initialize()
 
@@ -119,6 +142,8 @@ def register_dataset(project_Name=None,project_Info=None,DataInfo=None,
 
 	print ("project id","data id")," : ",(project.id,data.id)
 	return project.id,data.id
+
+
 
 
 # @register_func(overwrite_if_exists=False)

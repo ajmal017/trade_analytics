@@ -1,3 +1,4 @@
+from __future__ import division
 import datascience.libs as dtsclibs
 import pdb
 
@@ -495,7 +496,7 @@ def StandardizeData_Close01Volume01_X30_Y5_flatout(X,Y,Meta):
     Yn=None
     Metan=None
     for i in range(Nsamples):
-        dfX=pd.DataFrame(X[i,:,:],columns=colsX)
+        dfX=pd.DataFrame(X[i,:,:],columns=colsX).iloc[-30:]
         dfY=pd.DataFrame(Y[i,:,:],columns=colsY)
         
         
@@ -540,7 +541,7 @@ def StandardizeData_Close01Volume01_X30_Y5_flatout(X,Y,Meta):
 
         dfX['Close']=(dfX['Close']-mn)/mx
         
-        XX=np.expand_dims( dfX.iloc[-30:][FinalXcols].astype(float).values.flatten(order='F')   ,axis=0     )
+        XX=np.expand_dims( dfX[FinalXcols].astype(float).values.flatten(order='F')   ,axis=0     )
         YY=np.expand_dims( np.array([int(Ydict[key]) for key in FinalYcols]),axis=0 )
         if Xn is None:
             Xn=XX

@@ -1,18 +1,20 @@
 from __future__ import division
-import datascience.MLmodels as MLmd
-import datascience.models as dtascmd
+import datascience.models as dtscmd
+import datascience.libs as dtsclibs
+import datascience.tasks as dtsctks
 import numpy as np
 import pandas as pd
 import time
 import threading
-from sklearn.model_selection import train_test_split
 
 
 
 
 
 
-def get_train_test_from_RawProcessed(InputData):
+
+
+def get_train_test_from_RawProcessed(DataId):
 	"""
 	- Make 5 sets of training and test data 70:30 splits
 	- Make additional 20  30% slits
@@ -22,50 +24,29 @@ def get_train_test_from_RawProcessed(InputData):
 
 	- Start a thread, and monitor the size of the numpy array and then make a separate shard
 	"""
-	if InputData.Datatype!='RawProcessed':
-		print "Data has to have Datatype as  RawProcessed"
-		return False
+	data=dtscmd.Data.objects.get(id=DataId)
 
+	
 
 	for split in range(5):
 		s=time.time()
 		s=(s-int(s))* 10000+split
 		N=np.random.seed(s)
 
-		TrainData= dtascmd.Data(Project=InputData.Project,ParentData=InputData,GroupName='BasicSplit',tag='Split_%s'%split,Modeltype=InputData.Modeltype,Datatype='Train',Dataformat='h5')
-		TrainData.save()
-		TrainData.initialize()
+		projectid,traindataId=dtsclibs.register_dataset(ParentdataId=DataId,Datatype='Train',tag=str(data.tag)+'_train_'+str(split) )
+		projectid,validdataId=dtsclibs.register_dataset(ParentdataId=DataId,Datatype='Validation',tag=str(data.tag)+'_valid_'+str(split) )
 
-		ValidationData= dtascmd.Data(Project=InputData.Project,ParentData=InputData,GroupName='BasicSplit',tag='Split_%s'%split,Modeltype=InputData.Modeltype,Datatype='Validation',Dataformat='h5')
-		ValidationData.save()
-		ValidationData.initialize()
+		for shard in dtscmd.DataShard.objects.filter(Data=data) :
+			dtsctks.train_valid_split(shard.id,traindataId,validdataId,N)
 
-		for df in InputData.gen_readshard():
-
-			df_train, df_test, y_train, y_test = train_test_split(df, df.index, test_size=0.33, random_state=N)
-
-			shardname,shardpath=TrainData.newshardpath()
-			df_train.to_hdf(shardpath,'table')
-			TrainData.ShardInfo[shardname]['#samples'] =len(df_train)
-
-			shardname,shardpath=ValidationData.newshardpath()
-			df_test.to_hdf(shardpath,'table')
-			ValidationData.ShardInfo[shardname]['#samples'] =len(df_test)
-
-
-	for split in range(5,25):
+			
+	# create more validation sets
+	for split in range(5,10):
 		s=time.time()
 		s=(s-int(s))* 10000+split
 		N=np.random.seed(s)
 
-		ValidationData= dtascmd.Data(Project=InputData.Project,ParentData=InputData,GroupName='BasicSplit',tag='Split_%s'%split,Modeltype=InputData.Modeltype,Datatype='Validation',Dataformat='h5')
-		ValidationData.save()
-		ValidationData.initialize()
-
-		for df in InputData.gen_readshard():
-
-			df_train, df_test, y_train, y_test = train_test_split(df, df.index, test_size=0.33, random_state=N)
-
-			shardname,shardpath=ValidationData.newshardpath()
-			df_test.to_hdf(shardpath,'table')
-			ValidationData.ShardInfo[shardname]['#samples'] =len(df_test)
+		projectid,validdataId=dtsclibs.register_dataset(ParentdataId=DataId,Datatype='Validation',tag=str(data.tag)+'_valid_'+str(split) )
+		
+		for shard in dtscmd.DataShard.objects.filter(Data=data) :
+			dtsctks.train_valid_split(shard.id,None,validdataId,N)
