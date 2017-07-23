@@ -136,23 +136,38 @@ def Perform_TransformData(dataId1):
 		shardTransformer.delay(shard0Id,dataId1)
 
 
-
-def train_valid_split(shard0Id,traindataId,validdataId,N):
+@shared_task
+def train_valid_split(traindataId,validdataId,N):
 	from sklearn.model_selection import train_test_split
-	shard0=dtscmd.DataShard.objects.get(id=shard0Id)
 
-	X,Y,Meta=shard0.getdata()
-	X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, random_state=N)
+	data0Id=dtscmd.Data.objects.get(id=validdataId).ParentData.id
+	print "Working on ", data0Id, " --> ", traindataId," , ", validdataId
 
-	if traindataId is not None:
-		shardt=dtscmd.DataShard(Data__id=traindataId)
-		shardt.save()
-		shardt.savedata(X=X_train,Y=y_train,Meta=Meta)
+	for shard0 in dtscmd.DataShard.objects.filter(Data__id=data0Id) :
 
-	if validdataId is not None:
-		shardv=dtscmd.DataShard(Data__id=validdataId)
-		shardv.save()
-		shardv.savedata(X=X_test,Y=y_test,Meta=Meta)
+	# shard0=dtscmd.DataShard.objects.get(id=shard0Id)
+
+		X,Y,Meta=shard0.getdata()
+		# print X.shape
+		if len(X.shape)==0:
+			continue
+
+		if X.shape[0]<5:
+			continue
+
+		X_train, X_test, y_train, y_test = train_test_split(X, Y, test_size=0.33, random_state=N)
+
+		if traindataId is not None:
+			traindata=dtscmd.Data.objects.get(id=traindataId)
+			shardt=dtscmd.DataShard(Data=traindata)
+			shardt.save()
+			shardt.savedata(X=X_train,Y=y_train,Meta=Meta)
+
+		if validdataId is not None:
+			validdata=dtscmd.Data.objects.get(id=validdataId)
+			shardv=dtscmd.DataShard(Data=validdata)
+			shardv.save()
+			shardv.savedata(X=X_test,Y=y_test,Meta=Meta)
 
 ### Do ML #######################
 

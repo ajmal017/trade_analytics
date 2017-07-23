@@ -533,14 +533,20 @@ def StandardizeData_Close01Volume01_X30_Y5_flatout(X,Y,Meta):
 
         dfX['Volume']=dfX['Volume']/mxvol
         
-        mx=dfX['Close'].max()
+        
         mn=dfX['Close'].min()
 
+        
+
+        dfX['Close']=(dfX['Close']-mn)
+
+        mx=dfX['Close'].max()
         if mx==0:
             continue
 
-        dfX['Close']=(dfX['Close']-mn)/mx
-        
+        dfX['Close']=dfX['Close']/mx
+
+                    
         XX=np.expand_dims( dfX[FinalXcols].astype(float).values.flatten(order='F')   ,axis=0     )
         YY=np.expand_dims( np.array([int(Ydict[key]) for key in FinalYcols]),axis=0 )
         if Xn is None:

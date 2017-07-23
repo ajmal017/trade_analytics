@@ -29,24 +29,23 @@ def get_train_test_from_RawProcessed(DataId):
 	
 
 	for split in range(5):
+		
+		
+
+		projectid,traindataId=dtsclibs.register_dataset(ParentDataId=DataId,Datatype='Train',tag=str(data.tag)+'_train_'+str(split) , DeleteShards=True)
+		projectid,validdataId=dtsclibs.register_dataset(ParentDataId=DataId,Datatype='Validation',tag=str(data.tag)+'_valid_'+str(split) , DeleteShards=True)
 		s=time.time()
-		s=(s-int(s))* 10000+split
-		N=np.random.seed(s)
+		N=int( (s-int(s))* 10000+split )
 
-		projectid,traindataId=dtsclibs.register_dataset(ParentdataId=DataId,Datatype='Train',tag=str(data.tag)+'_train_'+str(split) )
-		projectid,validdataId=dtsclibs.register_dataset(ParentdataId=DataId,Datatype='Validation',tag=str(data.tag)+'_valid_'+str(split) )
-
-		for shard in dtscmd.DataShard.objects.filter(Data=data) :
-			dtsctks.train_valid_split(shard.id,traindataId,validdataId,N)
+		# for shard in dtscmd.DataShard.objects.filter(Data=data) :
+		dtsctks.train_valid_split.delay(traindataId,validdataId,N)
 
 			
 	# create more validation sets
 	for split in range(5,10):
-		s=time.time()
-		s=(s-int(s))* 10000+split
-		N=np.random.seed(s)
-
-		projectid,validdataId=dtsclibs.register_dataset(ParentdataId=DataId,Datatype='Validation',tag=str(data.tag)+'_valid_'+str(split) )
 		
-		for shard in dtscmd.DataShard.objects.filter(Data=data) :
-			dtsctks.train_valid_split(shard.id,None,validdataId,N)
+		projectid,validdataId=dtsclibs.register_dataset(ParentDataId=DataId,Datatype='Validation',tag=str(data.tag)+'_valid_'+str(split) )
+		s=time.time()
+		N=int( (s-int(s))* 10000+split )
+
+		dtsctks.train_valid_split.delay(None,validdataId,N)

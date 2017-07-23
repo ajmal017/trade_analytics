@@ -14,7 +14,7 @@ logger = logging.getLogger('datascience')
 
 def register_dataset(project_Name=None,project_Info=None,ParentDataId=None,DataInfo=None,
 					Datatype=None,GroupName=None,tag=None,data_format=None,Modeltype=None,
-					TransformedFromDataId=None,TransFuncId=None,use_project_ifexists=True ):
+					TransformedFromDataId=None,TransFuncId=None,use_project_ifexists=True, DeleteShards=False ):
 
 	# project_Name="PredictReturn_TSLA", 
 	# use_project_ifexists=True,
@@ -108,6 +108,8 @@ def register_dataset(project_Name=None,project_Info=None,ParentDataId=None,DataI
 			data.ParentData=dtscmd.Data.objects.get(id=ParentDataId)
 
 		print "The dataset already exists"
+
+
 		if DataInfo is not None:
 			data.Info=DataInfo
 			print "updating data info"
@@ -126,7 +128,10 @@ def register_dataset(project_Name=None,project_Info=None,ParentDataId=None,DataI
 
 	if TransformedFromDataId and TransFuncId:
 		if dtscmd.DataShard.objects.filter(Data=data).exists():
-			print "the new dataset already has shard, trasnformation not possible, delete them first and run again"
+			if DeleteShards==True:
+				dtscmd.DataShard.objects.filter(Data=data).delete()
+			else:
+				print "the new dataset already has shard, trasnformation not possible, delete them first and run again"
 			return False
 
 		if data.id==data0.id:
@@ -139,6 +144,13 @@ def register_dataset(project_Name=None,project_Info=None,ParentDataId=None,DataI
 		data.initialize()
 		print "saving transfoermer function to this dataset"
 	
+	if Datatype=='Train' or Datatype=='Validation':
+		if dtscmd.DataShard.objects.filter(Data=data).exists():
+			if DeleteShards==True:
+				dtscmd.DataShard.objects.filter(Data=data).delete()
+			else:
+				print "There are shards present for this Train/Validation data, ERROR, delete them to register the dataset"
+			return False
 
 	print ("project id","data id")," : ",(project.id,data.id)
 	return project.id,data.id
