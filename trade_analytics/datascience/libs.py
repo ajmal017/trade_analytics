@@ -130,9 +130,11 @@ def register_dataset(project_Name=None,project_Info=None,ParentDataId=None,DataI
 		if dtscmd.DataShard.objects.filter(Data=data).exists():
 			if DeleteShards==True:
 				dtscmd.DataShard.objects.filter(Data=data).delete()
+				print "Deleting the existing shards for this data"
+				
 			else:
 				print "the new dataset already has shard, trasnformation not possible, delete them first and run again"
-			return False
+				return False
 
 		if data.id==data0.id:
 			print "Looks like you might over write the data, fail safe create a new dataset"
@@ -148,9 +150,10 @@ def register_dataset(project_Name=None,project_Info=None,ParentDataId=None,DataI
 		if dtscmd.DataShard.objects.filter(Data=data).exists():
 			if DeleteShards==True:
 				dtscmd.DataShard.objects.filter(Data=data).delete()
+				print "Deleting the existing shards for this data"
 			else:
 				print "There are shards present for this Train/Validation data, ERROR, delete them to register the dataset"
-			return False
+				return False
 
 	print ("project id","data id")," : ",(project.id,data.id)
 	return project.id,data.id

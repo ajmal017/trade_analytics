@@ -44,7 +44,7 @@ def get_train_test_from_RawProcessed(DataId):
 	# create more validation sets
 	for split in range(5,10):
 		
-		projectid,validdataId=dtsclibs.register_dataset(ParentDataId=DataId,Datatype='Validation',tag=str(data.tag)+'_valid_'+str(split) )
+		projectid,validdataId=dtsclibs.register_dataset(ParentDataId=DataId,Datatype='Validation',tag=str(data.tag)+'_valid_'+str(split), DeleteShards=True )
 		s=time.time()
 		N=int( (s-int(s))* 10000+split )
 

@@ -1,8 +1,8 @@
+Django
 bokeh
 celery
 cvxopt
 cvxpy
-Django
 memory-profiler
 mpld3
 numpy
@@ -26,6 +26,13 @@ pymongo
 django-multiselectfield
 cloudpickle
 joblib
+keras
+tensorflow
+xgboost
+sklearn
+scipy
+jupyter
+tornado
 
 
 #git clone git://repo.or.cz/docutils.git
