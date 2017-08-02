@@ -59,6 +59,8 @@ class ComputeFunc(models.Model):
 	"""
 	Name=models.CharField(max_length=200)
 	Group=models.CharField(max_length=200,null=True)
+	Userfilename = models.CharField(max_length=150,help_text="User Name from database",blank=True)
+
 	RequiredImports=JSONField(default={})
 	RequiredGroup=JSONField(default={})
 
@@ -124,7 +126,8 @@ class Data(models.Model):
 	data_structures=[('Channels','Channels'),('Flattened','Flattened')]
 	DataStructure=models.CharField(choices=data_structures,max_length=20,default='Channels')
 
-	data_choices=[('Raw','Raw'),('RawProcessed','RawProcessed'),('Train','Train'),('Validation','Validation'),('Test','Test')]
+	# Raw has all missing etc, Base is cleaned up
+	data_choices=[('Raw','Raw'),('Base','Base'),('RawProcessed','RawProcessed'),('Train','Train'),('Validation','Validation'),('Test','Test')]
 	Datatype=models.CharField(choices=data_choices,max_length=20)
 
 	data_format=[('npz','npz'),('h5','h5'),('pkl','pkl'),('joblib','joblib'),('json','json')]
@@ -134,7 +137,7 @@ class Data(models.Model):
 	# Binary is always 0/1, classes are labelled by integers 0,1,2,...
 	# binary 1 is the important class i.e. like fraud==1 , nofraud==0
 	ouput_choices=[('binary','binary'),('multiclass','multiclass'),('continuous','continuous')]
-	ouput_type=models.CharField(choices=data_format,max_length=30)
+	ouput_type=models.CharField(choices=data_format,max_length=30,default='binary')
 
 	# Datashards=JSONField(default={})
 

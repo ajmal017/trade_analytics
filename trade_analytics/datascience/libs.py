@@ -13,7 +13,7 @@ logger = logging.getLogger('datascience')
 
 
 def register_dataset(project_Name=None,project_Info=None,ParentDataId=None,DataInfo=None,
-					Datatype=None,GroupName=None,tag=None,data_format=None,Modeltype=None,
+					Datatype=None,GroupName=None,tag=None,data_format=None,Modeltype=None,ouput_type=None,
 					TransformedFromDataId=None,TransFuncId=None,use_project_ifexists=True, DeleteShards=False ):
 
 	# project_Name="PredictReturn_TSLA", 
@@ -46,7 +46,10 @@ def register_dataset(project_Name=None,project_Info=None,ParentDataId=None,DataI
 			data_format=ParentData.Dataformat
 		if not Modeltype:	
 			Modeltype=ParentData.Modeltype
-
+		if not ouput_type:	
+			ouput_type=ParentData.ouput_type
+			
+		
 	if (not TransformedFromDataId and TransFuncId) or (TransformedFromDataId and not TransFuncId):
 		print "the pair (TransformedFromDataId,TransFuncId) both have to have a value or both None simultaneously"
 		return False
