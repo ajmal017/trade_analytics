@@ -1,0 +1,31 @@
+
+<form id="form_{{record.No}}" action="" method="post">
+    <div id="disp_{{record.No}}"></div>
+    <div style="width:300px;height:200px;overflow-x:scroll ; overflow-y: scroll;" >
+	    <input type="hidden" name="Symbol" value={{record.Symbol}}>
+	    <input type="hidden" name="window" value={{record.window}}>
+	    <input type="hidden" name="Interval" value={{record.Interval}}>
+	    <input type="hidden" name="T" value={{record.T}}>
+	    <table border=1 style="	text-align: left;border: 1px solid black;border-collapse: collapse;">
+	    {% for meta in record.Categories %}
+	    	<tr>
+	    	{% if meta.checked %}
+	    		{% if meta.gencat %}
+	    			<td> <input type="checkbox" name="cat{{meta.id}}" value="1" checked> </td>  <td><font color="blue"> {{meta.name}} </font> </td>
+	    		{% else %}
+	    			<td> <input type="checkbox" name="cat{{meta.id}}" value="1" checked> </td>  <td> {{meta.name}}  </td>
+	    		{% endif %}
+	    	{% else %}
+	    		{% if meta.gencat %}
+	    			<td> <input type="checkbox" name="cat{{meta.id}}" value="1"> </td>          <td><font color="blue"> {{meta.name}}  </font></td>
+	    		{% else %}
+	    			<td> <input type="checkbox" name="cat{{meta.id}}" value="1"> </td>          <td> {{meta.name}}  </td>
+	    		{% endif %}
+	    	{% endif %}
+	    	</tr>
+	    {% endfor %}
+	    </table>
+	    <p align="center"> <input onclick="submittagfunc('form_{{record.No}}','disp_{{record.No}}')" type="button" name="tag_submit" value="Submit" /> </p>
+    </div>
+</form>
+

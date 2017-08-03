@@ -46,7 +46,7 @@ def Mapper_wait(Func_id,args):
 			cnt=len(result)-1
 		if len(M)==len(result):
 			break
-		print cnt,len(M),len(result)
+		# print cnt,len(M),len(result)
 		# print cnt,len(M),len(result)
 
 	return M

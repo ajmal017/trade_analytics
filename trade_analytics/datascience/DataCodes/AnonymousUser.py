@@ -1,10 +1,22 @@
 from __future__ import division
 from datascience.ML.MLmodels  import *
 import datascience.libs as dtsclibs
+import datascience.models as dtscmd
 import pdb
 
 filename=__name__.split('.')[-1]
 
+#################### ------------ Some Data Statistics-------------- ##################################
+
+@dtsclibs.register_compfunc(Group='Meta',overwrite_if_exists=True)
+def DataShardMeta_1(DataShardId):
+	shard=dtscmd.DataShard.objects.get(id=DataShardId)
+	X,Y,Meta=shard.getdata()
+	NXnans=np.count_nonzero(np.isnan(X))
+	NYnans=np.count_nonzero(np.isnan(Y))
+
+
+	return (NXnans,NYnans,X.shape,Y.shape)
 
 #################### ------------ Some Data Transformers-------------- ##################################
 

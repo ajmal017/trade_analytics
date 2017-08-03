@@ -1,0 +1,144 @@
+{% extends "homepage/base.html" %} 
+{% load staticfiles %}
+
+{% block tabtitle %}  Query Tool {% endblock%}
+
+{% block head %}
+
+      <script src="{% static 'research/RedQueryBuilder/RedQueryBuilder.nocache.js' %}" type="text/javascript">//</script>
+      <link rel="stylesheet" href="{% static 'research/RedQueryBuilder/gwt/dark/dark.css' %}" type="text/css" />
+      <script src="{% static 'research/RedQueryBuilder/RedQueryBuilderFactory.nocache.js' %}" type="text/javascript">//</script>
+     
+      <meta charset="utf-8">
+  <title>jQuery UI Sortable - Connect lists</title>
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <script src="http://code.jquery.com/jquery-1.10.2.js"></script>
+  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+  <style>
+  #sortable1, #sortable2 {
+    border: 4px solid #eee;
+    /*width: 142px;*/
+    min-height: 30px;
+    list-style-type: none;
+    margin: 2px;
+    padding: 5px 5px 5px 5px;
+    float: left;
+    margin-right: 10px;
+    margin-top: 10px;
+  }
+  #sortable1 li, #sortable2 li {
+    margin: 5px 5px 5px 5px;
+    padding: 5px;
+    /*font-size: 1.2em;*/
+    /*width: 120px;*/
+  }
+  </style>
+  <script>
+  $(function() {
+    $( "#sortable1, #sortable2" ).sortable({
+      connectWith: ".connectedSortable"
+    }).disableSelection();
+  });
+  </script>
+  <style>
+ul#sortable2 li {
+    display:inline;
+}
+ul#sortable1 {
+  columns: 10;
+  -webkit-columns: 12;
+  -moz-columns: 12;
+}
+
+li.nav  {
+ background-color:#EFF9E7;
+}
+
+</style>
+
+{% endblock %}
+
+
+{% block title %}Query Tool{% endblock %}
+
+
+
+
+
+
+
+{% block pagetitle %} Query Tool {% endblock %}
+
+{% block pagemain %} 
+
+<script type="text/javascript">
+  
+{% autoescape off %}
+    RedQueryBuilderFactory.create(
+    {
+        meta : {{RQ.meta}} ,
+      
+
+      onSqlChange : {{RQ.onSqlChange}} ,
+
+      enumerate : {{RQ.enumerate}} ,
+      
+      editors : {{RQ.editors}}
+
+     });
+      
+
+{% endautoescape %}
+</script>
+
+
+    <h2>Construct a Window based filter</h2>
+
+    <div id="rqb"> </div>
+    <br>
+    <br>
+    
+    <h2>Choose columns to display</h2>
+    <form onsubmit="myFunction()" action="{% url 'research:querytool' %}" method="post">
+    {% csrf_token %}
+    <div><textarea type="hidden" style="display:none;" id="debug" name="sqlquery" cols="80" rows="10">debug query</textarea></div>
+
+    <div style="min-height: 200px;overflow-x: scroll;">
+    <ul id="sortable1" class="connectedSortable">
+      {% for ss in COLS_labels %}
+      <li class="nav"> {{ss}} </li>
+      {% endfor %}
+    </ul>
+     </div>
+
+    <div style="min-height: 200px;overflow: hidden;"> 
+       <p>
+        <ul id="sortable2" class="connectedSortable">
+          <li class="ui-state-highlight">Symbol</li>
+        </ul>
+       </p>
+    </div>
+
+    <div><textarea id="columns" name="columns" cols="80" rows="10"></textarea></div>
+    <p align="center"> <input type="submit" class="btn" name="query_submit" value="Submit Query" /> </p>
+    </form>
+
+
+ <script type="text/javascript">
+ function myFunction() {
+   var lis = document.getElementById("sortable2").getElementsByTagName("li");
+   var ss='';
+    for (i = 0; i < lis.length; i++) { 
+    ss=ss+ lis[i].innerHTML+', ';
+    }
+  document.getElementById("columns").innerHTML=ss;
+}
+ </script>
+
+{% endblock %} 
+
+{% block footer %} 
+
+Copyright of Nagavenkat Adurthi
+
+ {% endblock %}

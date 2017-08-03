@@ -1,0 +1,78 @@
+ <!DOCTYPE html>
+        <html>
+        <head>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script>
+        <!-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script> -->
+        <!-- <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script> -->
+<script type="text/javascript">
+	
+	$(document).ready(function() {
+    var max_fields      = 10; //maximum input boxes allowed
+    var wrapper         = $(".input_fields_wrap"); //Fields wrapper
+    var add_button      = $(".add_field_button"); //Add button ID
+    
+    var x = 1; //initlal text box count
+    $(add_button).click(function(e){ //on add input button click
+        e.preventDefault();
+        if(x < max_fields){ //max input box allowed
+            x++; //text box increment
+            $(wrapper).append('<div><input type="text" name="mytext[]"/><a href="#" class="remove_field">Remove</a></div>'); //add input box
+        }
+    });
+    
+    $(wrapper).on("click",".remove_field", function(e){ //user click on remove text
+        e.preventDefault(); $(this).parent('div').remove(); x--;
+    })
+});
+</script>
+
+
+</head>
+        
+<body>
+
+<div class="input_fields_wrap">
+    <button class="add_field_button">Add More Fields</button>
+    <div><input type="text" name="mytext[]"></div>
+</div>
+
+<hr>
+
+<div class="input_fields_wrap">
+    <button class="add_field_button">Add More Fields</button>
+    <div><input type="text" name="mytext[]"></div>
+</div>
+
+
+<hr>
+<!-- <img id="img0" src=""> -->
+<!-- <img id="img1" src=""> -->
+<!-- <img id="img2" src=""> -->
+
+
+<script>
+		
+$.ajax({
+        type: 'GET',
+        url: "http://127.0.0.1:8000/charting/tvdatafeed/config",
+        contentType: 'text/plain',
+        success: function(response) { alert(response);
+        alert(response);
+        var configurationData = JSON.parse('{"a":"b"}');
+        alert("ok")
+        alert(configurationData);
+         },
+        error: function( jqXhr, textStatus, errorThrown ){
+            alert(errorThrown);
+            alert(jqXhr.contents);
+            alert(textStatus);
+                    console.log( errorThrown );
+                }
+    });
+
+</script>
+
+    </body>
+        </html>
+

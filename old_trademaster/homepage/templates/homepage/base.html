@@ -1,0 +1,179 @@
+{% load staticfiles %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>{% block tabtitle %}  tab title {% endblock%}</title>
+
+
+
+
+	   <!-- <link rel="stylesheet" href="styles2.css"> -->
+	   <!-- <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script> -->
+
+
+	   	<script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
+		<script src="{% static 'charting/jquery-lazyload/jquery.lazyload.js' %}"></script>
+		<script src="{% static 'charting/jquery-lazyload/jquery.lazyload.js' %}"></script>
+
+		
+
+		<script type="text/javascript">
+		
+		$(function() {
+			// $("img.lazy").lazyload({failure_limit : 10,event : "mouseover",threshold : 200});
+			// $("img.lazy").lazyload();
+			$("img.lazy").lazyload({ event: "scrollstop", failure_limit : 1000});
+		});
+
+		$(function() {
+    		$("img.lazy").lazyload({ event: "scrollstop",failure_limit : 1000,container: $("#container")});
+  		});
+		
+		// $("#container").each(function() {
+		//     var tthis = $(this);
+		//     $(this).find('img.lazy').lazyload({event: "scrollstop",failure_limit : 10000,
+		//         container: tthis
+		//     });
+		// });
+		// $("#container").each(function() {
+		//     var tthis = $(this);
+		//     $(this).find('img').lazyload({
+		//         container: tthis
+		//     });
+		// });
+		</script>
+		<script src="{% static 'research/jquery.scrollstop.js' %}" type="text/javascript"></script> 
+
+		<!-- icons -->
+		<!--link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png"-->
+		<!--link rel="shortcut icon" href="favicon.ico"-->
+
+		<!-- Override CSS file - add your own CSS rules -->
+		<link rel="stylesheet" type="text/css" href="{% static 'homepage/styles_eg.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'homepage/styles2.css' %}" />
+
+		<style type="text/css">
+		.TFtable{
+			border : 0;
+			border-spacing: 7px;
+    		border-collapse: separate;
+		}
+		.TFtable th{
+			align:center;
+			text-align: center;
+			font-family: "Times New Roman", Times, serif;
+			font-size: 110%;
+			padding:7px;
+		}
+		  .TFtable td{ 
+		  	text-align: center;
+			padding:7px; 
+			border:#4e95f4 1px solid;,
+			align:center;
+		  }
+		  /* provide some minimal visual accomodation for IE8 and below */
+
+		  /*  Define the background color for all the ODD background rows  */
+		  .TFtable tr:nth-child(odd){ 
+			background: #e6f7ff;
+		  }
+
+		</style>
+		
+		{% block head %}
+
+		{% endblock %} 
+
+	</head>
+	<body>
+		<div class="header">
+			<div class="container">
+				<h1 class="header-heading">  {% block title%}Default title{% endblock%}  </h1>
+			</div>
+		</div>
+
+
+<div id='cssmenu'>
+
+<ul>
+   <li><a href="{% url 'homepage:welcome' %}"><span>Getting Started</span></a></li>
+   <li><a href="{% url 'homepage:home' %}"><span>Home</span></a></li>
+   <li><a href="{% url 'homepage:boot' %}"><span>boot</span></a></li>
+   <li class='active has-sub' ><a href="{% url 'research:windowquerytool_advanced' %}"><span>Research</span></a>
+   		<ul>
+   			<li><a href="{% url 'research:windowquerytool_advanced' %}"><span>Custom Stock Query </span></a></li>
+   			<li><a href="{% url 'research:createmodifyfeature' %}"><span>Create/Modify Custom Features </span></a></li>
+
+   			<li><a href="{% url 'research:study' %}"><span>Study a Stock </span></a></li>
+   			<li><a href="{% url 'research:researchstatus' %}"><span>Compute Status </span></a></li>
+   			<li><a href="{% url 'research:ComputeLog' %}"><span>Compute Log </span></a></li>
+   			<li class='last'><a href="{% url 'research:category' %}"><span>Categories </span></a></li>
+
+   		</ul>
+   	</li>
+
+   
+   <li class='active has-sub' ><a href="{% url 'research:learning' %}"><span>Machine Learning</span></a>
+   		<ul>
+   			<li class='last'><a href="{% url 'research:learning' %}"><span>Data Set 1 </span></a></li>
+   		</ul>
+   </li>
+
+
+   <li class='active has-sub' ><a href="{% url 'stockdata:viewwatchlist' %}"><span>Watch List</span></a>
+   		<ul>
+   			<li><a href="{% url 'stockdata:viewwatchlist' %}"><span>View Watchlist </span></a></li>
+   			<li><a href="{% url 'stockdata:watchlistmanager_create' %}"><span>Create Watchlist </span></a></li>
+   			<li class='last'><a href="{% url 'stockdata:watchlistmanager_amend' %}"><span>Modify Watchlist </span></a></li>
+   		</ul>
+   </li>
+
+   <li class='active has-sub' ><a href="{% url 'charting:viewcharts' %}"><span>View Charts</span></a></li>
+
+   
+
+   
+
+   <li><a href="{% url 'homepage:register' %}"><span>Register</span></a></li>
+   <li><a href="{% url 'homepage:login' %}"><span>Log in</span></a></li>
+   {% if user.is_authenticated %}
+   		{% ifequal user.username "nagavenkat" %}
+   			<li><a href="{% url 'stockdata:controlpanel' %}"><span>Control Panel</span></a></li>
+   			<li><a href="/admin"><span>Admin</span></a></li>
+		{% endifequal %}
+	{% endif %}
+
+   <li class='last'><a href="{% url 'homepage:logout' %}"><span>Log out</span></a></li>
+</ul>
+
+
+</div>
+
+
+		<div class="content">
+			<div class="container">
+				<div class="main">
+					{% block pagemain %} 
+
+					Page 1 
+
+					{% endblock %}
+					
+					
+
+				</div>
+			</div>
+		</div>
+
+		<div class="footer">
+			<div class="container">
+				
+			</div>
+		</div>
+		
+	</body>
+</html>

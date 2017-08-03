@@ -1,0 +1,111 @@
+{% extends "homepage/base.html" %} 
+{% load staticfiles %}
+
+{% block tabtitle %}  Query Tool {% endblock%}
+
+{% block head %}
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script> -->
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="{% static 'research/jquery_chained/jquery.chained.js' %}" type="text/javascript" charset="utf-8"></script>
+
+
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet"  href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
+  <link rel="stylesheet" href="{% static 'research/tablesorter/themes/blue/style.css' %}" type="text/css" media="print, projection, screen" />
+  <script type="text/javascript" src="{% static 'research/tablesorter/jquery.tablesorter.js' %}"></script> 
+
+<!-- <script type="text/javascript">
+			$(function() {
+			$("img.lazy").lazyload({failure_limit : 10});
+		});
+</script> -->
+
+<script type="text/javascript">
+function formsubmitreturn(formid,geturl,returndivid){
+  $(formid).submit(function() { // catch the form's submit event
+    $.ajax({ // create an AJAX call...
+        data: $(this).serialize(), // get the form data
+        type: $(this).attr('GET'), // GET or POST
+        url: $(this).attr(geturl), // the file to call
+        success: function(response) { // on success..
+            $(returndivid).html(response); // update the DIV
+        }
+    });
+    return false; // cancel original event to prevent form submitting
+}
+});
+}
+</script>
+
+{% endblock %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block pagetitle %} Home page {% endblock %}
+
+{% block pagemain %} 
+
+
+<h1>Getting Started</h1>
+<div style="font-size: 150%;border-radius: 25px;background:#ccffcc;padding: 20px;margin-left:10%;margin-right:10%;width: 80%;">
+<ul>
+	<li style="margin: 10px 0;"> Note: This website is still under development, but it still works and shows a proof of concept described below  </li>
+	<li>See <a href="https://github.com/nadurthi/CompTechAnalysis">Github page</a> for the development code</li>
+
+	<li style="margin: 10px 0;"> Please <a href="{% url 'homepage:register' %}">register</a> and <a href="{% url 'homepage:login' %}">login</a> </li>
+	<li style="margin: 10px 0;"> The objective of this site is to search for interesting stocks. You can create a custom stock filter.</li>
+	<li style="margin: 10px 0;"> For example check out the data set at <a href="{% url 'research:learning' %}">Data Set 1 </a>: Sort by target column for this table. All the rows labeled as Buy are stock that resulted in a minimum of 10% profit over 6 months. Rows with target variable as Sell are charts that resulted in a 10% loss. The goal is to develop a computational approach to recognize these trades.</li>
+
+	<li style="margin: 10px 0;"> Filter the stocks that resulted in a profit, Most of the charts show some kind of pattern. Identify these patterns/features</li>
+	<li style="margin: 10px 0;"> Are there any recurring patterns in the charts for the buy trades? If you find any recurring pattern, try representing it using stock price data and </li>
+	<li style="margin: 10px 0;"> You can then <a href="{% url 'research:createmodifyfeature' %}">code up the features</a>. Or just the built-in ones available </li>
+	<li style="margin: 10px 0;"> Once coded up, all the features are computed for all stocks everyday at midnight</li>
+	<li style="margin: 10px 0;"> You can <a href="{% url 'research:windowquerytool_advanced' %}">create a filter/query</a> using any feature or all of them</li>
+	<li style="margin: 10px 0;"> Save your filters/query and your filter will automatically run everyday, the results of which are shown on your homepage </li>
+	<li style="margin: 10px 0;"> You can label/categorize each chart, which are then used in a classification algorithm </li>
+</ul>
+
+
+</div>
+<h2 style="margin : 30px 30px;"> Identifying Patterns </h2>
+<div style="font-size: 170%;border-radius: 25px;background:#ccffcc;padding: 20px;margin-left:10%;margin-right:10%;width: 80%;">
+
+  For example, we want search for these patterns well before they start, as they sure do results in good returns. 
+  	<table>
+  		<tr>
+  		<td> <img src="{% static 'homepage/TSLA_Desired_entry_point.png' %}" width="1000px" height="600px" >   </td>
+		</tr>
+  		<tr>
+  		<td> <img src="{% static 'homepage/BDL_Desired_entry_point.png' %}"  width="1000px" height="600px" >   </td>
+		</tr>
+		<tr>
+  		<td> <img src="{% static 'homepage/DNO_Desired_entry_point.png' %}"  width="1000px" height="600px" >   </td>
+		</tr>
+		<tr>
+  		<td> <img src="{% static 'homepage/OVAS_Desired_entry_point.png' %}"  width="1000px" height="600px" >   </td>
+		</tr>
+		<tr>
+  		<td> <img src="{% static 'homepage/SCO_Desired_entry_point.png' %}"  width="1000px" height="600px" >   </td>
+		</tr>
+	</table>
+
+</div>
+
+
+
+
+
+
+{% endblock %}
+
+
+
+
+{% block footer %} 
+
+Copyright of Nagavenkat Adurthi
+
+ {% endblock %}
