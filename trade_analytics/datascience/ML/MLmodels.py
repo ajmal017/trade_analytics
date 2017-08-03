@@ -164,10 +164,10 @@ class BaseClassificationModel(object):
 		pass
 
 	def train(self):
-		# if self.model.Status=='Trained' or self.model.Status=='Validated':
-		# 	print "Model is already trained/validated, so skipping training"
-		# 	self.post_process_model()
-		# 	return
+		if self.model.Status=='Trained' or self.model.Status=='Validated':
+			print "Model is already trained/validated, so skipping training"
+			self.post_process_model()
+			return
 
 		X,Y=self.pre_processing_train()
 
@@ -176,7 +176,7 @@ class BaseClassificationModel(object):
 		self.post_process_model()
 
 		self.savemodel()
-		
+
 		self.model.Status='Trained'
 		self.model.save()
 
@@ -187,18 +187,21 @@ class BaseClassificationModel(object):
 		Ypred=None
 		Yvalid=None
 		for X,Y in self.pre_processing_validation(validation_data):
+			Y1=np.reshape(self.predict(X),Y.shape)
 			if Ypred is None:
-				Ypred=self.predict(X)
+				Ypred=Y1 
 				Yvalid=Y
 			else:
-				Ypred=np.vstack((Ypred, self.predict(X) ))
+				Ypred=np.vstack((Ypred, Y1 ))
 				Yvalid=np.vstack((Yvalid, Y ))
+
+
 
 		model_metrics=self.getmetrics(Ypred,Yvalid)
 		obj, created = dtscmd.ModelMetrics.objects.get_or_create(Data=validation_data,MLmodel=self.model)
 		obj.Metrics=model_metrics
 		obj.save()
-
+		print "Done with validation id = ",validation_data.id
 
 
 
