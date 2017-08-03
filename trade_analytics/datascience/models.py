@@ -156,6 +156,19 @@ class Data(models.Model):
 		if not os.path.isdir(path):
 			os.makedirs(path)
 
+	def getdata(self):
+		filename=os.path.join(self.datapath(),'fulldata'+"."+self.Dataformat)
+		if not os.path.isfile(filename):
+			import datascience.libs as dtsclibs
+			dtsclibs.combineshards(self.id,filename,self.Dataformat)
+		
+		if self.Dataformat=='npz':
+			data=np.load(filename)
+
+		return ( data['X'], data['Y'], data['Meta'][()] )
+
+
+
 
 
 class DataShard(models.Model):
@@ -195,7 +208,7 @@ class MLmodels(models.Model):
 	Project=models.ForeignKey(Project,on_delete=models.SET_NULL,null=True)
 	Data=models.ForeignKey(Data,on_delete=models.SET_NULL,null=True)
 
-	Name=models.CharField(max_length=200,unique=True)
+	Name=models.CharField(max_length=200)
 	Info=JSONField(default={})
 
 	status_choices=[('Validated','Validated'),('Trained','Trained'),('UnTrained','UnTrained'),('Running','Running')]
@@ -208,12 +221,16 @@ class MLmodels(models.Model):
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
+	def modeldir(self):
+		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Project.Name,"Models")
+
 	def modelpath(self):
 		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Project.Name,"Models",str(self.id)+"_"+self.Name+"."+self.saveformat)
 
+
 	def initialize(self):
 		# make the model path
-		path=self.modelpath()
+		path=self.modeldir()
 		if not os.path.isdir(path):
 			os.makedirs(path)
 

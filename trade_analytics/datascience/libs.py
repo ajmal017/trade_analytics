@@ -8,6 +8,8 @@ import pandas as pd
 from utility import maintenance as mnt
 import logging
 import pdb
+import numpy as np
+
 
 logger = logging.getLogger('datascience')
 
@@ -251,3 +253,21 @@ def shardTransformer(shardId0,dataId1):
 	print "done transforming shardId0 ",shardId0," to new shardid = ",shard1.id
 
 
+def combineshards(dataID,filename,format):
+	data=dtscmd.Data.objects.get(id=dataID)
+	shards=dtscmd.DataShard.objects.filter(Data=data)
+	Xm=None
+	Ym=None
+	Metam=None
+	for shard in shards:
+		X,Y,Meta=shard.getdata()
+		if Xm is None:
+			Xm=X
+			Ym=Y
+			Metam=Meta
+		else:
+			Xm=np.vstack((Xm,X))
+			Ym=np.vstack((Ym,Y))
+
+	if format=='npz':
+		np.savez_compressed(filename,X=Xm,Y=Ym,Meta=Metam)
