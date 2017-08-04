@@ -41,10 +41,7 @@ class Label(models.Model):
 
 """
 
-class ModelCode(utymd.ComputeCode):
 
-	module='datascience'
-	codesfolder='ModelCodes'
 
 class DataCode(utymd.ComputeCode):
 
@@ -199,7 +196,12 @@ class DataShard(models.Model):
 		return ( data['X'], data['Y'], data['Meta'][()] )
 
 
+class ModelCode(utymd.ComputeCode):
 
+	module='datascience'
+	codesfolder='ModelCodes'
+
+	
 class MLmodels(models.Model):
 	"""
 	In the description, please mention the way the data is to be read
@@ -210,6 +212,7 @@ class MLmodels(models.Model):
 
 	Name=models.CharField(max_length=200)
 	Info=JSONField(default={})
+	ModelCode=models.ForeignKey(ModelCode,on_delete=models.SET_NULL,null=True)
 
 	status_choices=[('Validated','Validated'),('Trained','Trained'),('UnTrained','UnTrained'),('Running','Running')]
 	Status=models.CharField(choices=status_choices,max_length=30)

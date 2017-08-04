@@ -176,7 +176,7 @@ def TrainModel(modelid):
 	"""
 	Train a specific model with model id as modelid
 	"""
-	model=dtscmd.MLmodels.objects.filter(id=modelid)
+	model=dtscmd.MLmodels.objects.get(id=modelid)
 	ModelCLass=MLmd.ModelFactory(model)
 
 	MCL=ModelCLass(model)

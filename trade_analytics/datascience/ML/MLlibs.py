@@ -12,8 +12,6 @@ import threading
 
 
 
-
-
 def get_train_test_from_RawProcessed(DataId):
 	"""
 	- Make 5 sets of training and test data 70:30 splits

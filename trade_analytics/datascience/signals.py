@@ -53,7 +53,7 @@ def delete_MLmodels_files(sender, instance, using, **kwargs):
     path=instance.modelpath()
     
     try:
-	    shutil.rmtree(path)
+	    os.remove(path)
     except Exception as e:
     	print e
 

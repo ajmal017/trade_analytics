@@ -379,7 +379,7 @@ class RandomForrestmodels(BaseClassificationModel):
 					for  class_weight in ['balanced_subsample',None]:
 						clf=RandomForestClassifier(n_estimators=n_estimators, n_jobs=5,max_depth=max_depth,max_features=max_features,class_weight=class_weight)
 						modelparas={'n_estimators':n_estimators, 'n_jobs':5,'max_depth':max_depth,'max_features':max_features}
-						model=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Info={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+						model=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
 						model.save()
 						model.initialize()
 						filename=model.modelpath()
