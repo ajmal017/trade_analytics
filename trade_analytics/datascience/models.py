@@ -207,12 +207,15 @@ class MLmodels(models.Model):
 	In the description, please mention the way the data is to be read
 	ProjectName--> Data --> Raw --> DataName --> files
 	"""
+	
 	Project=models.ForeignKey(Project,on_delete=models.SET_NULL,null=True)
 	Data=models.ForeignKey(Data,on_delete=models.SET_NULL,null=True)
 
 	Name=models.CharField(max_length=200)
 	Info=JSONField(default={})
-	ModelCode=models.ForeignKey(ModelCode,on_delete=models.SET_NULL,null=True)
+	
+	# Userfilename is same as username
+	Userfilename = models.CharField(max_length=150,help_text="User ID from database",blank=True)
 
 	status_choices=[('Validated','Validated'),('Trained','Trained'),('UnTrained','UnTrained'),('Running','Running')]
 	Status=models.CharField(choices=status_choices,max_length=30)

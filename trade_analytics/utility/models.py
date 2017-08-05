@@ -56,6 +56,13 @@ class ComputeCode(models.Model):
 		compclass = getattr(module, self.computeclassname)
 		return compclass
 
+	def importobject(self,name):
+		import importlib
+		modpath=self.getimportpath()
+		module=importlib.import_module(modpath) 
+		module=reload(module)
+		compclass = getattr(module, name)
+		return compclass
 
 	def getfilepath(self):
 		from django.conf import settings

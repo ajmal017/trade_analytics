@@ -144,21 +144,21 @@ class BaseClassificationModel(object):
 		self.validation_datasets=dtscmd.Data.objects.filter(ParentData=ParentData,Datatype='Validation')
 		self.train_data=dtscmd.Data.objects.get( id=self.model.Data.id) 
 
-	def pre_processing_train(self):
-		"""
-		Load the data and pre process it and then send it
-		"""
-		X,Y,Meta=self.train_data.getdata()
-		return (X,np.round(Y))
+	def pre_processing_train(self,X,Y):
+		return (X,Y)
 
-	def pre_processing_validation(self,validation_data):
-		"""
-		Load the data and pre process it and then send it
-		"""
+	def pre_processing_validation(self,X,Y):
+		return (X,Y)
+
+	def load_training_data(self):
+		X,Y,Meta=self.train_data.getdata()
+		return (X,Y)
+				
+	def validation_shard_iter(self,validation_data):
 		shards=dtscmd.DataShard.objects.filter(Data=validation_data)
 		for shard in shards:
 			X,Y,Meta=shard.getdata()
-			yield (X,np.round(Y))
+			yield (X,Y)
 
 	def post_process_model(self):
 		pass
@@ -169,7 +169,8 @@ class BaseClassificationModel(object):
 			self.post_process_model()
 			return
 
-		X,Y=self.pre_processing_train()
+		X,Y=self.load_training_data()
+		X,Y=self.pre_processing_train(X,Y)
 
 		self.clf.fit(X,Y)
 
@@ -186,7 +187,9 @@ class BaseClassificationModel(object):
 	def Run_validation(self,validation_data):
 		Ypred=None
 		Yvalid=None
-		for X,Y in self.pre_processing_validation(validation_data):
+		for X,Y in self.validation_shard_iter(validation_data):
+			X,Y=self.pre_processing_validation(X,Y)
+
 			Y1=np.reshape(self.predict(X),Y.shape)
 			if Ypred is None:
 				Ypred=Y1 
@@ -320,7 +323,7 @@ class XGBOOSTmodels(BaseClassificationModel):
 							modelparas={'param':param,'plst':plst,'num_round':num_round,'early_stopping_rounds':early_stopping_rounds}
 							info={'createdbyclass':cls.__name__,'doc':cls.__doc__}
 
-							model=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Info=info,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+							model=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Userfilename=cls.filename,Info=info,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
 							model.save()
 							model.initialize()
 							filename=model.modelpath()
@@ -379,7 +382,7 @@ class RandomForrestmodels(BaseClassificationModel):
 					for  class_weight in ['balanced_subsample',None]:
 						clf=RandomForestClassifier(n_estimators=n_estimators, n_jobs=5,max_depth=max_depth,max_features=max_features,class_weight=class_weight)
 						modelparas={'n_estimators':n_estimators, 'n_jobs':5,'max_depth':max_depth,'max_features':max_features}
-						model=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
+						model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
 						model.save()
 						model.initialize()
 						filename=model.modelpath()

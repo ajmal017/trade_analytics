@@ -169,7 +169,7 @@ def train_valid_split(traindataId,validdataId,N):
 			shardv.save()
 			shardv.savedata(X=X_test,Y=y_test,Meta=Meta)
 
-### Do ML #######################
+### Do Training and Validation #######################
 
 @shared_task
 def TrainModel(modelid):
@@ -177,14 +177,15 @@ def TrainModel(modelid):
 	Train a specific model with model id as modelid
 	"""
 	model=dtscmd.MLmodels.objects.get(id=modelid)
-	ModelCLass=MLmd.ModelFactory(model)
+	
+	
+	MCode=dtscmd.ModelCode.object.get(Username=model.Userfilename)
+	Mclass=MCode.importobject(model.Name)
 
-	MCL=ModelCLass(model)
-	MCL.loadmodel()
-	MCL.loaddata()
-	MCL.train()
-	MCL.Run_validation_all()
-	MCL.savemodel()
+	M=Mclass()
+	M.loadmodel(model)
+	M.loaddata()
+	M.train()
 
 
 @shared_task
@@ -203,14 +204,17 @@ def ValidateModeldata(modelid,validationdataid):
 	"""
 	Run Validation on validationdata with id validationdataid using modelid
 	"""
-	model=dtscmd.MLmodels.objects.filter(id=modelid)
-	ModelCLass=MLmd.ModelFactory(model)
+	model=dtscmd.MLmodels.objects.get(id=modelid)
+	
+	
+	MCode=dtscmd.ModelCode.object.get(Username=model.Userfilename)
+	Mclass=MCode.importobject(model.Name)
 
-	MCL=ModelCLass(model)
-	MCL.loadmodel()
-	MCL.loaddata()
-	MCL.Run_validation_id(validationdataid)
-	MCL.savemodel()
+	M=Mclass()
+	M.loadmodel(model)
+	M.loaddata()
+	M.Run_validation_id(validationdataid)
+
 
 # TODO: Write help
 @shared_task
@@ -218,14 +222,17 @@ def ValidateModel(modelid):
 	"""
 	Run Validation for modelid on all validation data.
 	"""
-	model=dtscmd.MLmodels.objects.filter(id=modelid)
-	ModelCLass=MLmd.ModelFactory(model)
+	model=dtscmd.MLmodels.objects.get(id=modelid)
+	
+	
+	MCode=dtscmd.ModelCode.object.get(Username=model.Userfilename)
+	Mclass=MCode.importobject(model.Name)
 
-	MCL=ModelCLass(model)
-	MCL.loadmodel()
-	MCL.loaddata()
+	M=Mclass()
+	M.loadmodel(model)
+	M.loaddata()
 
-	for validationdataid in MCL.validation_datasets.values_list('id',flat=True):
+	for validationdataid in M.validation_datasets.values_list('id',flat=True):
 		ValidateModeldata(modelid,validationdataid)
 
 
