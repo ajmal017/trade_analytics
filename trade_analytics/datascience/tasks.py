@@ -179,7 +179,7 @@ def TrainModel(modelid):
 	model=dtscmd.MLmodels.objects.get(id=modelid)
 	
 	
-	MCode=dtscmd.ModelCode.object.get(Username=model.Userfilename)
+	MCode=dtscmd.ModelCode.objects.get(Username=model.Userfilename)
 	Mclass=MCode.importobject(model.Name)
 
 	M=Mclass()
@@ -207,7 +207,7 @@ def ValidateModeldata(modelid,validationdataid):
 	model=dtscmd.MLmodels.objects.get(id=modelid)
 	
 	
-	MCode=dtscmd.ModelCode.object.get(Username=model.Userfilename)
+	MCode=dtscmd.ModelCode.objects.get(Username=model.Userfilename)
 	Mclass=MCode.importobject(model.Name)
 
 	M=Mclass()

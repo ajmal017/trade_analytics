@@ -27,17 +27,17 @@ class ComputeCode(models.Model):
 		abstract = True
 
 	def __str__(self):
-		if not self.User:
+		if not self.Username:
 			username='AnonymousUser'
 		else:
-			username=self.User.username
+			username=self.Username
 
 		if not self.File:
 			Filename='None'
 		else:
 			Filename=self.File
 
-		return ", ".join([ str(username),' ... ',str(Filename[-20:]) ])
+		return ", ".join([ str(username),' ... ',str(Filename[-50:]) ])
 
 
 	def getimportpath(self):
@@ -77,11 +77,12 @@ class ComputeCode(models.Model):
 	def initialize(cls):
 		if cls.objects.all().count()==0:
 			print "initializing files"
-			obj=cls(Code='')
+			obj=cls(Code='',Username='AnonymousUser')
 			obj.save()
 			obj.File=obj.getfilepath()
 			obj.save()
 
+			time.sleep(2)
 			cls.Sync_db2files()
 
 	@classmethod
@@ -93,6 +94,7 @@ class ComputeCode(models.Model):
 
 			if os.path.isfile(obj.File):
 				filetime=pd.to_datetime(time.ctime(os.path.getmtime(obj.File)))
+				print filetime,obj.updated_at
 				if obj.updated_at<filetime:
 					# first make a copy of that file and then copy dbfile to disk
 					shutil.move(obj.File,obj.File.replace('.py',filetime.strftime("%Y-%m-%d_%H-%M-%S")+'.py'))

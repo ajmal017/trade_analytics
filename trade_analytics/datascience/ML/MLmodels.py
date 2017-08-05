@@ -180,6 +180,8 @@ class BaseClassificationModel(object):
 
 		self.model.Status='Trained'
 		self.model.save()
+		print "Training done for ",self.model.id
+
 
 	def predict(self,X):
 		return self.clf.predict(X)
@@ -204,7 +206,7 @@ class BaseClassificationModel(object):
 		obj, created = dtscmd.ModelMetrics.objects.get_or_create(Data=validation_data,MLmodel=self.model)
 		obj.Metrics=model_metrics
 		obj.save()
-		print "Done with validation id = ",validation_data.id
+		print "Done with validation id = ",validation_data.id," for model = ",self.model.id
 
 
 
