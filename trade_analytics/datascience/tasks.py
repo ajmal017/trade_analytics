@@ -12,6 +12,16 @@ from celery.exceptions import TimeoutError
 import logging
 logger = logging.getLogger('debug')
 
+from celery.signals import worker_process_init
+
+@worker_process_init.connect
+def fix_multiprocessing(**kwargs):
+    from multiprocessing import current_process
+    try:
+        current_process()._config
+    except AttributeError:
+        current_process()._config = {'semprefix': '/mp'}
+    print "fixed multiprocessing"
 
 ## Compute Function Mapper ####################
 @shared_task
@@ -233,7 +243,7 @@ def ValidateModel(modelid):
 	M.loaddata()
 
 	for validationdataid in M.validation_datasets.values_list('id',flat=True):
-		ValidateModeldata(modelid,validationdataid)
+		ValidateModeldata.delay(modelid,validationdataid)
 
 
 
@@ -244,4 +254,4 @@ def ValidateProject(Projectid):
 	"""
 	MLmodels_ids=dtscmd.MLmodels.objects.filter(Project__id=Projectid,Status='Trained').values_list('id',flat=True)
 	for modelid in MLmodels_ids:
-		ValidateModel(modelid)
+		ValidateModel.delay(modelid)

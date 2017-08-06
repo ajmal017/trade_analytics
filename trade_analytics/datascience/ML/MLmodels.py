@@ -380,7 +380,7 @@ class RandomForrestmodels(BaseClassificationModel):
 		N=0
 		for n_estimators in [10,100,250,500]:
 			for max_depth in [10,100,250,500]:
-				for max_features in ['log2','auto',30,40,50,60]+list(np.arange(0,1,0.3)):
+				for max_features in ['log2','auto']+[0.25,0.5,0.75,0.9]:
 					for  class_weight in ['balanced_subsample',None]:
 						clf=RandomForestClassifier(n_estimators=n_estimators, n_jobs=5,max_depth=max_depth,max_features=max_features,class_weight=class_weight)
 						modelparas={'n_estimators':n_estimators, 'n_jobs':5,'max_depth':max_depth,'max_features':max_features}

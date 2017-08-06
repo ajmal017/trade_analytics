@@ -33,6 +33,6 @@ sklearn
 scipy
 jupyter
 tornado
-
+psycopg2
 
 #git clone git://repo.or.cz/docutils.git

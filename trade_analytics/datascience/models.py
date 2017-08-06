@@ -154,19 +154,26 @@ class Data(models.Model):
 			os.makedirs(path)
 
 	def getdata(self):
+
 		filename=os.path.join(self.datapath(),'fulldata'+"."+self.Dataformat)
 		if not os.path.isfile(filename):
 			import datascience.libs as dtsclibs
 			dtsclibs.combineshards(self.id,filename,self.Dataformat)
 		
-		if self.Dataformat=='npz':
-			data=np.load(filename)
+		try:
+			if self.Dataformat=='npz':
+				data=np.load(filename)
 
-		return ( data['X'], data['Y'], data['Meta'][()] )
+			return ( data['X'], data['Y'], data['Meta'][()] )
+		except:
+			
+			import datascience.libs as dtsclibs
+			dtsclibs.combineshards(self.id,filename,self.Dataformat)
 
+			if self.Dataformat=='npz':
+				data=np.load(filename)
 
-
-
+			return ( data['X'], data['Y'], data['Meta'][()] )
 
 class DataShard(models.Model):
 	Data=models.ForeignKey(Data,on_delete=models.CASCADE)
