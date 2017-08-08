@@ -358,7 +358,7 @@ LOGGING = {
 # CELERY SETTINGS
 # --------------------------------------------------------------------#
 
-BROKER_URL = 'amqp://guest:guest@192.168.1.103:5672//'
+BROKER_URL = 'amqp://guest:guest@localhost:5672//'
 CELERY_ACCEPT_CONTENT = ['pickle']
 CELERY_TASK_SERIALIZER = 'pickle'
 CELERY_RESULT_SERIALIZER = 'pickle'
