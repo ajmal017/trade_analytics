@@ -1,5 +1,53 @@
 Using TensorFlow backend.
 /usr/local/lib/python2.7/dist-packages/sklearn/cross_validation.py:44: DeprecationWarning: This module was deprecated in version 0.18 in favor of the model_selection module into which all the refactored classes and functions are moved. Also note that the interface of the new CV iterators are different from that of this module. This module will be removed in 0.20.
   "This module will be removed in 0.20.", DeprecationWarning)
-/home/venkat/GoogleDrive/repos/trade_analytics/trade_analytics/datascience/ML/MLmodels.py:175: DataConversionWarning: A column-vector y was passed when a 1d array was expected. Please change the shape of y to (n_samples,), for example using ravel().
+/home/venkat/GoogleDrive/repos/trade_analytics/trade_analytics/datascience/ML/MLmodels.py:179: DataConversionWarning: A column-vector y was passed when a 1d array was expected. Please change the shape of y to (n_samples,), for example using ravel().
   self.clf.fit(X,Y)
+Training done for  2532
+Training done for  2533
+Training done for  2534
+Training done for  2535
+Training done for  2536
+Training done for  2537
+Training done for  2538
+Training done for  2539
+Training done for  2540
+Training done for  2541
+Training done for  2542
+Training done for  2543
+Training done for  2544
+Training done for  2545
+Training done for  2546
+Training done for  2547
+Training done for  2548
+Training done for  2549
+Training done for  2550
+Training done for  2551
+Training done for  2552
+Training done for  2553
+Training done for  2554
+Training done for  2555
+Training done for  2556
+Training done for  2557
+Training done for  2558
+Training done for  2559
+Training done for  2560
+Training done for  2561
+Training done for  2562
+Training done for  2563
+Training done for  2564
+Training done for  2565
+Training done for  2566
+Training done for  2567
+Training done for  2568
+Training done for  2569
+Training done for  2570
+Training done for  2571
+Training done for  2572
+Training done for  2573
+Training done for  2574
+Training done for  2575
+Training done for  2576
+Training done for  2577
+Training done for  2578
+Training done for  2579

@@ -169,19 +169,25 @@ class BaseClassificationModel(object):
 			self.post_process_model()
 			return
 
-		X,Y=self.load_training_data()
-		X,Y=self.pre_processing_train(X,Y)
+		try:
+			self.model.Status='Running'
+			self.model.save()
 
-		self.clf.fit(X,Y)
+			X,Y=self.load_training_data()
+			X,Y=self.pre_processing_train(X,Y)
 
-		self.post_process_model()
+			self.clf.fit(X,Y)
 
-		self.savemodel()
+			self.post_process_model()
 
-		self.model.Status='Trained'
-		self.model.save()
-		print "Training done for ",self.model.id
+			self.savemodel()
 
+			self.model.Status='Trained'
+			self.model.save()
+			print "Training done for ",self.model.id
+		except:
+			self.model.Status='UnTrained'
+			self.model.save()
 
 	def predict(self,X):
 		return self.clf.predict(X)
@@ -379,20 +385,19 @@ class RandomForrestmodels(BaseClassificationModel):
 
 		N=0
 		for n_estimators in [10,100,250,500]:
-			for max_depth in [10,100,250,500]:
-				for max_features in ['log2','auto']+[0.25,0.5,0.75,0.9]:
-					for  class_weight in ['balanced_subsample',None]:
-						clf=RandomForestClassifier(n_estimators=n_estimators, n_jobs=5,max_depth=max_depth,max_features=max_features,class_weight=class_weight)
-						modelparas={'n_estimators':n_estimators, 'n_jobs':5,'max_depth':max_depth,'max_features':max_features}
-						model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
-						model.save()
-						model.initialize()
-						filename=model.modelpath()
-						try:
-							joblib.dump(clf, filename)
-						except:
-							pdb.set_trace()
-						N=N+1
+			for max_features in ['log2','auto']+[0.25,0.5,0.75,1]:
+				for  class_weight in ['balanced','balanced_subsample',None]:
+					clf=RandomForestClassifier(n_estimators=n_estimators,min_samples_split=10,min_samples_leaf=10, n_jobs=5,max_features=max_features,class_weight=class_weight)
+					modelparas={'n_estimators':n_estimators, 'n_jobs':5,'max_features':max_features}
+					model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
+					model.save()
+					model.initialize()
+					filename=model.modelpath()
+					try:
+						joblib.dump(clf, filename)
+					except:
+						pdb.set_trace()
+					N=N+1
 
 	
 
@@ -412,7 +417,7 @@ class LinearSVCmodels(BaseClassificationModel):
 		for C in [1, 10, 100, 1000,10000]:
 			clf=LinearSVC(C=C)
 			modelparas={'C':C}
-			model=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+			model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)		
 			model.save()
 			model.initialize()
 			filename=model.modelpath()
@@ -435,7 +440,7 @@ class QDAmodels(BaseClassificationModel):
 		for reg_param in [1, 10, 100, 1000,10000]:
 			clf=QuadraticDiscriminantAnalysis(reg_param=reg_param)
 			modelparas={'reg_param':reg_param}
-			model=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+			model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
 			model.save()
 			model.initialize()
 			filename=model.modelpath()
@@ -485,10 +490,10 @@ class NNmodels(BaseClassificationModel):
 		model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
 		
 		modelparas={}
-		dbmodel=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
-		dbmodel.save()
-		dbmodel.initialize()
-		filename=dbmodel.modelpath()
+		model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
+		model.save()
+		model.initialize()
+		filename=model.modelpath()
 		
 		model.save(filename)
 
@@ -535,10 +540,10 @@ class CNN1Dmodels(BaseClassificationModel):
 		model.compile(optimizer=sgd, loss='categorical_crossentropy')
 
 		modelparas={}
-		dbmodel=dtscmd.MLmodels(Project=Project,Data=Data,Name=cls.name,Misc={'modelparas':modelparas} ,Status='UnTrained' ,saveformat=cls.saveformat)
+		model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
 		dbmodel.save()
-		dbmodel.initialize()
-		filename=dbmodel.modelpath()
+		model.initialize()
+		filename=model.modelpath()
 		
 		model.save(filename)
 
