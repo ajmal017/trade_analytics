@@ -10,6 +10,11 @@ filename=__name__.split('.')[-1]
 
 @dtsclibs.register_compfunc(Group='Meta',overwrite_if_exists=True)
 def DataShardMeta_1(DataShardId):
+	"""
+	Get meta data from shards
+	- Get Nans in X and Y
+	- Get shapes of X and Y
+	"""
 	shard=dtscmd.DataShard.objects.get(id=DataShardId)
 	X,Y,Meta=shard.getdata()
 	NXnans=np.count_nonzero(np.isnan(X))
@@ -22,9 +27,6 @@ def DataShardMeta_1(DataShardId):
 
 @dtsclibs.register_compfunc(Group='Transformer',overwrite_if_exists=True)
 def StandardizeData_1(X,Y,Meta):
-	import pandas as pd
-	import numpy as np
-	
 	"""
 	A transformer function has to take X,Y,Meta and return another modified X,Y,Meta
 	1. Normalize all data as 
@@ -38,6 +40,9 @@ def StandardizeData_1(X,Y,Meta):
    
 	"""
 	
+	import pandas as pd
+	import numpy as np
+
 	# next normalize the volume to 0-1
 	Nsamples=X.shape[0]
 	Tsteps=X.shape[1]
@@ -113,9 +118,6 @@ def StandardizeData_1(X,Y,Meta):
 
 @dtsclibs.register_compfunc(Group='Transformer',overwrite_if_exists=True)
 def StandardizeData_CloseReturnVolume01(X,Y,Meta):
-	import pandas as pd
-	import numpy as np
-	
 	"""
 	A transformer function has to take X,Y,Meta and return another modified X,Y,Meta
 	1. Normalize all data as 
@@ -127,7 +129,9 @@ def StandardizeData_CloseReturnVolume01(X,Y,Meta):
 	
    
 	"""
-	
+	import pandas as pd
+	import numpy as np
+
 	# next normalize the volume to 0-1
 	Nsamples=X.shape[0]
 	Tsteps=X.shape[1]
@@ -202,9 +206,6 @@ def StandardizeData_CloseReturnVolume01(X,Y,Meta):
 
 @dtsclibs.register_compfunc(Group='Transformer',overwrite_if_exists=True)
 def StandardizeData_Close01Volume01(X,Y,Meta):
-	import pandas as pd
-	import numpy as np
-	
 	"""
 	A transformer function has to take X,Y,Meta and return another modified X,Y,Meta
 	1. Normalize all data as 
@@ -216,7 +217,9 @@ def StandardizeData_Close01Volume01(X,Y,Meta):
 	
    
 	"""
-	
+	import pandas as pd
+	import numpy as np
+
 	# next normalize the volume to 0-1
 	Nsamples=X.shape[0]
 	Tsteps=X.shape[1]
@@ -291,9 +294,6 @@ def StandardizeData_Close01Volume01(X,Y,Meta):
 
 @dtsclibs.register_compfunc(Group='Transformer',overwrite_if_exists=True)
 def StandardizeData_CloseSMAVolSMA10(X,Y,Meta):
-	import pandas as pd
-	import numpy as np
-	
 	"""
 	A transformer function has to take X,Y,Meta and return another modified X,Y,Meta
 	1. Normalize all data as 
@@ -307,6 +307,9 @@ def StandardizeData_CloseSMAVolSMA10(X,Y,Meta):
    
 	"""
 	
+	import pandas as pd
+	import numpy as np
+
 	# next normalize the volume to 0-1
 	Nsamples=X.shape[0]
 	Tsteps=X.shape[1]
@@ -383,9 +386,6 @@ def StandardizeData_CloseSMAVolSMA10(X,Y,Meta):
 
 @dtsclibs.register_compfunc(Group='Transformer',overwrite_if_exists=True)
 def StandardizeData_Close01Volume01_X30_Y5prfbylss_interpcleaned(X,Y,Meta):
-	import pandas as pd
-	import numpy as np
-	
 	"""
 	A transformer function has to take X,Y,Meta and return another modified X,Y,Meta
 	1. Normalize all data as 
@@ -398,7 +398,9 @@ def StandardizeData_Close01Volume01_X30_Y5prfbylss_interpcleaned(X,Y,Meta):
 	
    
 	"""
-	
+	import pandas as pd
+	import numpy as np
+
 	# next normalize the volume to 0-1
 	Nsamples=X.shape[0]
 	
@@ -496,9 +498,6 @@ def StandardizeData_Close01Volume01_X30_Y5prfbylss_interpcleaned(X,Y,Meta):
 
 @dtsclibs.register_compfunc(Group='Transformer',overwrite_if_exists=True)
 def StandardizeData_Close01Volume01_X30_Y5prfbylss_interpcleaned_flatout(X,Y,Meta):
-	import pandas as pd
-	import numpy as np
-	
 	"""
 	A transformer function has to take X,Y,Meta and return another modified X,Y,Meta
 	1. Normalize all data as 
@@ -512,6 +511,9 @@ def StandardizeData_Close01Volume01_X30_Y5prfbylss_interpcleaned_flatout(X,Y,Met
    
 	"""
 	
+	import pandas as pd
+	import numpy as np
+
 	# next normalize the volume to 0-1
 	Nsamples=X.shape[0]
 	
@@ -602,6 +604,144 @@ def StandardizeData_Close01Volume01_X30_Y5prfbylss_interpcleaned_flatout(X,Y,Met
 
 		XX=np.expand_dims( dfX[FinalXcols].astype(float).values.flatten(order='F')   ,axis=0     )
 		YY=np.expand_dims( np.array(Ydict['Fut5days_Profit_BY_SumProfitLoss_Ratio']),axis=0 )
+		if Xn is None:
+			Xn=XX
+			Yn=YY
+		else:
+			Xn=np.vstack((Xn,XX))
+			Yn=np.vstack((Yn,YY))
+	
+	Metan=Meta
+	Metan['MetaX']['columns']=FinalXcols
+	Metan['MetaY']['columns']=FinalYcols
+	
+	Metan['MetaX']['shape']=Xn.shape
+	Metan['MetaY']['shape']=Yn.shape
+
+	return Xn,Yn,Metan
+
+
+####################################################################################################
+###########################                                #########################################
+####################################################################################################
+
+@dtsclibs.register_compfunc(Group='Transformer',overwrite_if_exists=True)
+def StandardizeData_HLmeanVolumeSMA01_X30_Y5return_interpcleaned_flatout(X,Y,Meta):
+	"""
+	A transformer function has to take X,Y,Meta and return another modified X,Y,Meta
+	1. Normalize all data as 
+		1. (High+Low)/2 last 23 days --> 0-1
+		2. Volume last 23 days --> 0-1
+		3. 23 days of SMA 10,20,50,100,200 --> 0-1
+		4. VolumeSMA10
+		4. fill nans with interpolation
+		5. flatten the data in order and return
+	2. For output Y data:
+		0. Take next 5
+		1. Take only Close
+		2. compute the best return in next 5 days
+	
+   
+	"""
+	import pandas as pd
+	import numpy as np
+
+	# next normalize the volume to 0-1
+	Nsamples=X.shape[0]
+	
+	Tsteps=X.shape[1]
+	Nfeat=X.shape[2]
+
+	volumecols=['Volume','VolSMA10']
+	pricecols=['HLmean','SMA10','SMA20','SMA50','SMA100','SMA200']
+	colsX=list( Meta['MetaX']['columns'] )
+	colsY=list( Meta['MetaY']['columns'] )
+	FinalXcols = pricecols+volumecols
+	FinalYcols = ['MaxReturn5days']
+	
+	Xn=None
+	Yn=None
+	Metan=None
+	for i in range(Nsamples):
+		dfX=pd.DataFrame(X[i,:,:],columns=colsX).iloc[-23:]
+		dfY=pd.DataFrame(Y[i,:,:],columns=colsY)
+		
+		dfX.index=range(len(dfX))
+		dfY.index=range(len(dfY))
+		
+		dfX['HLmean']=(dfX['High']+dfX['Low'])/2
+
+		if dfX['HLmean'].max()<=2:
+			continue
+
+
+
+		# clean up Y
+		dfY.drop('Symbol',axis=1,inplace=True)
+
+		
+		Ydict={}
+		dfY['ZeroPerf']=0
+	
+#         dfY['FutProfit5days']=-100*self.df['Close'].diff(periods=-5)/self.df['Close']
+		if dfY['Close'].iloc[0]==0:
+			continue
+
+		dfY['Returns']=100*(dfY['Close']-dfY['Close'].iloc[0])/dfY['Close'].iloc[0]
+		ret=dfY['Returns'].iloc[0:5].max()
+
+		if ret==0:
+			Ydict['MaxReturn5days'] = 0
+		else:
+			Ydict['MaxReturn5days'] = ret
+
+		if pd.isnull(Ydict['MaxReturn5days']):
+			continue
+
+
+
+		# clean up X
+		dfX.drop('Symbol',axis=1,inplace=True)
+		
+		mxvol=dfX['Volume'].max()
+		if mxvol==0:
+			continue
+
+		dfX=dfX[FinalXcols]
+
+		dfX['Volume']=dfX['Volume']/mxvol
+		dfX['VolSMA10']=dfX['VolSMA10']/mxvol
+		
+		mn=dfX[pricecols].min(axis=1).min()
+		for cc in pricecols:
+			dfX[cc]=(dfX[cc]-mn)	
+		
+		mx=dfX[pricecols].max(axis=1).max()
+		if mx==0:
+			continue
+
+		for cc in pricecols:
+			dfX[cc]=dfX[cc]/mx
+
+		
+
+		NaNind=dfX[dfX.isnull().any(axis=1)].index
+		if len(NaNind)>=len(dfX)/2:
+			continue
+
+		for cc in FinalXcols:
+			if pd.isnull( dfX.loc[0,cc] ):
+				dfX.loc[0,cc]=0
+		try:	
+			if len(NaNind)>0:
+				dfX=dfX.interpolate()
+		except:
+			dfX=dfX.fillna(0)
+
+		# pdb.set_trace()
+
+		XX=np.expand_dims( dfX[FinalXcols].astype(float).values.flatten(order='F')   ,axis=0     )
+		YY=np.expand_dims( np.array(Ydict['MaxReturn5days']),axis=0 )
 		if Xn is None:
 			Xn=XX
 			Yn=YY
