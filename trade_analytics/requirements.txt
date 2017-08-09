@@ -1,41 +1,7 @@
-Django
-bokeh
-celery
-cvxopt
-cvxpy
-memory-profiler
-mpld3
-numpy
-pandas
-pandas-datareader
-matplotlib
-numpy
-pathlib2
-scikit-learn
-scipy
-sklearn
-django-extensions
-Sphinx
-pytz
-django-celery-results
-djangorestframework
-markdown
-django-filter
-jinja2
-pymongo
-django-multiselectfield
-cloudpickle
-joblib
-keras
-tensorflow
-xgboost
-sklearn
-scipy
-jupyter
-tornado
-psycopg2
+
 
 #git clone git://repo.or.cz/docutils.gitadium-theme-ubuntu (0.3.4)
+
 alabaster (0.7.10)
 amqp (2.1.4)
 appdirs (1.4.3)
