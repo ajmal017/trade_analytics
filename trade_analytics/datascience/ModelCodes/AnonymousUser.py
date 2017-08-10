@@ -22,3 +22,22 @@ class RandomForrrest_1(MLmodels.RandomForrestmodels):
 		return (X,np.round(Y))
 
 
+class RandomForrrest_2(MLmodels.RandomForrestmodels):
+	"""
+	Random forrest :
+	@input: 23 days close+SMA_all, 23 days volume+SMA10 : flat
+	@output: 0-1 class : 1 is return >5% 
+	"""
+	filename=filename
+	
+
+
+	def pre_processing_train(self,X,Y):
+		Y[Y<5]=0
+		Y[Y>=5]=1
+		return (X,Y)
+
+	def pre_processing_validation(self,X,Y):
+		Y[Y<5]=0
+		Y[Y>=5]=1
+		return (X,Y)
