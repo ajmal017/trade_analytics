@@ -8,7 +8,7 @@ import datascience.ML.MLmodels as MLmd
 
 import time
 import pandas as pd
-from celery.exceptions import TimeoutError 
+from celery.exceptions import TimeoutError
 import logging
 logger = logging.getLogger('debug')
 
@@ -79,11 +79,11 @@ def applyfunc2data(funcId,dataId,wait=False):
 
 	"""
 	shardIds=dtscmd.DataShard.objects.filter(Data__id=dataId).values_list('id',flat=True)
-	
+
 	if wait==True:
-		return Mapper_wait(funcId,shardIds)		
+		return Mapper_wait(funcId,shardIds)
 	else:
-		return Mapper_nowait(funcId,shardIds)		
+		return Mapper_nowait(funcId,shardIds)
 
 
 ## Create Raw Stock Datasets ##################
@@ -106,7 +106,7 @@ def CreateStockData_ShardsBySymbol(T0TF_dict_X,T0TF_dict_Y,Symbol,dataId):
 def CreateStockData_1(T0TF_dict_X,T0TF_dict_Y,dataId,Symbols):
 	if Symbols is None:
 		Symbols=stkmd.Stockmeta.objects.all().values_list('Symbol',flat=True)
-	
+
 	for Symbol in Symbols:
 		CreateStockData_ShardsBySymbol.delay(T0TF_dict_X,T0TF_dict_Y,Symbol,dataId)
 
@@ -114,13 +114,13 @@ def CreateStockData_1(T0TF_dict_X,T0TF_dict_Y,dataId,Symbols):
 def CreateStockData_2(window,window_fut,dataId,Symbols):
 	if Symbols is None:
 		Symbols=stkmd.Stockmeta.objects.all().values_list('Symbol',flat=True)
-	
+
 	T0TF_dict_X=map(lambda x: { 'T0':(x.date()-pd.DateOffset(window)).date(),'TF' :x.date(),'window':window },
 			pd.date_range(start=pd.datetime(2010,1,1),end=pd.datetime.today(),freq='W-MON') )
 
 	T0TF_dict_Y=map(lambda x: { 'T0':x.date(), 'TF' : (x.date()+pd.DateOffset(window_fut)).date(),'window':window_fut },
 			pd.date_range(start=pd.datetime(2010,1,1),end=pd.datetime.today(),freq='W-MON') )
-	
+
 	# pdb.set_trace()
 
 	for Symbol in Symbols:
@@ -141,7 +141,7 @@ def Perform_TransformData(dataId1):
 	data0=data1.ParentData
 	# funcId=data1.TransfomerFunc.id
 	shard0Ids=dtscmd.DataShard.objects.filter(Data=data0).values_list('id',flat=True)
-	
+
 	for shard0Id in shard0Ids:
 		shardTransformer.delay(shard0Id,dataId1)
 
@@ -187,8 +187,8 @@ def TrainModel(modelid):
 	Train a specific model with model id as modelid
 	"""
 	model=dtscmd.MLmodels.objects.get(id=modelid)
-	
-	
+
+
 	MCode=dtscmd.ModelCode.objects.get(Username=model.Userfilename)
 	Mclass=MCode.importobject(model.Name)
 
@@ -205,7 +205,7 @@ def TrainProject(Projectid):
 	"""
 	MLmodels_ids=dtscmd.MLmodels.objects.filter(Project__id=Projectid,Status='UnTrained').values_list('id',flat=True)
 	for modelid in MLmodels_ids:
-		TrainModel(modelid)
+		TrainModel.delay(modelid)
 
 
 #	Model Validation
@@ -215,8 +215,8 @@ def ValidateModeldata(modelid,validationdataid):
 	Run Validation on validationdata with id validationdataid using modelid
 	"""
 	model=dtscmd.MLmodels.objects.get(id=modelid)
-	
-	
+
+
 	MCode=dtscmd.ModelCode.objects.get(Username=model.Userfilename)
 	Mclass=MCode.importobject(model.Name)
 
@@ -233,8 +233,8 @@ def ValidateModel(modelid):
 	Run Validation for modelid on all validation data.
 	"""
 	model=dtscmd.MLmodels.objects.get(id=modelid)
-	
-	
+
+
 	MCode=dtscmd.ModelCode.object.get(Username=model.Userfilename)
 	Mclass=MCode.importobject(model.Name)
 
