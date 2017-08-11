@@ -35,4 +35,5 @@ urlpatterns = [
     url(r'^stockapp/', include('stockapp.urls',namespace='stockapp')),
     url(r'^queryapp/', include('queryapp.urls',namespace='queryapp')),
 
+     url(r'^django-rq/', include('django_rq.urls')),
 ]

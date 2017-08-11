@@ -57,8 +57,14 @@ INSTALLED_APPS = [
     'featureapp',
     'computeapp',
 
+    'django_rq',
 ]
 
+
+## --------------------- WHICH TASK DISTRIBUTION YOU LIKE TO USE ---------------------------------------------------------------##
+## ---------------------------------------------------------------------------------------------##
+USE_REDIS= True
+USE_CELERY= False
 
 ## --------------------- MIDDLEWARE ---------------------------------------------------------------##
 ## ---------------------------------------------------------------------------------------------##
@@ -147,7 +153,7 @@ if os.path.isdir(BIGDATA_DIR)==False:
 
 
     #--------------------------POSTGRES --------------
-IP='192.168.1.103'
+IP='localhost'
 PORT='5432'
 DATABASES = {
     'default': {
@@ -273,6 +279,10 @@ LOGGING = {
         'simple': {
             'format': '%(levelname)s %(message)s'
         },
+        "rq_console": {
+            "format": "%(asctime)s %(message)s",
+            "datefmt": "%H:%M:%S",
+        },
     },
 
 
@@ -316,6 +326,12 @@ LOGGING = {
             'filename': os.path.join('logs','dataapp_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
             'formatter': 'verbose',
         },
+        "rq_console": {
+            "level": "DEBUG",
+            "class": "rq.utils.ColorizingStreamHandler",
+            "formatter": "rq_console",
+            "exclude": ["%(asctime)s"],
+        },
 
     },
 
@@ -348,11 +364,15 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        "rq.worker": {
+            "handlers": ["rq_console"],
+            "level": "DEBUG"
+        },
+
 
     }
 
 }
-
 
 # --------------------------------------------------------------------#
 # CELERY SETTINGS
@@ -369,6 +389,33 @@ CELERYD_MAX_TASKS_PER_CHILD=20
 
 CELERYBEAT_SCHEDULE = {}
 
+# do the following
+# celery -A trade_analytics worker -l info
+
+
+# --------------------------------------------------------------------#
+# REDIS SETTINGS
+# --------------------------------------------------------------------#
+
+RQ_QUEUES = {
+    'default': {
+        'HOST': '172.18.65.75',
+        'PORT': 6379,
+        'DB': 0,
+        # 'PASSWORD': 'some-password',
+        'DEFAULT_TIMEOUT': 360,
+    },
+    'ML': {
+        'HOST': '172.18.65.75',
+        'PORT': 6379,
+        'DB': 0,
+    }
+}
+
+# do the following
+# redis-server trade_analytics/redis.conf
+# python manage.py rqworker ML    .......for ML queue
+# python manage.py rqworker       .......for default queue
 
 # --------------------------------------------------------------------#
 # JUPYTER NOTEBOOK SETTINGS

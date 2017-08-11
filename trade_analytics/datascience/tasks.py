@@ -1,27 +1,46 @@
 from __future__ import division
-from celery import shared_task
 import stockapp.models as stkmd
 
 import datascience.models as dtscmd
 import datascience.libs as dtsclibs
 import datascience.ML.MLmodels as MLmd
+from django.conf import settings
 
 import time
 import pandas as pd
-from celery.exceptions import TimeoutError
+
 import logging
 logger = logging.getLogger('debug')
 
-from celery.signals import worker_process_init
 
-@worker_process_init.connect
-def fix_multiprocessing(**kwargs):
-    from multiprocessing import current_process
-    try:
-        current_process()._config
-    except AttributeError:
-        current_process()._config = {'semprefix': '/mp'}
-    print "fixed multiprocessing"
+
+if settings.USE_REDIS:
+	from django_rq import job as shared_task
+
+elif settings.USE_CELERY:
+	from celery import shared_task
+	from celery.exceptions import TimeoutError
+	from celery.signals import worker_process_init
+
+	@worker_process_init.connect
+	def fix_multiprocessing(**kwargs):
+	    from multiprocessing import current_process
+	    try:
+	        current_process()._config
+	    except AttributeError:
+	        current_process()._config = {'semprefix': '/mp'}
+	    print "fixed multiprocessing"
+else:
+	# use dummy task
+	raise Exception('Unknown option for task distribution')
+
+
+## test --------------------
+@shared_task
+def add(x,y):
+	return x+y
+	
+
 
 ## Compute Function Mapper ####################
 @shared_task
