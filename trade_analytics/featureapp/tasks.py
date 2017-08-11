@@ -1,6 +1,6 @@
 # Create your tasks here
 # from __future__ import absolute_import, unicode_literals
-from celery import shared_task
+
 import stockapp.models as stkmd
 import dataapp.models as dtamd
 import featureapp.models as ftmd
@@ -15,6 +15,28 @@ from django import db
 
 import logging
 logger = logging.getLogger('debug')
+
+
+from django.conf import settings
+if settings.USE_REDIS:
+	from django_rq import job as shared_task
+
+elif settings.USE_CELERY:
+	from celery import shared_task
+	from celery.exceptions import TimeoutError
+	from celery.signals import worker_process_init
+
+	@worker_process_init.connect
+	def fix_multiprocessing(**kwargs):
+	    from multiprocessing import current_process
+	    try:
+	        current_process()._config
+	    except AttributeError:
+	        current_process()._config = {'semprefix': '/mp'}
+	    print "fixed multiprocessing"
+else:
+	# use dummy task
+	raise Exception('Unknown option for task distribution')
 
 def computefeatuers(stkid,Trange):
 	featurecodes=ftmd.FeatureComputeCode.objects.all()
