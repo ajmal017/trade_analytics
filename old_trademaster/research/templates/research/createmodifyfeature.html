@@ -1,0 +1,316 @@
+{% extends "homepage/base.html" %} 
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+
+{% block tabtitle %}  Query Tool {% endblock%}
+
+{% block head %}
+
+
+     
+      <meta charset="utf-8">
+
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <!-- <script src="http://code.jquery.com/jquery-1.10.2.js"></script> -->
+  <script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+  <!--script src="http://code.jquery.com/jquery-1.10.2.js"></script -->
+  <!-- script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script -->
+
+  <link rel="stylesheet"  href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
+  
+  <link rel="stylesheet" href="{% static 'research/tablesorter/themes/blue/style.css' %}" type="text/css" media="print, projection, screen" />
+  <!-- script type="text/javascript" src="{% static 'research/tablesorter/jquery-latest.js' %}"></script --> 
+  <script type="text/javascript" src="{% static 'research/tablesorter/jquery.tablesorter.js' %}"></script> 
+  <script src="{% static 'research/ace/src-noconflict/ace.js' %}" type="text/javascript" charset="utf-8"></script>
+ 
+  <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">s
+  <style type="text/css" media="screen">
+
+/*
+    #editor_create {
+        margin: 10;
+        position: fixed;
+        top: 5;
+        bottom: 5;
+        left: 5;
+        right: 5;
+    }*/
+  </style>
+
+  <style>
+  .ui-autocomplete {
+    max-height: 100px;
+    overflow-y: auto;
+    /* prevent horizontal scrollbar */
+    overflow-x: hidden;
+  }
+  /* IE 6 doesn't support max-height
+   * we use height instead, but this forces the menu to always be this tall
+   */
+  * html .ui-autocomplete {
+    height: 100px;
+  }
+  </style>
+  <style type="text/css">
+    #id_operators li,#id_units li{
+    list-style-type: none;
+    /*margin: 1px;
+    padding: 1px;*/
+    background-color:#b3cccc;
+    display:inline;
+    border: 1px solid #eee;
+    
+    }
+  </style>
+{% endblock %}
+
+
+{% block title %}Create Features{% endblock %}
+
+
+
+
+
+
+
+{% block pagetitle %} Create Features {% endblock %}
+
+{% block pagemain %} 
+
+{% if user.is_authenticated %}
+    <p>Welcome, {{ user.get_username }}.</p>
+{% else %}
+    <!-- <p>Welcome, new user. Please <a href="{% url 'homepage:login' %}">log in</a></p> -->
+    <a href="{% url 'homepage:login' %}?next={{request.path}}">Log in to create and view custom categories</a>
+{% endif %}
+
+
+<p>
+<font color="red">{{error|default_if_none:""}}</font>
+</p>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><font color="red" size="4">{{ message }}</font></li>
+    {% endfor %}
+</ul>
+
+{% endif %}
+
+
+    
+
+    <form action="{% url 'research:createmodifyfeature' %}" method="post">
+    {% csrf_token %}
+    
+      <h2>Create a new Feature</h2>
+      <table>
+      <tr>
+      <td>{{CreateModifyFeatureForm.customfeature_name.label}}</td> <td>{{CreateModifyFeatureForm.customfeature_name}}</td>
+      </tr>
+      <tr>
+      <td>{{CreateModifyFeatureForm.customfeature_description.label}}</td> <td>{{CreateModifyFeatureForm.customfeature_description}}</td>
+      </tr>
+      <tr>
+      <td>Select or enter a group</td> <td> <div class="ui-widget">{{CreateModifyFeatureForm.select_group}} {{CreateModifyFeatureForm.customfeature_group}} </div></td>
+      </tr>
+      
+      {% if CreateModifyFeatureForm.nameisset %}
+      <tr>
+        <td>Select applicable operators for query </td><td>{{CreateModifyFeatureForm.operators}}</td>
+      </tr>
+      <tr>
+        <td>Select applicable units for query</td><td >{{CreateModifyFeatureForm.units}}</td>
+      </tr>
+      <tr>
+      <td>{{CreateModifyFeatureForm.customfeature_code.label}}</td> <td>{{CreateModifyFeatureForm.customfeature_code}}</td>
+      </tr>
+
+      {% endif %}
+      </table>
+
+
+      {% if CreateModifyFeatureForm.nameisset %}
+
+
+<p align="center">
+<pre id="editor_create" style="width:1000px;height:300px;overflow: auto;">
+
+</pre>
+</p>
+
+
+      {% endif %}
+
+    {% if CreateModifyFeatureForm.nameisset %}
+    <p align="center"> <input type="submit" class="btn" name="feature_create_save" value="Save New Feature" /> </p>
+    {% else %}
+    <p align="center"> <input type="submit" class="btn" name="feature_create" value="Create Feature" /> </p>
+    {% endif %}
+
+
+    {% if CreateModifyFeatureForm.featvalue %}
+    <h2> Computed Feature value = {{CreateModifyFeatureForm.featvalue}}</h2>
+    {% endif %}
+
+    {% if CreateModifyFeatureForm.chart %}
+    {{CreateModifyFeatureForm.chart}}
+    {% endif %}
+
+<br>
+<br>
+<div style="position:static;">
+<hr>
+<br>
+
+
+<h2>View/Modify Features</h2>
+
+
+    
+ {% for feat in CreateModifyFeatureForm.SavedGenfeatures %}
+    <br>
+    <br>
+    <h3>Group: {{feat.group}}</h3>
+    <p>Feature Name: {{feat.name}}</p>
+    <p>Description: {{feat.description}}</p>
+    <p>Output: {{feat.output}}</p>
+    <textarea id="textcode_{{feat.id}}">{{feat.code}}</textarea>
+    <p align="center">
+    <pre id="editor_create_{{feat.id}}" style="width:1000px;height:300px;overflow: auto;">
+
+    </pre>
+    </p>
+
+  {% endfor %}
+
+  {% for feat in CreateModifyFeatureForm.SavedUserfeatures %}
+    <br>
+    <br>
+    <h3>Group: {{feat.group}}</h3>
+    <p>Feature Name: {{feat.name}}</p>
+    <p>Description: {{feat.description}}</p>
+    <p>Output: {{feat.output}}</p>
+      <textarea name="textcode_{{feat.id}}" id="textcode_{{feat.id}}">{{feat.code}}</textarea>
+    <p align="center">
+      <pre id="editor_create_{{feat.id}}" style="width:1000px;height:300px;overflow: auto;">  </pre>
+    </p>
+    <table style="width:1000px">
+    <tr>
+      <td align="left"><input type="submit" class="btnreset" name="feature_modify_{{feat.id}}" value="Delete Feature" /></td>
+      <td align="right"><input type="submit" class="btn" name="feature_modify_{{feat.id}}" value="Modify Feature" /></td>
+    </tr> 
+    </table>
+    
+
+  {% endfor %}
+
+    </form>
+
+
+
+
+
+</div>
+
+
+
+
+<body onload="master_func_onload();">
+<script type="text/javascript">
+  function master_func_onload(){
+ {% for feat in CreateModifyFeatureForm.SavedGenfeatures %}
+  load_create_editor_viewmodify('textcode_{{feat.id}}','editor_create_{{feat.id}}');
+{% endfor %}
+  
+  {% for feat in CreateModifyFeatureForm.SavedUserfeatures %}
+  load_create_editor_viewmodify('textcode_{{feat.id}}','editor_create_{{feat.id}}');
+  {% endfor %}
+
+  load_create_editor();
+
+}
+</script>
+
+
+
+<script>
+
+function load_create_editor() {
+  // alert(document.getElementById('feat').innerText);
+
+    
+    document.getElementById('editor_create').textContent=document.getElementById('id_customfeature_code').value;
+
+    var editor = ace.edit("editor_create");
+    editor.setTheme("ace/theme/twilight");
+    editor.session.setMode("ace/mode/python");
+    document.getElementById('editor_create').style.fontSize='15px';
+    // editor.setReadOnly(true);  // false to make it editable
+    editor.setHighlightActiveLine(false);
+    editor.setShowPrintMargin(false);
+    
+
+    editor.on("change", function(){
+      // alert(editor.getSession().getValue());
+      document.getElementById('id_customfeature_code').value= editor.getSession().getValue();
+      // alert(document.getElementById('id_customfeature_code').value);
+
+
+    });
+
+}
+
+function load_create_editor_viewmodify(idformcode,ideditorcode) {
+  // alert(document.getElementById('feat').innerText);
+
+    
+    document.getElementById(ideditorcode).textContent=document.getElementById(idformcode).value;
+
+    var editor = ace.edit(ideditorcode);
+    editor.setTheme("ace/theme/twilight");
+    editor.session.setMode("ace/mode/python");
+    document.getElementById(ideditorcode).style.fontSize='15px';
+    // editor.setReadOnly(true);  // false to make it editable
+    editor.setHighlightActiveLine(false);
+    editor.setShowPrintMargin(false);
+    
+
+    editor.on("change", function(){
+      // alert(editor.getSession().getValue());
+      document.getElementById(idformcode).value= editor.getSession().getValue();
+      // alert(document.getElementById('id_customfeature_code').value);
+
+
+    });
+
+}
+
+$('#id_select_group').on('change',function(){
+  var e=document.getElementById('id_select_group');
+  var txt=e.options[e.selectedIndex].text;
+  alert(txt);
+  if (txt=='Select'){
+   document.getElementById('id_customfeature_group').value='';     
+  }
+  else{
+   document.getElementById('id_customfeature_group').value=e.options[e.selectedIndex].text;    
+  }
+
+   e.selectedIndex=0;
+
+});
+
+</script>
+
+
+
+{% endblock %} 
+
+{% block footer %} 
+
+Copyright of Nagavenkat Adurthi
+
+ {% endblock %}

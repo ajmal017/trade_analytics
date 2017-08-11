@@ -11,6 +11,32 @@ import time
 import pandas as pd
 from django import db
 
+
+
+from django.conf import settings
+if settings.USE_REDIS:
+	from django_rq import job as shared_task
+
+elif settings.USE_CELERY:
+	from celery import shared_task
+	from celery.exceptions import TimeoutError
+	from celery.signals import worker_process_init
+
+	@worker_process_init.connect
+	def fix_multiprocessing(**kwargs):
+	    from multiprocessing import current_process
+	    try:
+	        current_process()._config
+	    except AttributeError:
+	        current_process()._config = {'semprefix': '/mp'}
+	    print "fixed multiprocessing"
+else:
+	# use dummy task
+	raise Exception('Unknown option for task distribution')
+
+
+
+
 def processQ_SyncPrice2Meta(inQ,BadStartQ,BadLastQ,NoDataQ,InActiveQ,DuplicatesQ):
 	while True:
 		try:

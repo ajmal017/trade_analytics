@@ -1,6 +1,6 @@
 from __future__ import division
 
-from celery import shared_task
+
 import stockapp.models as stkmd
 import dataapp.models as dtamd
 import utility.parallelcomputations as utpc
@@ -8,7 +8,31 @@ import itertools as itt
 import dataapp.libs as dtalibs
 
 # make the function shared
-UpdatePriceData=shared_task(dtalibs.UpdatePriceData)
+from django.conf import settings
+if settings.USE_REDIS:
+	from django_rq import job as shared_task
+
+elif settings.USE_CELERY:
+	from celery import shared_task
+	from celery.exceptions import TimeoutError
+	from celery.signals import worker_process_init
+
+	@worker_process_init.connect
+	def fix_multiprocessing(**kwargs):
+	    from multiprocessing import current_process
+	    try:
+	        current_process()._config
+	    except AttributeError:
+	        current_process()._config = {'semprefix': '/mp'}
+	    print "fixed multiprocessing"
+else:
+	# use dummy task
+	raise Exception('Unknown option for task distribution')
+
+
+@shared_task
+def UpdatePriceData(Symbols_ids,*args,**kwargs):
+	dtalibs.UpdatePriceData(Symbols_ids,*args,**kwargs)
 
 
 def RunDataDownload():

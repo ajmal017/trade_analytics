@@ -1,0 +1,79 @@
+{% extends "homepage/base.html" %} 
+
+{% block tabtitle %}  Watch List Modify  {% endblock%}
+
+{% block title %}Watch List Modify {% endblock %}
+
+
+{% block pagetitle %} Watch List Modify {% endblock %}
+
+{% block pagemain %} 
+
+{% if user.is_authenticated %}
+    <p>Welcome, {{ user.get_username }}.</p>
+{% else %}
+    <p>Welcome, new user. Please <a href="{% url 'homepage:login' %}">log in</a></p>
+{% endif %}
+
+<p>
+<font color="red">{{error|default_if_none:""}}</font>
+</p>
+
+
+<h2> Modify Watch List </h2>
+  <form action="{% url 'stockdata:watchlistmanager_amend' %}" method="post">
+      {% csrf_token %}
+      {{ watchform.errors }}
+      
+      <p>
+
+      {% comment "Optional note" %}
+      
+        <table class="table table-striped">
+        {{ watchform.as_table  }}
+        </table>
+      
+      {% endcomment %}
+
+      {{ watchform.watchlist.errors}}
+      <table class="table table-striped">
+      <tr>
+        <td>{{watchform.watchlist.label_tag}}</td>  <td> {{watchform.watchlist}} </td>
+      </tr>
+      {% if watchform.symbols_append %}
+      <tr>
+        <td>{{watchform.symbols_append.label_tag}}</td>  <td> {{watchform.symbols_append}} </td>
+      </tr>
+      {%  endif %}
+      </table>
+
+      {% if watchform.symbols_length_del  %}
+        <table >
+        <tr><th> Delete </th> <th> Symbol </th></tr>
+        {% for field in watchform %}
+          {% if field.label != watchform.watchlist.label and field.label != watchform.symbols_append.label  %}
+            <tr> <td> {{field}} </td> <td> {{ field.label }} </td> </tr>
+          {% endif %}  
+        {% endfor %}
+        </table>
+      {% endif %}
+
+      </p>
+      {% if watchform.symbols_length_del  %}
+        <p align="center"> <input type="submit" class="btn" name="watch_save" value="Save Changes" /> </p>
+      {% else %}
+       <p align="center"> <input type="submit" class="btn" name="watch_submit" value="Select Watchlist" /> </p>
+      {% endif %}
+  </form>
+
+
+<br>
+
+
+{% endblock %}
+
+{% block footer %} 
+
+Copyright of Nagavenkat Adurthi
+
+ {% endblock %}
