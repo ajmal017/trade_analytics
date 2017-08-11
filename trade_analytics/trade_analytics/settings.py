@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.10/ref/settings/
 import os
 from . import db_routers
 import datetime
+from celery.schedules import crontab
 from datetime import timedelta
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
@@ -42,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',
     'django.contrib.admindocs',
-
+    'django_celery_results',
     'rest_framework',
 
 
@@ -59,6 +60,11 @@ INSTALLED_APPS = [
     'django_rq',
 ]
 
+
+## --------------------- WHICH TASK DISTRIBUTION YOU LIKE TO USE ---------------------------------------------------------------##
+## ---------------------------------------------------------------------------------------------##
+USE_REDIS= True
+USE_CELERY= False
 
 ## --------------------- MIDDLEWARE ---------------------------------------------------------------##
 ## ---------------------------------------------------------------------------------------------##
@@ -147,7 +153,7 @@ if os.path.isdir(BIGDATA_DIR)==False:
 
 
     #--------------------------POSTGRES --------------
-IP='192.168.1.103'
+IP='localhost'
 PORT='5432'
 DATABASES = {
     'default': {
@@ -273,6 +279,10 @@ LOGGING = {
         'simple': {
             'format': '%(levelname)s %(message)s'
         },
+        "rq_console": {
+            "format": "%(asctime)s %(message)s",
+            "datefmt": "%H:%M:%S",
+        },
     },
 
 
@@ -316,6 +326,12 @@ LOGGING = {
             'filename': os.path.join('logs','dataapp_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
             'formatter': 'verbose',
         },
+        "rq_console": {
+            "level": "DEBUG",
+            "class": "rq.utils.ColorizingStreamHandler",
+            "formatter": "rq_console",
+            "exclude": ["%(asctime)s"],
+        },
 
     },
 
@@ -348,11 +364,30 @@ LOGGING = {
             'level': 'DEBUG',
             'propagate': True,
         },
+        "rq.worker": {
+            "handlers": ["rq_console"],
+            "level": "DEBUG"
+        },
+
 
     }
 
 }
 
+# --------------------------------------------------------------------#
+# CELERY SETTINGS
+# --------------------------------------------------------------------#
+
+BROKER_URL = 'amqp://guest:guest@localhost:5672//'
+CELERY_ACCEPT_CONTENT = ['pickle']
+CELERY_TASK_SERIALIZER = 'pickle'
+CELERY_RESULT_SERIALIZER = 'pickle'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_TIMEZONE='US/Eastern'
+CELERY_ENABLE_UTC=True,
+CELERYD_MAX_TASKS_PER_CHILD=20
+
+CELERYBEAT_SCHEDULE = {}
 
 # --------------------------------------------------------------------#
 # REDIS SETTINGS
@@ -360,18 +395,14 @@ LOGGING = {
 
 RQ_QUEUES = {
     'default': {
-        'HOST': 'localhost',
+        'HOST': '172.18.65.75',
         'PORT': 6379,
         'DB': 0,
-        'PASSWORD': 'some-password',
+        # 'PASSWORD': 'some-password',
         'DEFAULT_TIMEOUT': 360,
     },
-    'high': {
-        'URL': os.getenv('REDISTOGO_URL', 'redis://localhost:6379/0'), # If you're on Heroku
-        'DEFAULT_TIMEOUT': 500,
-    },
-    'low': {
-        'HOST': 'localhost',
+    'ML': {
+        'HOST': '172.18.65.75',
         'PORT': 6379,
         'DB': 0,
     }
