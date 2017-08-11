@@ -389,6 +389,10 @@ CELERYD_MAX_TASKS_PER_CHILD=20
 
 CELERYBEAT_SCHEDULE = {}
 
+# do the following
+# celery -A trade_analytics worker -l info
+
+
 # --------------------------------------------------------------------#
 # REDIS SETTINGS
 # --------------------------------------------------------------------#
@@ -408,6 +412,10 @@ RQ_QUEUES = {
     }
 }
 
+# do the following
+# redis-server trade_analytics/redis.conf
+# python manage.py rqworker ML    .......for ML queue
+# python manage.py rqworker       .......for default queue
 
 # --------------------------------------------------------------------#
 # JUPYTER NOTEBOOK SETTINGS
