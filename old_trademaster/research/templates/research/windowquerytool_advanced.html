@@ -1,0 +1,610 @@
+{% extends "homepage/base.html" %} 
+{% load staticfiles %}
+{% load render_table from django_tables2 %}
+
+{% block tabtitle %}  Query Tool {% endblock%}
+
+{% block head %}
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script> -->
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="{% static 'research/jquery_chained/jquery.chained.js' %}" type="text/javascript" charset="utf-8"></script>
+<style>
+  /*#collist { list-style-type: none; margin: 0; padding: 0; width: 60%; }*/
+  /*#collist li { margin: 0 3px 3px 3px; padding: 0.4em; padding-left: 1.5em; font-size: 1.4em; height: 18px; }*/
+  /*#collist li span { margin-left: -1.3em; }*/
+  
+
+  #collist {
+    border: 1px solid #eee;
+    min-height: 30px;
+    list-style-type: none;
+    margin: 1px;
+    padding: 5px 5px 5px 5px;
+    margin-right: 10px; 
+    display:inline;
+  }
+  #collist li {
+    margin: 10px 10px 10px 10px;
+    padding: 5px;
+    font-size: 1.2em;
+    float:left;
+    background-color:#b3cccc;
+
+        display:inline;
+        border: 1px solid #eee;
+  }
+  #collist ul {
+  list-style-type: none;
+    margin: 10px;
+    padding: 10px;
+    display:inline;
+  }
+</style>
+
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet"  href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
+  <link rel="stylesheet" href="{% static 'research/tablesorter/themes/blue/style.css' %}" type="text/css" media="print, projection, screen" />
+  <!-- <script type="text/javascript" src="{% static 'research/tablesorter/jquery.tablesorter.js' %}"></script>  -->
+
+  <script type="text/javascript" src="{% static 'research/jquery_tablesorter/jquery.tablesorter.js' %}"></script> 
+  <script type="text/javascript" src="{% static 'research/jquery_tablesorter/themes/blue/style.css' %}"></script> 
+
+<script type="text/javascript">
+// Function to submit tag categories
+function submittagfunc(pp_id,dispdiv_id) {
+  $.post( "{% url 'research:tagsubmit' %}", $( "#"+pp_id ).serialize(),function( data ) {
+    $( "#"+dispdiv_id ).html( data );
+  });
+}
+</script>
+
+
+<script type="text/javascript">
+  $(document).ready(function() 
+    { 
+        $("#myTable").tablesorter(); 
+    } 
+); 
+   
+</script>
+{% endblock %}
+
+
+
+
+{% block title %}Custom Query Tool{% endblock %}
+
+{% block pagetitle %}Custom Query Tool {% endblock %}
+
+{% block pagemain %} 
+
+<body onload="funcOnLoad()">
+<script type="text/javascript">
+// var GroupOptions=[  
+//               {'value':"None","text":"Select","connectedto":[]} , 
+//               {'value':"price","text":"Price","connectedto":[]},
+//               {'value':"volume","text":"Volume","connectedto":[]},
+//               {'value':"corr","text":"Correlation","connectedto":[]},  
+//             ];
+
+// var FeatOptions=[ 
+//           {'value':"None","text":"Select","connectedto":["None","corr","price","volume"] } , 
+//           {'value':"perf1y","text":"Perf 1y","connectedto":["price"]},
+//           {'value':"change","text":"Change","connectedto":["price"] }, 
+//           {'value':"relvol","text":"RelVol","connectedto":["volume"]}, 
+//           {'value':"mxvol","text":"MaxVol","connectedto":["volume"]} ,
+//           {'value':"corsymb","text":"To Symbol","connectedto":["corr"]}  
+//         ];
+
+// var FeatExtraInput=["corsymb"]
+
+// var OperatorOptions=[ 
+//             {'value':"None","text":"Select","connectedto":[]} , 
+//             { 'value':"greater_than","text":"greater than","connectedto":["corsymb"] },
+//             { 'value':"less_than","text":"less than","connectedto":["perf1y","corsymb"] }, 
+//             { 'value':"equal_to","text":"equal to" ,"connectedto":["perf1y","mxvol"] } 
+//           ];
+
+// var UnitOptions=[   {'value':"None","text":"Select","connectedto":[]} ,
+//           {'value':"candles","text":"Candles","connectedto":["price","volume"]} , 
+//           {'value':"percentwindow","text":"% of window","connectedto":["price","volume"]} ,
+//           {'value':"percent","text":"%","connectedto":["corr"]} 
+//         ];
+
+
+// var GroupColm=[  
+//               {'value':"None","text":"Select","connectedto":[]} , 
+//               {'value':"price","text":"Price","connectedto":[]},
+//               {'value':"volume","text":"Volume","connectedto":[]},
+//               {'value':"corr","text":"Correlation","connectedto":[]},  
+//             ];
+
+// var FeatColm=[ 
+//           {'value':"None","text":"Select","connectedto":["None","corr","price","volume"] } , 
+//           {'value':"perf1y","text":"Perf 1y","connectedto":["price"]},
+//           {'value':"change","text":"Change","connectedto":["price"] }, 
+//           {'value':"relvol","text":"RelVol","connectedto":["volume"]}, 
+//           {'value':"mxvol","text":"MaxVol","connectedto":["volume"]} ,
+//           {'value':"corsymb","text":"To Symbol","connectedto":["corr"]}  
+//         ];
+
+var GroupOptions={{ WindowQueryTool_advanced.browser_feature_options.GroupOptions}}
+
+var FeatOptions={{ WindowQueryTool_advanced.browser_feature_options.FeatOptions}}
+var FeatExtraInput=["corsymb"]
+
+var OperatorOptions={{ WindowQueryTool_advanced.browser_feature_options.OperatorOptions}}
+
+var UnitOptions={{ WindowQueryTool_advanced.browser_feature_options.UnitOptions}}
+
+var GroupColm={{ WindowQueryTool_advanced.browser_feature_options.GroupColm}}
+
+var FeatColm={{ WindowQueryTool_advanced.browser_feature_options.FeatColm}}
+
+</script>
+
+<script type="text/javascript">  
+  var Coljson_options={{ WindowQueryTool_advanced.Coljson}};
+  var Filjson_options={{ WindowQueryTool_advanced.Filjson}};
+  var SavedQmeta_options={{ WindowQueryTool_advanced.SavedQmeta_options}};
+</script>
+
+<script src="{% static 'research/filterlistbuilder.js' %}" type="text/javascript" charset="utf-8"></script>
+
+
+{% if user.is_authenticated %}
+    <p>Welcome, {{ user.get_username }}.</p>
+{% else %}
+    <!-- <p>Welcome, new user. Please <a href="{% url 'homepage:login' %}">log in</a></p> -->
+    <a href="{% url 'homepage:login' %}?next={{request.path}}">Login to personalize</a>
+{% endif %}
+
+<p>
+<font color="red">{{error|default_if_none:""}}</font>
+</p>
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}><font color="red" size="4">{{ message }}</font></li>
+    {% endfor %}
+</ul>
+
+{% endif %}
+
+<form  id="queryform" onsubmit="return beforeformsubmit_createjson()" onload="" name="queryform" action="{% url 'research:windowquerytool_advanced' %}" method="get">
+      
+
+  
+    
+    <font size="4" color="red">
+     {{ WindowQueryTool_advanced.errors }} 
+     {{ WindowQueryTool_advanced.non_field_errors }}
+    </font>
+
+    {% csrf_token %}
+  <div style="border-radius: 25px; border: 2px solid #73AD21; margin: 20px; padding: 20px;float: left;">
+    <h2>Select the Window and dates to search in </h2>
+    <table>
+      <tr><td>{{WindowQueryTool_advanced.watchlist.label}}</td> <td> {{WindowQueryTool_advanced.watchlist}}</td></tr> 
+      <tr><td>and/or Enter Symbols </td> <td> {{WindowQueryTool_advanced.symbol}}</td></tr>   
+      <tr><td>{{WindowQueryTool_advanced.window.label}} </td> <td> {{WindowQueryTool_advanced.window}}</td></tr>  
+      <tr><td>{{WindowQueryTool_advanced.Interval.label}} </td> <td> {{WindowQueryTool_advanced.Interval}}</td></tr> 
+      <tr><td>Select T range(date) </td> 
+          <td> 
+              <table> 
+                  <tr> 
+                      <td>To: {{WindowQueryTool_advanced.T}} 
+                      <input class="btn" value="Prev Monday" style="width:100px;" onclick="PrevMonday()" /> 
+                      <input class="btn" value="Next Monday" style="width:100px;" onclick="NextMonday()" /></td> 
+                  </tr> 
+                  <tr> 
+                      <td>
+                          <table>
+                          <tr>
+                            <td><input class="btn" value="shift left" style="width:60px;" onclick="moveTdateleft()" /></td> 
+                          <td>
+                              <table>
+                              <tr>
+                                <td><input type="text" id="shiftby" value="5" style="width:30px;" /></td>
+                                  <td>
+                                      <select  id="shiftbyunit">
+                                        <option value="1">days</option>
+                                        <option value="7">weeks</option>
+                                        <option value="30">months</option>
+                                      </select>  
+                                  </td>
+                              </tr>
+                            </table>
+                          </td>  
+                          <td><input class="btn" value="shift right" style="width:70px;" onclick="moveTdateright()" /></td>
+                          </tr>  
+                          </table>
+                      </td>
+                  </tr>
+                  <tr> 
+                      <td>From: {{WindowQueryTool_advanced.T0}} <input class="btn" value="Make From date = To date" style="width:120px;" onclick="FromAndTosame()" /> </td> 
+                  </tr>
+              </table>    
+          </td>
+      </tr> 
+    </table>
+</div>
+
+    <br>
+
+  
+
+  <table>
+  
+
+    <tr>
+      <td>
+        <div style="border-radius: 25px; border: 2px solid #73AD21; margin: 20px; padding: 20px;float: left;">
+              <h2>Construct a filter based on features</h2>
+              <div id="filterdiv" style="border:1px solid red;float: left;">
+                <ui id="filterlist">
+
+                </ui> 
+              </div>
+              {{ WindowQueryTool_advanced.filjson}}
+          </div>      
+      </td>
+    </tr>
+
+    <tr>
+      <td>
+
+        <div style="border-radius: 25px; border: 2px solid #73AD21; margin: 20px; padding: 20px;float: left;">
+            <h2>Add Columns to display</h2> 
+            <table>
+              <tr>
+                <td><button onclick="add_colm();return false;"> Add Column  </button> </td> 
+                <td><button onclick="delete_colm();return false;"> Delete Column  </button> </td> 
+              </tr>
+              <tr>
+                <td>
+                <br>
+                    <div id="coldiv" style="border:1px solid black;float: left;">
+                      <ui id="collist">
+
+                      </ui> 
+                    </div>      
+                </td>
+              </tr>
+              <tr>
+                <td>
+                    <br>
+                    {{ WindowQueryTool_advanced.coljson}}
+                    Select Chart style:  {{WindowQueryTool_advanced.chartstyle}}      
+                </td>
+              </tr>
+            </table> 
+            
+            
+            
+        </div>
+      </td>
+    </tr>
+
+    <tr>
+    <td>
+      <div style="border-radius: 25px; border: 2px solid #73AD21;  margin: 20px; padding: 20px;float: left;">
+          
+          <table>
+            <tr>
+              <td> Load a saved Query : </td> <td> {{WindowQueryTool_advanced.loadsavedQs}} </td>
+              <td> Save/Modify Query: </td> <td> {{WindowQueryTool_advanced.savemodifyQ_bool}}  </td>
+              <td> Delete Query </td> <td> {{WindowQueryTool_advanced.deleteQ_bool}} </td>
+            </tr>
+          </table>
+          Give a name to the query/filter to save it   : {{WindowQueryTool_advanced.saveQs}}<br>
+          Query Description: {{WindowQueryTool_advanced.saveQs_description}}<br>
+           <input type="submit" class="btn" name="query_savemod" value="Save/Modify Query" />
+        </div>  
+    </td>
+  </tr>
+
+  </table>
+
+{{WindowQueryTool_advanced.pageno}} 
+    <p align="center"> <input type="submit" class="btnreset" name="query_reset" value="Reset Query" /> <input type="submit" class="btn" name="query_submit" id="query_submit" value="Submit Query" /> </p>
+
+<div>
+  <table>
+    <tr>
+      <td> <input type="submit" class="btn" name="query_download" id="query_download" value="Download Query Results" /> </td> <td> 
+      {% if WindowQueryTool_advanced.QueryDownloadURL %}
+        <a href="{{WindowQueryTool_advanced.QueryDownloadURL}}"> Download csv</a> 
+      {% endif %}
+      </td>
+    </tr>
+  </table>
+</div>
+
+
+{% if WindowQueryTool_advanced.SummaryCharts == None %}
+
+{% else %}
+  <p align="center">
+    <table>
+      {% for PP in  WindowQueryTool_advanced.SummaryCharts %}
+        <tr> 
+          {% for pp in PP %}
+            <td> {{pp}} </td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </table>
+  </p>
+{% endif %}
+    
+
+{% if WindowQueryTool_advanced.table %}
+
+      {% render_table WindowQueryTool_advanced.table %}
+
+{% elif WindowQueryTool_advanced.dftable %}
+
+
+ 
+  
+
+<p>
+    <div class="pagination">
+    <span class="step-links">
+        {% if WindowQueryTool_advanced.pages.has_previous %}
+        <input class="btn" value="previous" style="width:100px;" onclick="prevpage()" /> 
+            <!-- <a href="?page={{ WindowQueryTool_advanced.pages.previous_page_number }}">previous</a> -->
+            <script type="text/javascript">
+              function prevpage(){
+             document.getElementById('id_pageno').value={{ WindowQueryTool_advanced.pages.previous_page_number }};
+             document.getElementById("query_submit").click(); // Click on the checkbox
+             // document.getElementById('query_submit').value="Submit Query";
+             //  document.getElementById("queryform").submit();
+              }
+            </script>
+        {% endif %}
+
+        <span class="current">
+            Page {{ WindowQueryTool_advanced.pages.number }} of {{ WindowQueryTool_advanced.pages.paginator.num_pages }}.
+        </span>
+
+        {% if WindowQueryTool_advanced.pages.has_next %}
+         <input class="btn" value="next" style="width:100px;" onclick="nextpage()" /> 
+            <!-- <a href="?page={{ WindowQueryTool_advanced.pages.next_page_number }}">next</a> -->
+        <script type="text/javascript">
+          function nextpage(){
+         document.getElementById('id_pageno').value={{ WindowQueryTool_advanced.pages.next_page_number }};
+          document.getElementById("query_submit").click(); // Click on the checkbox
+         // document.getElementById('query_submit').value="Submit Query";
+         //  document.getElementById("queryform").submit();
+          }
+        </script>
+        {% endif %}
+    </span>
+</div> 
+</p>  
+
+
+ {{WindowQueryTool_advanced.dftable}}
+
+{% else %}
+  Submit Query to view table 
+{% endif %}
+
+
+
+
+
+
+  
+</form> 
+
+
+{% if WindowQueryTool_advanced.table %}
+    <!-- <  JUST A DUMMY FORM TO MAKE THE submittagfunc work PROPOERLY> -->
+  <form id="ABCDEFGHAA_form" action="" method="post">
+    <div id="ABCDEFGHAA_disp"></div>
+    <p align="center"> <input type="hidden" onclick="submittagfunc('ABCDEFGHAA_form','ABCDEFGHAA_disp')" class="btn" name="tag_submit" value="Submit Category" /> </p>
+  </form>
+
+
+{% elif WindowQueryTool_advanced.dftable %}
+  <!-- <  JUST A DUMMY FORM TO MAKE THE submittagfunc work PROPOERLY> -->
+  <form id="ABCDEFGHAA_form" action="" method="post">
+    <div id="ABCDEFGHAA_disp"></div>
+    <p align="center"> <input type="hidden" onclick="submittagfunc('ABCDEFGHAA_form','ABCDEFGHAA_disp')" class="btn" name="tag_submit" value="Submit Category" /> </p>
+  </form>
+
+{% else %}
+
+{% endif %}
+
+
+
+<script type="text/javascript">
+  $( "#id_loadsavedQs" ).change(function() {
+
+  var em=document.getElementById('id_loadsavedQs');
+  var qpk=em.options[em.selectedIndex].value;
+  
+  if (qpk!='None'){
+  document.getElementById('filjson').value = Filjson_options[qpk];
+  document.getElementById('coljson').value = Coljson_options[qpk];
+  document.getElementById('filterlist').innerHTML = '';
+  document.getElementById('collist').innerHTML = '';
+  document.getElementById('id_saveQs').innerHTML = SavedQmeta_options[qpk]['name'];
+  document.getElementById('id_saveQs_description').innerHTML = SavedQmeta_options[qpk]['desc'];
+
+  funcOnLoad();
+  }
+  else{
+    document.getElementById('filjson').value = '';
+    document.getElementById('coljson').value = '';
+    document.getElementById('filterlist').innerHTML = '';
+    document.getElementById('collist').innerHTML = '';
+    document.getElementById('id_saveQs').innerHTML = '';
+    document.getElementById('id_saveQs_description').innerHTML = '';
+    funcOnLoad();
+  }
+});
+</script>
+
+collist
+
+
+
+<script type="text/javascript">
+  function moveTdateleft(){
+    // return false;
+    // debugger
+    var em=document.getElementById('id_T_month');
+    var ed=document.getElementById('id_T_day');
+    var ey=document.getElementById('id_T_year');
+    var yr=ey.options[ey.selectedIndex].value;
+    var mn=em.options[em.selectedIndex].value;
+    var dy=ed.options[ed.selectedIndex].value;
+
+    var shiftby=Number(document.getElementById('shiftby').value);
+    var eshunit=document.getElementById('shiftbyunit');
+    var shiftbyunit = Number(eshunit.options[eshunit.selectedIndex].value);
+    dy=(Number(dy)-shiftby*shiftbyunit).toString();
+    var shiftedTdate=new Date(Number(yr),Number(mn)-1,Number(dy) ) ;
+
+    ed.value=shiftedTdate.getDate().toString();
+    em.value=(shiftedTdate.getMonth()+1).toString();
+    ey.value=shiftedTdate.getFullYear().toString();
+
+
+    var em0=document.getElementById('id_T0_month');
+    var ed0=document.getElementById('id_T0_day');
+    var ey0=document.getElementById('id_T0_year');
+    
+    var yr0=ey0.options[ey0.selectedIndex].value;
+    var mn0=em0.options[em0.selectedIndex].value;
+    var dy0=ed0.options[ed0.selectedIndex].value;
+
+    var T0date=new Date(Number(yr0),Number(mn0)-1,Number(dy0) ) ;
+    // alert(T0date>shiftedTdate);
+    if (T0date>shiftedTdate){
+          ed0.value=shiftedTdate.getDate().toString();
+          em0.value=(shiftedTdate.getMonth()+1).toString();
+          ey0.value=shiftedTdate.getFullYear().toString();      
+    }
+
+  }
+
+  function moveTdateright(){
+    // return false;
+
+    var em=document.getElementById('id_T_month');
+    var ed=document.getElementById('id_T_day');
+    var ey=document.getElementById('id_T_year');
+    var yr=ey.options[ey.selectedIndex].value;
+    var mn=em.options[em.selectedIndex].value;
+    var dy=ed.options[ed.selectedIndex].value;
+
+    var shiftby=Number(document.getElementById('shiftby').value);
+    var eshunit=document.getElementById('shiftbyunit');
+    var shiftbyunit = Number(eshunit.options[eshunit.selectedIndex].value);
+    dy=(Number(dy)+shiftby*shiftbyunit).toString();
+    var shiftedTdate=new Date(Number(yr),Number(mn)-1,Number(dy) ) ;
+
+    ed.value=shiftedTdate.getDate().toString();
+    em.value=(shiftedTdate.getMonth()+1).toString();
+    ey.value=shiftedTdate.getFullYear().toString();
+
+    var em0=document.getElementById('id_T0_month');
+    var ed0=document.getElementById('id_T0_day');
+    var ey0=document.getElementById('id_T0_year');
+    
+    var yr0=ey0.options[ey0.selectedIndex].value;
+    var mn0=em0.options[em0.selectedIndex].value;
+    var dy0=ed0.options[ed0.selectedIndex].value;
+
+    var T0date=new Date(Number(yr0),Number(mn0)-1,Number(dy0) ) ;
+    if (T0date>shiftedTdate){
+          ed0.value=shiftedTdate.getDate().toString();
+          em0.value=(shiftedTdate.getMonth()+1).toString();
+          ey0.value=shiftedTdate.getFullYear().toString();      
+    }
+
+  }
+  function FromAndTosame(){
+    var em=document.getElementById('id_T_month');
+    var ed=document.getElementById('id_T_day');
+    var ey=document.getElementById('id_T_year');
+
+    var em0=document.getElementById('id_T0_month');
+    var ed0=document.getElementById('id_T0_day');
+    var ey0=document.getElementById('id_T0_year');
+    
+    ey0.selectedIndex=ey.selectedIndex;
+    em0.selectedIndex=em.selectedIndex;
+    ed0.selectedIndex=ed.selectedIndex;
+
+  }
+
+  function PrevMonday(){
+    var em=document.getElementById('id_T_month');
+    var ed=document.getElementById('id_T_day');
+    var ey=document.getElementById('id_T_year');
+    var yr=ey.options[ey.selectedIndex].value;
+    var mn=em.options[em.selectedIndex].value;
+    var dy=ed.options[ed.selectedIndex].value;
+    var i;
+    for(i=1;i<10;i++){
+      var shiftedTdate=new Date(Number(yr),Number(mn)-1,Number(dy)-i ) ;
+      if (shiftedTdate.getDay()==1){
+        break;
+      }
+    }
+    ed.value=shiftedTdate.getDate().toString();
+    em.value=(shiftedTdate.getMonth()+1).toString();
+    ey.value=shiftedTdate.getFullYear().toString();
+    
+  }
+
+  
+  function NextMonday(){
+    var em=document.getElementById('id_T_month');
+    var ed=document.getElementById('id_T_day');
+    var ey=document.getElementById('id_T_year');
+    var yr=ey.options[ey.selectedIndex].value;
+    var mn=em.options[em.selectedIndex].value;
+    var dy=ed.options[ed.selectedIndex].value;
+    var i;
+    for(i=1;i<10;i++){
+      var shiftedTdate=new Date(Number(yr),Number(mn)-1,Number(dy)+i ) ;
+      if (shiftedTdate.getDay()==1){
+        break;
+      }
+    }
+    ed.value=shiftedTdate.getDate().toString();
+    em.value=(shiftedTdate.getMonth()+1).toString();
+    ey.value=shiftedTdate.getFullYear().toString();
+
+  }
+
+</script>
+<!-- 
+    <script type="text/javascript">
+  $( "#id_T_year" ).change(  function(){ document.getElementById("id_T0_year").selectedIndex=document.getElementById("id_T_year").selectedIndex; });
+  $( "#id_T_month" ).change(  function(){ document.getElementById("id_T0_month").selectedIndex=document.getElementById("id_T_month").selectedIndex; });
+  $( "#id_T_day" ).change(  function(){ document.getElementById("id_T0_day").selectedIndex=document.getElementById("id_T_day").selectedIndex; });
+
+</script> -->
+
+{% endblock %} 
+
+{% block footer %} 
+
+Copyright of Nagavenkat Adurthi
+
+ {% endblock %}
+
+
+

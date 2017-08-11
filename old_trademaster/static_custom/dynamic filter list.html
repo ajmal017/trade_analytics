@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.2/jquery.min.js"></script> -->
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script>
+<script src="jquery.chained.js?v=1.0.0" type="text/javascript" charset="utf-8"></script>
+</head>
+
+
+
+<body>
+
+<div id="filterdiv">
+<ui id="filter">
+
+</ui>	
+</div>
+<br>
+<form method="get" onsubmit="beforeformsubmit()">
+<input id="filQ" type="text" name="ok">
+<input type="submit" value="Submit">	
+</form>
+
+
+
+
+<script type="text/javascript">
+var GroupOptions=[ ["None","Select",[]] , ["price","Price",[]],["volume","Volume",[]]  ]
+var FeatOptions=[ ["None","Select",[] ] , ["perf1y","Perf 1y",["None","price"]],["change","Change",["None","price"] ], ["relvol","RelVol",["None","volume"]], ["mxvol","MaxVol",["None","volume"]]  ]
+var OperatorOptions=[ ["None","Select",[]] , [ "greater_than","greater than",["None","perf1y","change","relvol","mxvol"] ],[ "less_than","less than",["None","perf1y","change"] ], 
+						[ "equal_to","equal to" ,["None","perf1y","change","mxvol"] ] ]
+var UnitOptions=[ ["candles","Candles",['price']] , ["percent","% of window",['price','volume']] ]
+
+var Selectgroup='<select id="grpd0d" class="grpd0d" name="grpd0d" >';
+for (var i = 0; i < GroupOptions.length; i++) {
+	var cls='';
+	for(var j = 0; j < GroupOptions[i][2].length; j++) {
+ 		cls=cls+' '+GroupOptions[i][2][j];
+ 	}
+ 	if(cls==''){
+ 		Selectgroup=Selectgroup+ '<option value="'+ GroupOptions[i][0] + '" class="'+cls+'">'+GroupOptions[i][1]+ '</option>'; 
+ 	}
+ 	else{
+ 		Selectgroup=Selectgroup+ '<option value="'+ GroupOptions[i][0] + '">'+GroupOptions[i][1]+ '</option>'; 		
+ 	}
+}
+Selectgroup=Selectgroup+ '</select>';
+
+var Selectfeat='<select id="featd0d" class="featd0d" name="featd0d" >';
+for (var i = 0; i < FeatOptions.length; i++) {
+	var cls='';
+	for(var j = 0; j < FeatOptions[i][2].length; j++) {
+ 		cls=cls+' '+FeatOptions[i][2][j];
+
+ 	}
+ 	if(cls.length>0){
+ 		Selectfeat=Selectfeat+ '<option value="'+ FeatOptions[i][0] + '" class="'+cls+'">'+FeatOptions[i][1]+ '</option>'; 
+ 	}
+ 	else{
+ 		Selectfeat=Selectfeat+ '<option value="'+ FeatOptions[i][0] + '">'+FeatOptions[i][1]+ '</option>'; 		
+ 	}
+}
+Selectfeat=Selectfeat+ '</select>';
+
+var Selectopt='<select id="optd0d" class="optd0d" name="optd0d" >';
+for (var i = 0; i < OperatorOptions.length; i++) {
+	var cls='';
+	for(var j = 0; j < OperatorOptions[i][2].length; j++) {
+ 		cls=cls+' '+OperatorOptions[i][2][j];
+ 	}
+ 	if(cls==''){
+ 		Selectopt=Selectopt+ '<option value="'+ OperatorOptions[i][0] + '" class="'+cls+'">'+OperatorOptions[i][1]+ '</option>'; 
+ 	}
+ 	else{
+ 		Selectopt=Selectopt+ '<option value="'+ OperatorOptions[i][0] + '">'+OperatorOptions[i][1]+ '</option>'; 		
+ 	}
+}
+Selectopt=Selectopt+ '</select>';
+
+var Selectunt='<select id="untd0d" class="untd0d" name="untd0d" >';
+for (var i = 0; i < UnitOptions.length; i++) {
+	var cls='';
+	for(var j = 0; j < UnitOptions[i][2].length; j++) {
+ 		cls=cls+' '+UnitOptions[i][2][j];
+ 	}
+ 	if(cls==''){
+ 		Selectunt=Selectunt+ '<option value="'+ UnitOptions[i][0] + '" class="'+cls+'">'+UnitOptions[i][1]+ '</option>'; 
+ 	}
+ 	else{
+ 		Selectunt=Selectunt+ '<option value="'+ UnitOptions[i][0] + '">'+UnitOptions[i][1]+ '</option>'; 		
+ 	}
+}
+Selectunt=Selectunt+ '</select>';
+
+var copyoffilter='<li id="fild0d" style="border: 1px solid black;width: 600px;margin:10px;padding:10px;">\n'+
+	Selectgroup+'\n'+
+	Selectfeat+'\n'+
+	Selectopt+'\n'+
+	' <input id="vald0d" type="text" style="width: 50px;">   </input> \n' +
+	Selectunt+'\n'+
+	' <button id="btnd0d" onclick="add_filter(d0d);return false;"> Add Filter  </button> \n' +  
+	'</li>';
+
+
+// var copyoffilter='<li id="fild0d" style="border: 1px solid black;width: 300px;margin:10px;padding:10px;">\n' + 
+//  ' <select id="catd0d"> <option value="1">1 </option><option value="2">2 </option> </select>\n' +
+//  ' <select id="featd0d"><option value="1">1 </option><option value="2">2 </option> </select> \n' +
+//  ' <select id="optd0d"><option value="ge">ge </option><option value="le">le </option> </select> \n' + 
+//  ' <input id="vald0d" type="text" style="width: 50px;">   </input> \n' +
+//  ' <button id="btnd0d" onclick="add_filter(d0d);return false;"> Add Filter  </button> \n' +  
+//  '</li>';
+
+
+</script>
+
+<body onload="funcOnLoad()">
+<script type="text/javascript">
+function funcOnLoad(){
+	$("#filter").append(copyoffilter.replace(/d0d/g,'0' ) ) ;
+	applylink('grpd0d'.replace(/d0d/g,'0' ),"featd0d".replace(/d0d/g,'0' ),"optd0d".replace(/d0d/g,'0' ),"untd0d".replace(/d0d/g,'0' ));
+	return false;
+}
+</script>
+
+<script>
+
+function delete_filter(id){
+	// alert(id.toString());
+	var elem = document.getElementById('fil'+id.toString());
+	// alert(elem);
+	elem.parentNode.removeChild(elem);
+}
+
+
+function add_filter(id){
+	document.getElementById('btn'+id.toString()).innerHTML="Delete Filter";
+	document.getElementById('btn'+id.toString()).onclick=function(){delete_filter(id);};
+	id2=(id+1).toString();
+	$("#filter").append(copyoffilter.replace(/d0d/g, id2) ) ;
+	applylink('grpd0d'.replace(/d0d/g,id2 ),"featd0d".replace(/d0d/g,id2 ),"optd0d".replace(/d0d/g,id2 ),"untd0d".replace(/d0d/g,id2 ));
+	return false;
+}
+
+function beforeformsubmit(){
+	var nums = document.getElementById("filter");
+	var listItem = nums.getElementsByTagName("li");
+
+	var newNums = [];
+
+	for (var i=0; i < listItem.length; i++) {
+	    newNums.push( parseInt( listItem[i].innerHTML, 10 ) );
+	}
+	// alert(newNums);
+	document.getElementById("filQ").value=newNums;
+	var ss=$('#filterdiv').html();
+	alert(ss);
+}
+</script>
+
+<script type="text/javascript" charset="utf-8">
+  function applylink(group,features,operators,units) {
+  	debugger
+    /* For jquery.chained.js */
+    $('#'+features).chained('#'+group);
+    $('#'+operators).chained('#'+features);
+    $('#'+units).chained('#'+operators);
+
+
+
+    /* For multiple jquery.chained.js */
+    $("."+features).each(function() {
+        $(this).chained($("."+group, $(this).parent()));
+    });
+    $("."+operators).each(function() {
+        $(this).chained($("."+features, $(this).parent()));
+    });
+    $("."+units).each(function() {
+        $(this).chained($("."+operators, $(this).parent()));
+    });
+
+
+    return false;
+  }
+   
+  
+</script>
+
+
+</body>
+</html>
+

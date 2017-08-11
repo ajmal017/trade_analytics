@@ -1,0 +1,73 @@
+{% load staticfiles %}
+
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>{% block tabtitle %}  tab title {% endblock%}</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="Description" lang="en" content="ADD SITE DESCRIPTION">
+		<meta name="author" content="ADD AUTHOR INFORMATION">
+		<meta name="robots" content="index, follow">
+
+
+
+	   <!-- <link rel="stylesheet" href="styles2.css"> -->
+	   <script src="http://code.jquery.com/jquery-latest.min.js" type="text/javascript"></script>
+	   <script src="script.js"></script>
+
+
+		<!-- icons -->
+		<!--link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png"-->
+		<!--link rel="shortcut icon" href="favicon.ico"-->
+
+		<!-- Override CSS file - add your own CSS rules -->
+		<link rel="stylesheet" type="text/css" href="{% static 'stockdata/styles_eg.css' %}" />
+		<link rel="stylesheet" type="text/css" href="{% static 'stockdata/styles2.css' %}" />
+
+	</head>
+	<body>
+		<div class="header">
+			<div class="container">
+				<h1 class="header-heading">  {% block title%}Default title{% endblock%}  </h1>
+			</div>
+		</div>
+		
+		<!-- <div class="nav-bar">
+			<div class="container">
+				<ul class="nav">
+				{% block navbar %} Nav bar items list {% endblock %} 
+					
+				</ul>
+			</div>
+		</div> -->
+
+<div id='cssmenu'>
+
+
+</div>
+
+
+		<div class="content">
+			<div class="container">
+				<div class="main">
+					{% block pagemain %} 
+
+					Page 1 
+
+					{% endblock %}
+					
+					
+
+				</div>
+			</div>
+		</div>
+		<div class="footer">
+			<div class="container">
+				{% block footer %} footer {% endblock %}
+			</div>
+		</div>
+	</body>
+</html>

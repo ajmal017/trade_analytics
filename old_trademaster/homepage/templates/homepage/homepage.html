@@ -1,0 +1,119 @@
+{% extends "homepage/base.html" %} 
+{% load staticfiles %}
+
+{% block tabtitle %}  Query Tool {% endblock%}
+
+{% block head %}
+
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+<!-- <script type="text/javascript" src="https://code.jquery.com/jquery-1.11.2.min.js"></script> -->
+<script src="http://code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+<script src="{% static 'research/jquery_chained/jquery.chained.js' %}" type="text/javascript" charset="utf-8"></script>
+
+
+  <link rel="stylesheet" href="http://code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css">
+  <link rel="stylesheet"  href="{% static 'django_tables2/themes/paleblue/css/screen.css' %}" />
+  <link rel="stylesheet" href="{% static 'research/tablesorter/themes/blue/style.css' %}" type="text/css" media="print, projection, screen" />
+  <script type="text/javascript" src="{% static 'research/tablesorter/jquery.tablesorter.js' %}"></script> 
+
+<!-- <script type="text/javascript">
+			$(function() {
+			$("img.lazy").lazyload({failure_limit : 10});
+		});
+</script> -->
+
+{% endblock %}
+
+{% block title %}Home Page{% endblock %}
+
+{% block pagetitle %} Home page {% endblock %}
+
+{% block pagemain %} 
+
+<script type="text/javascript">
+{% for sq,sqdata in SavedQueriesView.items  %}	
+	$(function() {
+    		$("img.lazy").lazyload({ event: "scrollstop",failure_limit : 10000,container: $("#container{{forloop.counter0}}")});
+  		});
+
+{% endfor %}
+</script>
+
+<h1>DashBoard</h1>
+
+<table>
+
+{% for sq,sqdata in SavedQueriesView.items  %}
+		<tr>
+			<td>
+				<h2 style="font-family: 'Ultra', sans-serif; font-weight: normal;margin: 1em 0 0.5em 0;">{{sq}}</h2>
+				<div id="container{{forloop.counter0}}" style="border-radius: 25px; box-shadow: 10px 10px 5px #888888;background: #d6e0f5;padding: 20px;margin: 20px; height:600px;overflow-y: auto;white-space: nowrap;">
+					
+						<table>
+							<tr><td>
+								<table>
+									<tr>
+										{% for chrtname,chart in sqdata.SummaryCharts.items %}
+											{% if 'Industry' not in chrtname %}
+											<td style="border-left: 1px solid #cdd0d4;">
+												<h6>{{chrtname}}</h6>
+												{{chart}}
+											</td>
+											{% endif %}
+										{% endfor %}
+									</tr>
+								</table>
+							</td></tr>
+							<tr><td>
+								<table>
+									<tr>
+								{% for chrtname,chart in sqdata.SummaryCharts.items %}
+									{% if 'Industry' in chrtname %}
+									<td valign="top" style="border-left: 1px solid ">
+										<h6>{{chrtname}}</h6>
+										{{chart}}
+									</td>
+									{% endif %}
+								{% endfor %}
+									</tr>
+								</table>
+							</td></tr>
+						</table>
+						<table>
+							
+								{% for rows in sqdata.Table  %}
+									<tr>
+									{% for img in rows  %}
+										<td valign="top">{{img}}</td>
+									{%endfor%}
+									</tr>
+
+								{%endfor%}
+						</table>
+				</div>
+			</td>
+		</tr>
+
+{% endfor %}
+	
+</table>
+
+
+
+
+
+
+
+
+
+{% endblock %}
+
+
+
+
+{% block footer %} 
+
+Copyright of Nagavenkat Adurthi
+
+ {% endblock %}
