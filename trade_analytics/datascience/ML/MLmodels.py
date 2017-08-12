@@ -126,6 +126,9 @@ class BaseClassificationModel(object):
 		if self.saveformat=='joblib':
 			with open(path,'r') as F:
 				self.clf=joblib.load(F)
+		elif self.saveformat=='keras':
+			self.clf = load_model(path)
+
 
 		if 'validation_metrics' not in self.model.Info:
 			self.model.Info['validation_metrics']={}
@@ -163,6 +166,9 @@ class BaseClassificationModel(object):
 	def post_process_model(self):
 		pass
 
+	def getfit_args_kwargs(self):
+		return ((),{})
+
 	def train(self):
 		if self.model.Status=='Trained' or self.model.Status=='Validated':
 			print "Model is already trained/validated, so skipping training"
@@ -176,7 +182,9 @@ class BaseClassificationModel(object):
 			X,Y=self.load_training_data()
 			X,Y=self.pre_processing_train(X,Y)
 
-			self.clf.fit(X,Y)
+			args,kwargs=self.getfit_args_kwargs()
+
+			self.clf.fit(X,Y,*args,**kwargs)
 
 			self.post_process_model()
 
@@ -198,7 +206,7 @@ class BaseClassificationModel(object):
 		for X,Y in self.validation_shard_iter(validation_data):
 			X,Y=self.pre_processing_validation(X,Y)
 
-			Y1=np.reshape(self.predict(X),Y.shape)
+			Y1=np.reshape(self.clf.predict(X),Y.shape)
 			if Ypred is None:
 				Ypred=Y1 
 				Yvalid=Y
@@ -244,6 +252,8 @@ class BaseClassificationModel(object):
 	def savemodel(self):
 		if self.model.saveformat=='joblib':
 			joblib.dump(self.clf, self.model.modelpath())
+		elif self.model.saveformat=='keras':
+			self.clf.save(self.model.modelpath())
 
 		self.model.save()
 
@@ -393,10 +403,7 @@ class RandomForrestmodels(BaseClassificationModel):
 					model.save()
 					model.initialize()
 					filename=model.modelpath()
-					try:
-						joblib.dump(clf, filename)
-					except:
-						pdb.set_trace()
+					joblib.dump(clf, filename)
 					N=N+1
 
 	
@@ -417,7 +424,7 @@ class LinearSVCmodels(BaseClassificationModel):
 		for C in [1, 10, 100, 1000,10000]:
 			clf=LinearSVC(C=C)
 			modelparas={'C':C}
-			model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)		
+			model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
 			model.save()
 			model.initialize()
 			filename=model.modelpath()
@@ -448,59 +455,73 @@ class QDAmodels(BaseClassificationModel):
 			N=N+1
 
 ###################################################################
-####################   NN  #####################################
+################(####   NN  #####################################
 ###################################################################
-class NNmodels(BaseClassificationModel):
-	name='NN'
+class NNmodels_1layer(BaseClassificationModel):
+	name='NN1layer'
 	saveformat='keras'
 
-	def savemodel(self):
-		filename=self.model.modelpath()
-		self.clf.save(filename)
-		self.model.save()
+	def getfit_args_kwargs(self):
+		args=()
+		kwargs=self.model.modelparas['fit_kwargs']
+		return (args,kwargs)
 
-	def loadmodel(self):
-		path=self.model.modelpath()
-		clf = load_model(path)
-		return clf
+	def getclassweights(self,Y):
+		n=Y.shape[1]
+		ss=0
+		class_weights={}
+		for i in range(n):
+			N=Y[Y[:,i]==1,:].shape[0]
+			ss=ss+N
+			class_weights[i]=N
 
-	def train(self):
-		X,Y=self.pre_processing_train()
-
-		self.clf.fit(X,Y, batch_size=32, epochs=10, verbose=1, callbacks=None, validation_split=0.0, validation_data=None, shuffle=True, class_weight=None, sample_weight=None, initial_epoch=0)
-
-		self.post_process_model()
+		for key in class_weights.keys():
+			class_weights[key]=class_weights[key]/ss
+		
+		return class_weights
 
 	@classmethod
 	def GenModels(cls,Project,Data):
-		N=0
-		batch_size = 500
-		nb_epoch = 100
-		random_state = 51
-		
-		model = Sequential()
-		model.add(Dense(output_dim=100, input_dim=self.input_dim,kernel_regularizer=regularizers.l2(0.1),))
-		model.add(Activation("linear"))
-		model.add(Dropout(0.5))
+		N=1
+		X,Y,Meta=dtscmd.DataShard.objects.filter(Data=Data).first().getdata()
+		input_dim=X.shape[1]
+		output_dim=len(np.unique(Y))
+		meandim=int((input_dim+output_dim)/2)
+		for batch_size in [50,100,5000]: 
+			for nb_epoch in [100,250,500,750]:
+				for l2 in [0.02,0.2]:
+					for dropout in [0,0.2]:
+						for act in ["sigmoid",'relu']:
+							for Nneurons in [2*input_dim,meandim]:
+								# random_state = 50+N
+								N=N+1
+						
+								model = Sequential()
+								model.add(Dense(output_dim=Nneurons, input_dim=input_dim,kernel_regularizer=regularizers.l2(l2),))
+								model.add(Activation(act))
+								model.add(Dropout(dropout))
 
-		model.add(Dense(output_dim=8))
-		model.add(Activation("softmax"))
+								model.add(Dense(output_dim=output_dim))
+								model.add(Activation("softmax"))
 
-		sgd = SGD(lr=1e-3, decay=1e-6, momentum=0.3, nesterov=True)
-		model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
-		
-		modelparas={}
-		model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
-		model.save()
-		model.initialize()
-		filename=model.modelpath()
-		
-		model.save(filename)
+								sgd = SGD(lr=1e-3, decay=1e-4, momentum=0.3, nesterov=True)
+								model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
+								
+								modelparas={'batch_size':batch_size, 'nb_epoch':nb_epoch,'l2':l2,'dropout':dropout,'act':act,'Nneurons':Nneurons}
+								modelparas['fit_args']=()
+								modelparas['fit_kwargs']={'batch_size':batch_size, 'epochs':nb_epoch, 'verbose':1, 'validation_split':0.1,  'class_weight':None}
 
-		N=N+1
+								model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
+								model.save()
+								model.initialize()
+								filename=model.modelpath()
+								
+								model.save(filename)
 
 
-###################################################################
+
+
+###################################################################n
 ####################   CNN1D  #####################################
 ###################################################################
 class CNN1Dmodels(BaseClassificationModel):

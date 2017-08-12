@@ -8,6 +8,7 @@ from django.conf import settings
 
 import time
 import pandas as pd
+from utility import maintenance as mnt
 
 import logging
 logger = logging.getLogger('debug')
@@ -35,10 +36,7 @@ else:
 	raise Exception('Unknown option for task distribution')
 
 
-## test --------------------
-@shared_task
-def add(x,y):
-	return x+y
+
 	
 
 
@@ -199,12 +197,8 @@ def train_valid_split(traindataId,validdataId,N):
 			shardv.savedata(X=X_test,Y=y_test,Meta=Meta)
 
 ### Do Training and Validation #######################
-
-@shared_task
-def TrainModel(modelid):
-	"""
-	Train a specific model with model id as modelid
-	"""
+@mnt.logperf('datascience',printit=True)
+def trainmodel_wrapper(modelid):
 	model=dtscmd.MLmodels.objects.get(id=modelid)
 
 
@@ -215,6 +209,13 @@ def TrainModel(modelid):
 	M.loadmodel(model)
 	M.loaddata()
 	M.train()
+
+@shared_task
+def TrainModel(modelid):
+	"""
+	Train a specific model with model id as modelid
+	"""
+	trainmodel_wrapper(modelid)
 
 
 @shared_task
@@ -228,11 +229,8 @@ def TrainProject(Projectid):
 
 
 #	Model Validation
-@shared_task
-def ValidateModeldata(modelid,validationdataid):
-	"""
-	Run Validation on validationdata with id validationdataid using modelid
-	"""
+@mnt.logperf('datascience',printit=True)
+def validationmodel_wrapper(modelid,validationdataid):
 	model=dtscmd.MLmodels.objects.get(id=modelid)
 
 
@@ -243,6 +241,13 @@ def ValidateModeldata(modelid,validationdataid):
 	M.loadmodel(model)
 	M.loaddata()
 	M.Run_validation_id(validationdataid)
+	
+@shared_task
+def ValidateModeldata(modelid,validationdataid):
+	"""
+	Run Validation on validationdata with id validationdataid using modelid
+	"""
+	validationmodel_wrapper(modelid,validationdataid)
 
 
 # TODO: Write help
