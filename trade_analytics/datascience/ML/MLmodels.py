@@ -394,17 +394,18 @@ class RandomForrestmodels(BaseClassificationModel):
 			raise Exception("Need Training Data For model")
 
 		N=0
-		for n_estimators in [10,100,250,500]:
+		for n_estimators in [10,100,250,300]:
 			for max_features in ['log2','auto']+[0.25,0.5,0.75,1]:
-				for  class_weight in ['balanced','balanced_subsample',None]:
-					clf=RandomForestClassifier(n_estimators=n_estimators,min_samples_split=10,min_samples_leaf=10, n_jobs=5,max_features=max_features,class_weight=class_weight)
-					modelparas={'n_estimators':n_estimators, 'n_jobs':5,'max_features':max_features,'class_weight':class_weight}
-					model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
-					model.save()
-					model.initialize()
-					filename=model.modelpath()
-					joblib.dump(clf, filename)
-					N=N+1
+				for max_depth in [50,100,150,250,400]:
+					for class_weight in ['balanced','balanced_subsample',None]:
+						clf=RandomForestClassifier(n_estimators=n_estimators,max_depth=max_depth,min_samples_leaf=200, n_jobs=5,max_features=max_features,class_weight=class_weight)
+						modelparas={'n_estimators':n_estimators, 'n_jobs':5,'max_features':max_features,'class_weight':class_weight,max_depth:max_depth}
+						model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
+						model.save()
+						model.initialize()
+						filename=model.modelpath()
+						joblib.dump(clf, filename)
+						N=N+1
 
 	
 
