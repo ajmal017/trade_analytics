@@ -257,8 +257,24 @@ class BaseClassificationModel(object):
 
 		self.model.save()
 
+	def deploy_pre_processing(self):
+		pass
+	def deploy_post_processing(self):
+		pass
 
-		
+	def deploy_predict(self,df,T):
+		"""
+		df is dataframe with the whole time sereis 
+		df has to be standardized
+		"""
+		if T not in df.index:
+			return None
+
+		df=df.loc[:T,:]
+		X=self.deploy_pre_processing(df)
+		Y=self.predict(X)
+		Y=self.deploy_post_processing(Y)
+		return Y
 
 
 ###################################################################
@@ -396,9 +412,9 @@ class RandomForrestmodels(BaseClassificationModel):
 		N=0
 		for n_estimators in [10,100,250,300]:
 			for max_features in ['log2','auto']+[0.25,0.5,0.75,1]:
-				for max_depth in [50,100,150,250,400]:
+				for max_depth in [5,50,100,300]:
 					for class_weight in ['balanced','balanced_subsample',None]:
-						clf=RandomForestClassifier(n_estimators=n_estimators,max_depth=max_depth,min_samples_leaf=200, n_jobs=5,max_features=max_features,class_weight=class_weight)
+						clf=RandomForestClassifier(n_estimators=n_estimators,max_depth=max_depth,min_samples_split=200,min_samples_leaf=200, n_jobs=5,max_features=max_features,class_weight=class_weight)
 						modelparas={'n_estimators':n_estimators, 'n_jobs':5,'max_features':max_features,'class_weight':class_weight,max_depth:max_depth}
 						model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
 						model.save()
