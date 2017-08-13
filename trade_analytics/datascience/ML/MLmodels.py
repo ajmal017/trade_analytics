@@ -423,7 +423,7 @@ class LinearSVCmodels(BaseClassificationModel):
 
 		N=0
 		for C in [1, 10, 100, 1000,10000]:
-			clf=LinearSVC(C=C)
+			clf=LinearSVC(C=C,class_weight='balanced',max_iter=100000)
 			modelparas={'C':C}
 			model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
 			model.save()
@@ -512,10 +512,10 @@ class NNmodels_1layer(BaseClassificationModel):
 								modelparas['fit_args']=()
 								modelparas['fit_kwargs']={'batch_size':batch_size, 'epochs':nb_epoch, 'verbose':1, 'validation_split':0.1,  'class_weight':None}
 
-								model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
-								model.save()
-								model.initialize()
-								filename=model.modelpath()
+								mlmodel=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
+								mlmodel.save()
+								mlmodel.initialize()
+								filename=mlmodel.modelpath()
 								
 								model.save(filename)
 

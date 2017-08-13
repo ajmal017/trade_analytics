@@ -46,8 +46,47 @@ class RandomForrrest_2(MLmodels.RandomForrestmodels):
 
 
 
+class SVC_1(MLmodels.LinearSVCmodels):
+	"""
+	SVC
+	@input: 23 days close+SMA_all, 23 days volume+SMA10 : flat
+	@output: 0-1 class : 1 is return >5%  
+	"""
+	filename=filename
+	def pre_processing_train(self,X,Y):
+		Y[Y<5]=0
+		Y[Y>=5]=1
+		Y=keras.utils.np_utils.to_categorical(Y)
+		return (X,Y)
+
+	def pre_processing_validation(self,X,Y):
+		Y[Y<5]=0
+		Y[Y>=5]=1
+		Y=keras.utils.np_utils.to_categorical(Y)
+		return (X,Y)
 
 
+class QDA_1(MLmodels.QDAmodels):
+	"""
+	SVC
+	@input: 23 days close+SMA_all, 23 days volume+SMA10 : flat
+	@output: 0-1 class : 1 is return >5%  
+	"""
+	filename=filename
+	def pre_processing_train(self,X,Y):
+		Y[Y<5]=0
+		Y[Y>=5]=1
+		Y=keras.utils.np_utils.to_categorical(Y)
+		return (X,Y)
+
+	def pre_processing_validation(self,X,Y):
+		Y[Y<5]=0
+		Y[Y>=5]=1
+		Y=keras.utils.np_utils.to_categorical(Y)
+		return (X,Y)
+
+
+	
 class NN_1(MLmodels.NNmodels_1layer):
 	"""
 	Neural networks 1D :
