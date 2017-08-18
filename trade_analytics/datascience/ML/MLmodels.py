@@ -103,8 +103,9 @@ import xgboost as xgb
 ###################################################################
 ####################   Exporting  #####################################
 ###################################################################
-
-
+import multiprocessing
+n_jobs=multiprocessing.cpu_count()-2
+n_jobs=max([n_jobs,2])
 
 
 ###################################################################
@@ -414,8 +415,8 @@ class RandomForrestmodels(BaseClassificationModel):
 			for max_features in ['log2','auto']+[0.25,0.5,0.75,1]:
 				for max_depth in [5,10,15,20]:
 					for class_weight in ['balanced','balanced_subsample',None]:
-						clf=RandomForestClassifier(n_estimators=n_estimators,max_depth=max_depth,min_samples_split=200,min_samples_leaf=200, n_jobs=5,max_features=max_features,class_weight=class_weight)
-						modelparas={'n_estimators':n_estimators, 'n_jobs':5,'max_features':max_features,'class_weight':class_weight,'max_depth':max_depth}
+						clf=RandomForestClassifier(n_estimators=n_estimators,max_depth=max_depth,min_samples_split=200,min_samples_leaf=200, n_jobs=n_jobs,max_features=max_features,class_weight=class_weight)
+						modelparas={'n_estimators':n_estimators, 'n_jobs':n_jobs,'max_features':max_features,'class_weight':class_weight,'max_depth':max_depth}
 						model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
 						model.save()
 						model.initialize()
