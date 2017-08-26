@@ -6,10 +6,11 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.postgres.fields import JSONField
 import utility.models as utymd
-
+import h5py
 import pandas as pd
 import numpy as np
 import joblib
+import json
 
 # Create your models here.
 
@@ -195,12 +196,31 @@ class DataShard(models.Model):
 		name,path=self.shardpath()
 		if self.Data.Dataformat=='npz':
 			np.savez_compressed(path,**kwargs)
+		elif self.Data.Dataformat=='h5':
+			h5f = h5py.File(path, 'w')
+			for key,value in kwargs.items():
+				if type(value)==dict:
+					string_dt = h5py.special_dtype(vlen=str)
+					h5f.create_dataset('key', data=np.array([json.dumps(value)]), dtype=string_dt)
+				else:
+					h5f.create_dataset(key, data=value,compression="gzip")
+			h5f.close() 
+
 
 	def getdata(self):
 		name,path=self.shardpath()
 		if self.Data.Dataformat=='npz':
 			data=np.load(path)
-		return ( data['X'], data['Y'], data['Meta'][()] )
+			X=data['X']
+			Y=data['X']
+			Meta=data['Meta'][()]
+		elif self.Data.Dataformat=='h5':
+			h5f = h5py.File(path, 'r')
+			X = h5f['X'][:]
+			Y = h5f['Y'][:]
+			Meta = json.loads(h5f['Meta'][:][0])
+
+		return ( X, Y, Meta )
 
 
 class ModelCode(utymd.ComputeCode):
