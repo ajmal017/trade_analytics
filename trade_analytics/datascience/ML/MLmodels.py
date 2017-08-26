@@ -12,7 +12,7 @@ import json
 from scipy.sparse import coo_matrix, hstack ,vstack
 import copy
 import datascience.models as dtscmd
-
+import time
 np.random.seed(1337)  # for reproducibility
 
 
@@ -413,9 +413,9 @@ class RandomForrestmodels(BaseClassificationModel):
 		N=0
 		for n_estimators in [10,100,250,300]:
 			for max_features in ['log2','auto']+[0.25,0.5,0.75,1]:
-				for max_depth in [5,10,15,19]:
+				for max_depth in [5,10,15]:
 					for class_weight in ['balanced','balanced_subsample',None]:
-						clf=RandomForestClassifier(n_estimators=n_estimators,max_depth=max_depth,min_samples_split=200,min_samples_leaf=200, n_jobs=n_jobs,max_features=max_features,class_weight=class_weight)
+						clf=RandomForestClassifier(n_estimators=n_estimators,max_depth=max_depth,min_samples_split=500,min_samples_leaf=500, n_jobs=n_jobs,max_features=max_features,class_weight=class_weight)
 						modelparas={'n_estimators':n_estimators, 'max_features':max_features,'class_weight':class_weight,'max_depth':max_depth}
 						model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
 						model.save()
@@ -499,9 +499,36 @@ class NNmodels_1layer(BaseClassificationModel):
 		return class_weights
 
 	@classmethod
+	def genmodel(cls,filename,input_dim,output_dim,batch_size,nb_epoch,l2,dropout,act,Nneurons):
+		print input_dim,output_dim,batch_size,nb_epoch,l2,dropout,act,Nneurons
+		starttime=time.time()
+		model = Sequential()
+		model.add(Dense(units=Nneurons, input_dim=input_dim,kernel_regularizer=regularizers.l2(l2),))
+		model.add(Activation(act))
+		model.add(Dropout(dropout))
+
+		model.add(Dense(units=output_dim))
+		model.add(Activation("softmax"))
+
+		sgd = SGD(lr=1e-3, decay=1e-4, momentum=0.3, nesterov=True)
+		model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
+		print "compile = ",time.time()-starttime
+		
+
+		
+		starttime=time.time()
+		model.save(filename)
+		print "save = ",time.time()-starttime
+
+
+	@classmethod
 	def GenModels(cls,Project,Data):
 		N=1
 		X,Y,Meta=dtscmd.DataShard.objects.filter(Data=Data).first().getdata()
+		M=cls()
+		X,Y=M.pre_processing_train(X,Y)
+
+		
 		input_dim=X.shape[1]
 		output_dim=len(np.unique(Y))
 		meandim=int((input_dim+output_dim)/2)
@@ -513,17 +540,6 @@ class NNmodels_1layer(BaseClassificationModel):
 							for Nneurons in [2*input_dim,meandim]:
 								# random_state = 50+N
 								N=N+1
-						
-								model = Sequential()
-								model.add(Dense(output_dim=Nneurons, input_dim=input_dim,kernel_regularizer=regularizers.l2(l2),))
-								model.add(Activation(act))
-								model.add(Dropout(dropout))
-
-								model.add(Dense(output_dim=output_dim))
-								model.add(Activation("softmax"))
-
-								sgd = SGD(lr=1e-3, decay=1e-4, momentum=0.3, nesterov=True)
-								model.compile(optimizer=sgd, loss='categorical_crossentropy', metrics=['accuracy'])
 								
 								modelparas={'batch_size':batch_size, 'nb_epoch':nb_epoch,'l2':l2,'dropout':dropout,'act':act,'Nneurons':Nneurons}
 								modelparas['fit_args']=()
@@ -533,9 +549,9 @@ class NNmodels_1layer(BaseClassificationModel):
 								mlmodel.save()
 								mlmodel.initialize()
 								filename=mlmodel.modelpath()
-								
-								model.save(filename)
 
+								cls.genmodel(filename,input_dim,output_dim,batch_size,nb_epoch,l2,dropout,act,Nneurons)
+								print N
 
 
 

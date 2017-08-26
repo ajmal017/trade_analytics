@@ -186,9 +186,9 @@ class DataShard(models.Model):
 	def __str__(self):
 		return " ".join( map(lambda x: str(x),[self.Data.Project, self.Data.GroupName,self.Data.tag, self.Data.Modeltype, self.Data.Datatype, self.Data.Dataformat,str(self.id) ]) )
 
-	def shardpath(self):
+	def shardpath(self,extratag=''):
 		# return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Project.Name,"Data",self.Datatype,self.GroupName+"_"+self.tag)
-		name='shard'+"_"+self.Data.tag+"_"+str(self.id)
+		name='shard'+"_"+self.Data.tag+extratag+"_"+str(self.id)
 		path=os.path.join(self.Data.datapath(),name+"."+self.Data.Dataformat)
 		return (name,path)
 

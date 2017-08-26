@@ -2,14 +2,14 @@ import cloudpickle as cldpkl
 from dill.source import getsource
 from datascience import models as dtscmd
 import dataapp.libs as dtalibs
-
+import h5py
 import functools
 import pandas as pd
 from utility import maintenance as mnt
 import logging
 import pdb
 import numpy as np
-
+import json
 
 logger = logging.getLogger('datascience')
 
@@ -272,3 +272,21 @@ def combineshards(dataID,filename,format):
 
 	if format=='npz':
 		np.savez_compressed(filename,X=Xm,Y=Ym,Meta=Metam)
+
+def convert2h5(dataId,frm,to):
+	data=dtscmd.Data.objects.get(id=dataId)
+	shards=dtscmd.DataShard.objects.filter(Data=data)
+	for shard in shards:
+		print shard.id
+		name,path=shard.shardpath(extratag='_test')
+		X,Y,Meta=shard.getdata()
+		kwargs={'X':X,'Y':Y,'Meta':Meta}
+
+		h5f = h5py.File(path, 'w')
+		for key,value in kwargs.items():
+			if type(value)==dict:
+				string_dt = h5py.special_dtype(vlen=str)
+				h5f.create_dataset('key', data=np.array([json.dumps(value)]), dtype=string_dt)
+			else:
+				h5f.create_dataset(key, data=value,compression="gzip")
+		h5f.close() 
