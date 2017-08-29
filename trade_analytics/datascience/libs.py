@@ -303,3 +303,25 @@ def convert2h5(dataId,frm,to):
 		h5f.close() 
 
 
+def GetTransformerList(dataid):
+	data=dtscmd.Data.objects.get( id=dataid) 
+	Transformers=[]
+	while data.TransfomerFunc is not None:
+		Transformers.append(data.TransfomerFunc.id)
+		data=dtscmd.Data.objects.get( id=data.ParentData.id) 
+
+	Transformers=list(reversed(Transformers))
+	return tuple(Transformers)
+
+def GetTransformedData(Xbase,Meta,dataid):
+	Transformers=GetTransformerList(dataid)
+	
+
+	for funcid in Transformers: 
+		Func=dtscmd.ComputeFunc.objects.filter(id=funcid).last()
+		if Func.Group=='BaseDataSet':
+			pass
+		elif Func.Group=='Transformer':
+			Xbase,Meta=Func.getfunc()(Xbase,None,Meta)
+
+	return Xbase,Meta

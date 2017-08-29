@@ -219,6 +219,7 @@ class DataManager(object):
 		self.stks={}
 		self.Symbols={}
 		self.Symbols2Ids={}
+		# Symbols=stkmd.Stockmeta.objects.all().values()
 		for symbid in self.Symbolids:
 			self.stks[symbid]=stkmd.Stockmeta.objects.get(id=symbid)
 			self.Symbols[symbid]=self.stks[symbid].Symbol

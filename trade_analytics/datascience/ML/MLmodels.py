@@ -113,7 +113,7 @@ n_jobs=max([n_jobs,2])
 ###################################################################
 
 import dataapp.libs as dtalibs
-
+import datascience.libs as dtsclibs
 
 ###################################################################
 ####################   BASE MODELS  #####################################
@@ -284,26 +284,27 @@ class BaseClassificationModel(object):
 		Y=self.deploy_post_processing(Y)
 		return Y
 
+	
+
+class ModelPredictionManager(object):
+	def __init__(self,ModelIds):
+		self.ModelIds=ModelIds
+		# we are going to group models by their transformer sequences
+		Transf={}
+		UniqTransf=set([])
+		for modelid in self.ModelIds:
+			model=dtscmd.MLmodels.objects.get(id=modelid)
+			Transf[modelid]=dtsclibs.GetTransformerList(model.Data.id)
+			UniqTransf=UniqTransf|Transf[modelid]
+			
 	def getprediction_stocks_bySymbol(self,SymbolId,TFs):
 		"""
 		For a given symbol, get the predictions for all the time instants in TFs
 		"""
-		data=dtscmd.Data.objects.get( id=self.model.Data.id) 
-		Transformers=[]
-		while data.TransfomerFunc is not None:
-			Transformers.append(data.TransfomerFunc)
-			data=dtscmd.Data.objects.get( id=data.ParentData.id) 
-
-		Transformers=list(reversed(Transformers))
-		
 		DataX=dtalibs.CreateStockData_base(SymbolId,TFs,'Predict')
 		X,Meta=DataX[0]
-		for func in Transformers: 
-			Func=dtscmd.ComputeFunc.objects.filter(id=func.id).last().getfunc()
-			if func.Group=='BaseDataSet':
-				pass
-			elif func.Group=='Transformer':
-				X,Meta=Func(X,None,Meta)
+
+		X,Meta=dtsclibs.GetTransformedData(X,Meta,self.model.Data.id)
 
 		return self.predict(X)
 
@@ -311,22 +312,10 @@ class BaseClassificationModel(object):
 		"""
 		For a given symbol, get the predictions for all the time instants in TFs
 		"""
-		data=dtscmd.Data.objects.get( id=self.model.Data.id) 
-		Transformers=[]
-		while data.TransfomerFunc is not None:
-			Transformers.append(data.TransfomerFunc)
-			data=dtscmd.Data.objects.get( id=data.ParentData.id) 
-
-		Transformers=list(reversed(Transformers))
-		
 		DataX=dtalibs.CreateStockData_base_byTF(TF,'Predict')
 		X,Meta=DataX[0]
-		for func in Transformers: 
-			Func=dtscmd.ComputeFunc.objects.filter(id=func.id).last().getfunc()
-			if func.Group=='BaseDataSet':
-				pass
-			elif func.Group=='Transformer':
-				X,Meta=Func(X,None,Meta)
+
+		X,Meta=dtsclibs.GetTransformedData(X,Meta,self.model.Data.id)
 
 		return self.predict(X)
 
