@@ -109,6 +109,13 @@ n_jobs=max([n_jobs,2])
 
 
 ###################################################################
+####################   dataapp stock data  #####################################
+###################################################################
+
+import dataapp.libs as dtalibs
+
+
+###################################################################
 ####################   BASE MODELS  #####################################
 ###################################################################
 
@@ -276,6 +283,52 @@ class BaseClassificationModel(object):
 		Y=self.predict(X)
 		Y=self.deploy_post_processing(Y)
 		return Y
+
+	def getprediction_stocks_bySymbol(self,SymbolId,TFs):
+		"""
+		For a given symbol, get the predictions for all the time instants in TFs
+		"""
+		data=dtscmd.Data.objects.get( id=self.model.Data.id) 
+		Transformers=[]
+		while data.TransfomerFunc is not None:
+			Transformers.append(data.TransfomerFunc)
+			data=dtscmd.Data.objects.get( id=data.ParentData.id) 
+
+		Transformers=list(reversed(Transformers))
+		
+		DataX=dtalibs.CreateStockData_base(SymbolId,TFs,'Predict')
+		X,Meta=DataX[0]
+		for func in Transformers: 
+			Func=dtscmd.ComputeFunc.objects.filter(id=func.id).last().getfunc()
+			if func.Group=='BaseDataSet':
+				pass
+			elif func.Group=='Transformer':
+				X,Meta=Func(X,None,Meta)
+
+		return self.predict(X)
+
+	def getprediction_stocks_byTF(self,Symbols,TF):
+		"""
+		For a given symbol, get the predictions for all the time instants in TFs
+		"""
+		data=dtscmd.Data.objects.get( id=self.model.Data.id) 
+		Transformers=[]
+		while data.TransfomerFunc is not None:
+			Transformers.append(data.TransfomerFunc)
+			data=dtscmd.Data.objects.get( id=data.ParentData.id) 
+
+		Transformers=list(reversed(Transformers))
+		
+		DataX=dtalibs.CreateStockData_base_byTF(TF,'Predict')
+		X,Meta=DataX[0]
+		for func in Transformers: 
+			Func=dtscmd.ComputeFunc.objects.filter(id=func.id).last().getfunc()
+			if func.Group=='BaseDataSet':
+				pass
+			elif func.Group=='Transformer':
+				X,Meta=Func(X,None,Meta)
+
+		return self.predict(X)
 
 
 ###################################################################

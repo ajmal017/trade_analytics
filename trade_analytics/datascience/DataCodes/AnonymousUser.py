@@ -1,6 +1,7 @@
 from __future__ import division
 from datascience.ML.MLmodels  import *
 import datascience.libs as dtsclibs
+import dataapp.libs as dtalibs
 import datascience.models as dtscmd
 import pdb
 
@@ -24,7 +25,7 @@ def DataShardMeta_1(DataShardId):
 	return (NXnans,NYnans,X.shape,Y.shape)
 
 ################# --------------- Data Base creators ---------------- ###################################
-import datascience.libs as dtsclibs
+
 @dtsclibs.register_compfunc(Group='BaseDataSet',overwrite_if_exists=False,create_new_ifchanged=True)
 def Sometest(dataId):
     """
@@ -34,25 +35,11 @@ def Sometest(dataId):
     return 3
 
 
+
 @dtsclibs.register_compfunc(Group='BaseDataSet',overwrite_if_exists=True)
-def CreateStockData_base_X1y_Y30d_from2010_(dataId):
-	Symbols=stkmd.Stockmeta.objects.all().values_list('Symbol',flat=True)
-	window=360
-	window_fut=30
-
-	T0TF_dict_X=map(lambda x: { 'T0':(x.date()-pd.DateOffset(window)).date(),'TF' :x.date(),'window':window },
-			pd.date_range(start=pd.datetime(2010,1,1),end=pd.datetime.today(),freq='W-MON') )
-
-	T0TF_dict_Y=map(lambda x: { 'T0':x.date(), 'TF' : (x.date()+pd.DateOffset(window_fut)).date(),'window':window_fut },
-			pd.date_range(start=pd.datetime(2010,1,1),end=pd.datetime.today(),freq='W-MON') )
-
-	# pdb.set_trace()
-
-	for Symbol in Symbols:
-		print "Working on Symbol ", Symbol
-		CreateStockData_ShardsBySymbol.delay(T0TF_dict_X,T0TF_dict_Y,Symbol,dataId)
-
-
+def CreateStockData_base_X1y_Y3m_TFMonday_from2010(SymbolId,Mode):
+	Trange=pd.date_range(start=pd.datetime(2010,1,1),end=pd.datetime.today(),freq='W-MON') 
+	return dtalibs.CreateStockData_base(SymbolId,Trange,Mode)
 
 #################### ------------ Some Data Transformers-------------- ##################################
 

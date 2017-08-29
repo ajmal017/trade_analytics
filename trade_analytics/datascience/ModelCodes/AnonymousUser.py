@@ -9,7 +9,7 @@ filename=__name__.split('.')[-1]
 
 ############################ Customize models here ###############################
 
-class RandomForrrest_1(MLmodels.RandomForrestmodels,DataMixIn):
+class RandomForrrest_1(MLmodels.RandomForrestmodels):
 	"""
 	Random forrest :
 	@input: 30 days close, 30 days volume : flat
@@ -24,7 +24,7 @@ class RandomForrrest_1(MLmodels.RandomForrestmodels,DataMixIn):
 		return (X,np.round(Y))
 
 
-class RandomForrrest_2(MLmodels.RandomForrestmodels,DataMixIn):
+class RandomForrrest_2(MLmodels.RandomForrestmodels):
 	"""
 	Random forrest :
 	@input: 23 days close+SMA_all, 23 days volume+SMA10 : flat
@@ -43,7 +43,7 @@ class RandomForrrest_2(MLmodels.RandomForrestmodels,DataMixIn):
 		return (X,Y)
 
 
-class SVC_1(MLmodels.LinearSVCmodels,DataMixIn):
+class SVC_1(MLmodels.LinearSVCmodels):
 	"""
 	SVC
 	@input: 23 days close+SMA_all, 23 days volume+SMA10 : flat
@@ -64,7 +64,7 @@ class SVC_1(MLmodels.LinearSVCmodels,DataMixIn):
 		return (X,Y)
 
 
-class QDA_1(MLmodels.QDAmodels,DataMixIn):
+class QDA_1(MLmodels.QDAmodels):
 	"""
 	SVC
 	@input: 23 days close+SMA_all, 23 days volume+SMA10 : flat
@@ -86,7 +86,7 @@ class QDA_1(MLmodels.QDAmodels,DataMixIn):
 
 
 	
-class NN_1(MLmodels.NNmodels_1layer,DataMixIn):
+class NN_1(MLmodels.NNmodels_1layer):
 	"""
 	Neural networks 1D :
 	@input: 23 days close+SMA_all, 23 days volume+SMA10 : flat

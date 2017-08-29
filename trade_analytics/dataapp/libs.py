@@ -320,6 +320,8 @@ class DataManager(object):
 		return in same order
 		padding True/False
 		"""
+		dfinstants_list=[dd for dd in dfinstants_list if dd is not None]
+
 		AllSymbols=reduce( lambda x,y: x|y,map(lambda x: set(x['Symbol'].unique()),dfinstants_list) )
 		Data=[]
 		for i in range(len(dfinstants_list)):
@@ -344,11 +346,12 @@ class DataManager(object):
 							TF=str2date( dfsymb.loc[ind,'TF'] )
 						if roundT2dfdate:
 							TFind=df.index[df.index<=TF][-1]
+							ds=df.iloc[TFind-width:TFind]
 						else:
 							TFind=df.index[df.index==TF]
 							if len(TFind)==0:
-								raise Exception('TF not in stock date index')
-						ds=df.iloc[TFind-width:TFind]
+								ds=pd.DataFrame()
+						
 						Nd=len(ds)-width
 						if Nd>0 and padding is not None:
 							d={}
@@ -363,11 +366,13 @@ class DataManager(object):
 							T0=str2date( dfsymb.loc[ind,'T0'] )
 						if roundT2dfdate:
 							T0ind=df.index[df.index>=T0][0]
+							ds=df.iloc[T0ind:T0ind+width]
 						else:
 							T0ind=df.index[df.index==T0]
 							if len(T0ind)==0:
-								raise Exception('T0 not in stock date index')
-						ds=df.iloc[T0ind:T0ind+width]
+								ds=pd.DataFrame()
+
+
 						Nd=len(ds)-width
 						if Nd>0 and padding is not None:
 							d={}
@@ -394,7 +399,45 @@ class DataManager(object):
 			yield X,Meta
 
 	
+def CreateStockData_base(SymbolId,TFs,Mode):
+	Symbol=stkmd.Stockmeta.objects.get(id=SymbolId)
+	DM=DataManager(SymbolId,RequiredCols=None,Append2RequiredCols=[],DF=None)
+	Data=[]
 
+	width=270
+	width_fut=70
+
+	T0TF_dict_X=map(lambda x: { 'TF' :x.date(),'width':width,'Symbol':Symbol },TFs )
+	if Mode=='Train':
+		T0TF_dict_Y=map(lambda x: { 'T0':x.date(), 'width':width_fut,'Symbol':Symbol },TFs)
+	else:
+		T0TF_dict_Y=None
+
+	for X,Meta in DM.Iterbatchdata_Ordered([T0TF_dict_X,T0TF_dict_Y],padding=True,roundT2dfdate=False):
+		Data.append((X,Meta))
+
+
+	return Data
+
+def CreateStockData_base_byTF(TF,Mode):
+	Symbols=stkmd.Stockmeta.objects.all()
+	DM=DataManager(list(Symbols.values_list('id',flat=True)),RequiredCols=None,Append2RequiredCols=[],DF=None)
+	Data=[]
+
+	width=270
+	width_fut=70
+
+	T0TF_dict_X=map(lambda x: { 'TF' :TF.date(),'width':width,'Symbol':x.Symbol },Symbols )
+	if Mode=='Train':
+		T0TF_dict_Y=map(lambda x: { 'T0':TF.date(), 'width':width_fut,'Symbol':x.Symbol },Symbols)
+	else:
+		T0TF_dict_Y=None
+
+	for X,Meta in DM.Iterbatchdata_Ordered([T0TF_dict_X,T0TF_dict_Y],padding=True,roundT2dfdate=False):
+		Data.append((X,Meta))
+
+
+	return Data
 
 
 def predownloadcheck(stk):
