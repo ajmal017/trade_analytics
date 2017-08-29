@@ -238,6 +238,8 @@ class MLmodels(models.Model):
 	Project=models.ForeignKey(Project,on_delete=models.SET_NULL,null=True)
 	Data=models.ForeignKey(Data,on_delete=models.SET_NULL,null=True)
 
+	Deploy=models.BooleanField(default=False)
+
 	Name=models.CharField(max_length=200)
 	Info=JSONField(default={})
 	
@@ -260,6 +262,9 @@ class MLmodels(models.Model):
 	def modelpath(self):
 		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Project.Name,"Models",str(self.id)+"_"+self.Name+"."+self.saveformat)
 
+	def getmodelname(self):
+		name=self.Name+'_'+self.id
+		return name
 
 	def initialize(self):
 		# make the model path

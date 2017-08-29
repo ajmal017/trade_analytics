@@ -98,6 +98,9 @@ def StockDataFrame_sanitize(df,standardize=False):
 
 @mnt.logperf('dataapp',printit=True)
 def addindicators(df,cols):
+	if len(cols)==0:
+		return df
+
 	inputs = {
     'open': df['Open'].values,
     'high': df['High'].values,
@@ -133,7 +136,6 @@ def addindicators(df,cols):
 					print "Indicator not available"
 
 			except Exception as e:
-				df[cc['colname']]=np.nan
 				print "error adding indicator ",cc['colname']
 				logger.error("error adding indicator "+cc['colname']+" "+str(type(e))+" "+str(e))
 				logger.exception(e)
@@ -191,93 +193,209 @@ def GetStockData(Symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datet
 	elif format=='concat':
 		return df
 
+class DataManager(object):
+	MasterColDict={'SMA10':{'name':'SMA','colname':'SMA10','timeperiod':10},'SMA20':{'name':'SMA','colname':'SMA20','timeperiod':20},'SMA50':{'name':'SMA','colname':'SMA50','timeperiod':50},'SMA100':{'name':'SMA','colname':'SMA100','timeperiod':100},'SMA200':{'name':'SMA','colname':'SMA200','timeperiod':200},
+					'CCI5':{'name':'CCI','colname':'CCI5','timeperiod':5},'CCI50':{'name':'CCI','colname':'CCI50','timeperiod':50},'CCI100':{'name':'CCI','colname':'CCI100','timeperiod':100},
+					'VolSMA10':{'name':'VolSMA','timeperiod':10,'colname':'VolSMA10'},'VolSMA20':{'name':'VolSMA','timeperiod':20,'colname':'VolSMA20'},
+	        		'EMA8':{'name':'EMA','timeperiod':8,'colname':'EMA8'},'EMA20':{'name':'EMA','timeperiod':20,'colname':'EMA20'},
 
-def Getbatchdata(dfinstants_req,padding=None,returnAs='StackedMatrix'):
-	"""
-	DataFrame input as
-	dfinstants= [ (Symbol, T0,TF), ... ]
-	return in same order
-	padding can be : ['OnTop','FromBottom']
-	"""
-	if type(dfinstants_req)!=list:
-		dfinstants_req=[dfinstants_req]
+					}
+	max_cache=20 # maximum number of stocks for which to hold data
 
-	ReturnData=[]
-	ds={}
-	cols=None
+	def __init__(self,SymbolIds,RequiredCols=None,Append2RequiredCols=[],DF=None):
+		"""
+		DF is a dict with keys as ids and values as dataframes of the objects
+		"""
+		if RequiredCols is None:
+			self.RequiredCols=['Close','Open','High','Low','Volume','VolSMA10','SMA10','SMA20','SMA50','SMA100','SMA200']
+		else:
+			self.RequiredCols=RequiredCols
 
-	addcols=[	{'name':'SMA','timeperiod':10,'colname':'SMA10'},
-        		{'name':'SMA','timeperiod':20,'colname':'SMA20'},
-        		{'name':'SMA','timeperiod':50,'colname':'SMA50'},
-        		{'name':'SMA','timeperiod':100,'colname':'SMA100'},
-        		{'name':'SMA','timeperiod':200,'colname':'SMA200'},
-        		{'name':'VolSMA','timeperiod':10,'colname':'VolSMA10'},
-        		{'name':'VolSMA','timeperiod':20,'colname':'VolSMA20'},
-        		{'name':'EMA','timeperiod':8,'colname':'EMA8'},
-        		{'name':'EMA','timeperiod':20,'colname':'EMA20'},
-        	]
+		self.RequiredCols=self.RequiredCols+Append2RequiredCols
+		self.RequiredCols=list( set(self.RequiredCols) )
 
 
-	for cnt in range(len(dfinstants_req)) :
-		dfinstants = dfinstants_req[cnt]
+		self.SymbolIds=SymbolIds
+		self.stks={}
+		self.Symbols={}
+		self.Symbols2Ids={}
+		for symbid in self.Symbolids:
+			self.stks[symbid]=stkmd.Stockmeta.objects.get(id=symbid)
+			self.Symbols[symbid]=self.stks[symbid].Symbol
+			self.Symbols2Ids[ self.Symbols[symbid] ]=symbid
 
-		dfinstants.index=range(len(dfinstants))
-
-		D={}
-		
-		NT=0
-		for Symbol,dfsymb in dfinstants.groupby("Symbol"):
-			if Symbol not in ds.keys():
-				ds[Symbol]=GetStockData([Symbol])
-				ds[Symbol]=addindicators(ds[Symbol],addcols)
-
-			for ind in dfsymb.index:
-				T0=str2date( dfsymb.loc[ind,'T0'] )
-				TF=str2date( dfsymb.loc[ind,'TF'] )
-				
-				window=dfsymb.loc[ind,'window']
-				NT=max([NT,window])
-				
-				D[ind]=ds[Symbol][T0:TF]
-
-				if cols is None:
-					if len(D[ind].index)>0:
-						cols=D[ind].columns
-
-		# padding
-		for ind in dfinstants.index:
-			if len(D[ind])<NT:
-				d={}
-				Nd=NT-len(D[ind])
-				for cc in D[ind].columns:
-					d[cc]=[np.nan]*Nd
-
-				dummyfill=pd.DataFrame(d)
-				
-				if padding[cnt]=='OnTop':
-					D[ind]=pd.concat([ dummyfill[cols] , D[ind][cols] ])
-
-				elif padding[cnt]=='FromBottom':	
-					D[ind]=pd.concat([ D[ind][cols], dummyfill[cols] ])
-
-
-		X=None
-		for ind in dfinstants.index:
-			Y=np.expand_dims(D[ind][cols].values,axis=0)
-			# print Y.shape
-
-			if X is None:
-				X=Y
+		if DF is not None:
+			if set(DF.keys()) == set(SymbolIds):
+				self.DF=DF
 			else:
-				X=np.vstack((X,Y))
+				raise Exception('SymbolIds and Keys  are not the same')
+		else:
+			self.DF={}
 
-		Meta={'shape':X.shape,'dfinstants':dfinstants,'columns':cols}
-		ReturnData.append( (X,Meta) )
+
+	def IndicatorCols(self,cols):
+		IndicatorCols=[]
+		for cc in cols: 
+			if cc in self.MasterColDict:	
+				IndicatorCols.append(self.MasterColDict[cc])
+		return IndicatorCols
+
+	def PullAllStockdata(self):
+		self.DF=GetStockData(self.SymbolIds,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='dict',standardize=True,addcols=None)
 	
-	if len(ReturnData)==1:
-		return ReturnData[0]
-	else:
-		return ReturnData
+	def PullStockdata(self,SymbolId):
+		if len(self.DF)==self.max_cache:
+			del self.DF[self.DF.keys()[0]]
+
+		if SymbolId not in self.DF:
+			self.DF[SymbolId]=GetStockData(SymbolId,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None)
+		
+		return self.DF[SymbolId]
+
+
+	def Iterate_Stockdata_id(self):
+		for SymbolId in self.SymbolIds:
+			yield GetStockData(SymbolId,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None)
+
+	def AppendCols2df(self,SymbId,df):
+		"""
+		you can add any columns you want
+		"""
+
+		cols=self.RequiredCols
+		ToDoCols=list( set(cols)-set(df.columns) )
+		IndicatorCols=self.IndicatorCols(ToDoCols)
+		if len(IndicatorCols)>0:
+			df=addindicators(df,IndicatorCols)
+
+		
+
+		stk=self.stks[SymbId]
+
+		if 'Sector' in ToDoCols:
+			df['Sector']=stk.Sector
+		if 'Industry' in ToDoCols:
+			df['Industry']=stk.Industry
+		if 'Marketcap' in ToDoCols:
+			df['Marketcap']=stk.Industry
+
+		if SymbId in self.DF.keys() and len(ToDoCols)>0:
+			self.DF[SymbId]=df
+
+		return df
+
+	def AppendCols2DF(self):
+		"""
+		you can add any columns you want
+		"""
+		for SymbId,df in self.DF.items() : 	
+			self.DF[SymbId]=self.AppendCols2df(SymbId,df)
+
+	def postprocess(self,SymbId,df):
+		df=self.AppendCols2df(SymbId,df)
+		return df[self.RequiredCols]
+
+	def GetProcessed_DF(self):
+		RetDF={}
+		for SymbId in self.DF.keys() : 	
+			RetDF[SymbId]=self.postprocess(SymbId,self.DF[SymbId])
+		return RetDF
+
+	def GetProcessed_df(self,Symbol):
+		for SymbId in self.DF.keys() : 	
+			if self.Symbols[SymbId]==Symbol:
+				return self.postprocess(SymbId,self.DF[SymbId])
+	
+	def Iterator_GetData_Process_df(self):
+		for SymbolId in self.SymbolIds:
+			df=GetStockData(SymbolId,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None)
+			df=self.postprocess(SymbolId,df)
+			yield (SymbolId,self.Symbols[SymbolId],df)
+
+	def Iterbatchdata_Ordered(self,dfinstants_list,padding=None,roundT2dfdate=True):
+		"""
+		DataFrame input as
+		dfinstants_list =[dfinstants,dfinstants,dfinstants .... ]
+		dfinstants= [ df(Symbol, TF,width), ..., or df(Symbol, T0,width) ]
+		return in same order
+		padding True/False
+		"""
+		AllSymbols=reduce( lambda x,y: x|y,map(lambda x: set(x['Symbol'].unique()),dfinstants_list) )
+		Data=[]
+		for i in range(len(dfinstants_list)):
+			dfinstants_list[i].index=range(len(dfinstants_list[i]))
+			Data.append({})
+
+		for Symbol in AllSymbols:
+			SymbId=self.Symbols2Ids[Symbol]
+			df=self.PullStockdata(SymbId)
+			df=self.AppendCols2df(SymbId,df)
+			for i in range(len(dfinstants_list)):
+				dfinstants=dfinstants_list[i]
+				dfsymb=dfinstants[dfinstants['Symbol']==Symbol]
+
+				for ind in dfsymb.index:
+					width=dfsymb.loc[ind,'width']
+					if 'TF' in dfsymb.columns and 'T0' in dfsymb.columns:
+						raise Exception('Cannot have both TF and T0 in dfinstants')
+
+					if 'TF' in dfsymb.columns:
+						if isinstance(dfsymb.loc[ind,'TF'],basestring):
+							TF=str2date( dfsymb.loc[ind,'TF'] )
+						if roundT2dfdate:
+							TFind=df.index[df.index<=TF][-1]
+						else:
+							TFind=df.index[df.index==TF]
+							if len(TFind)==0:
+								raise Exception('TF not in stock date index')
+						ds=df.iloc[TFind-width:TFind]
+						Nd=len(ds)-width
+						if Nd>0 and padding is not None:
+							d={}
+							for cc in ds.columns:
+								d[cc]=[np.nan]*Nd
+							dummyfill=pd.DataFrame(d)
+							ds=pd.concat([ dummyfill , ds ])
+
+
+					elif 'T0' in dfsymb.columns:
+						if isinstance(dfsymb.loc[ind,'T0'],basestring):
+							T0=str2date( dfsymb.loc[ind,'T0'] )
+						if roundT2dfdate:
+							T0ind=df.index[df.index>=T0][0]
+						else:
+							T0ind=df.index[df.index==T0]
+							if len(T0ind)==0:
+								raise Exception('T0 not in stock date index')
+						ds=df.iloc[T0ind:T0ind+width]
+						Nd=len(ds)-width
+						if Nd>0 and padding is not None:
+							d={}
+							for cc in ds.columns:
+								d[cc]=[np.nan]*Nd
+							dummyfill=pd.DataFrame(d)
+							ds=pd.concat([ ds, dummyfill ])
+
+
+
+					Data[i][ind]=np.expand_dims(ds.values,axis=0)
+		
+
+		for i in range(len(dfinstants_list)):
+			X=None
+			for ind in dfinstants_list[i].index:
+				if X is None:
+					X=Data[i][ind]
+				else:
+					X=np.vstack((X,Data[i][ind]))
+
+			Meta={'shape':X.shape,'dfinstants':dfinstants_list[i],'columns':self.RequiredCols}
+
+			yield X,Meta
+
+	
+
+
 
 def predownloadcheck(stk):
 	Todate=pd.datetime.today().date()
@@ -456,3 +574,98 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 
 	if semaphore:
 		semaphore.release()
+
+
+
+
+
+
+########################   Deprecated ########################################33
+
+
+def Getbatchdata(dfinstants_req,padding=None,returnAs='StackedMatrix'):
+	"""
+	DataFrame input as
+	dfinstants= [ (Symbol, T0,TF), ... ]
+	return in same order
+	padding can be : ['OnTop','FromBottom']
+	"""
+	if type(dfinstants_req)!=list:
+		dfinstants_req=[dfinstants_req]
+
+	ReturnData=[]
+	ds={}
+	cols=None
+
+	addcols=[	{'name':'SMA','timeperiod':10,'colname':'SMA10'},
+        		{'name':'SMA','timeperiod':20,'colname':'SMA20'},
+        		{'name':'SMA','timeperiod':50,'colname':'SMA50'},
+        		{'name':'SMA','timeperiod':100,'colname':'SMA100'},
+        		{'name':'SMA','timeperiod':200,'colname':'SMA200'},
+        		{'name':'VolSMA','timeperiod':10,'colname':'VolSMA10'},
+        		{'name':'VolSMA','timeperiod':20,'colname':'VolSMA20'},
+        		{'name':'EMA','timeperiod':8,'colname':'EMA8'},
+        		{'name':'EMA','timeperiod':20,'colname':'EMA20'},
+        	]
+
+
+	for cnt in range(len(dfinstants_req)) :
+		dfinstants = dfinstants_req[cnt]
+
+		dfinstants.index=range(len(dfinstants))
+
+		D={}
+		
+		NT=0
+		for Symbol,dfsymb in dfinstants.groupby("Symbol"):
+			if Symbol not in ds.keys():
+				ds[Symbol]=GetStockData([Symbol])
+				ds[Symbol]=addindicators(ds[Symbol],addcols)
+
+			for ind in dfsymb.index:
+				T0=str2date( dfsymb.loc[ind,'T0'] )
+				TF=str2date( dfsymb.loc[ind,'TF'] )
+				
+				window=dfsymb.loc[ind,'window']
+				NT=max([NT,window])
+				
+				D[ind]=ds[Symbol][T0:TF]
+
+				if cols is None:
+					if len(D[ind].index)>0:
+						cols=D[ind].columns
+
+		# padding
+		for ind in dfinstants.index:
+			if len(D[ind])<NT:
+				d={}
+				Nd=NT-len(D[ind])
+				for cc in D[ind].columns:
+					d[cc]=[np.nan]*Nd
+
+				dummyfill=pd.DataFrame(d)
+				
+				if padding[cnt]=='OnTop':
+					D[ind]=pd.concat([ dummyfill[cols] , D[ind][cols] ])
+
+				elif padding[cnt]=='FromBottom':	
+					D[ind]=pd.concat([ D[ind][cols], dummyfill[cols] ])
+
+
+		X=None
+		for ind in dfinstants.index:
+			Y=np.expand_dims(D[ind][cols].values,axis=0)
+			# print Y.shape
+
+			if X is None:
+				X=Y
+			else:
+				X=np.vstack((X,Y))
+
+		Meta={'shape':X.shape,'dfinstants':dfinstants,'columns':cols}
+		ReturnData.append( (X,Meta) )
+	
+	if len(ReturnData)==1:
+		return ReturnData[0]
+	else:
+		return ReturnData

@@ -168,32 +168,18 @@ def register_dataset(project_Name=None,project_Info=None,ParentDataId=None,DataI
 
 # @register_func(overwrite_if_exists=False)
 class register_compfunc(object):
-	def __init__(self,Group='',RequiredGroup=[],RequiredImports=[],overwrite_if_exists=False):
+	def __init__(self,Group='',RequiredGroup=[],RequiredImports=[],overwrite_if_exists=False,create_new_ifchanged=True):
 		self.Group=Group
 		self.RequiredImports=RequiredImports
 		self.RequiredGroup=RequiredGroup
 		self.overwrite_if_exists=overwrite_if_exists
+		self.create_new_ifchanged=create_new_ifchanged
 
-
-   	def __call__(self,func):
-   		func.id=None
-
-   		if self.overwrite_if_exists:
-   			if dtscmd.ComputeFunc.objects.filter(Name=func.__name__,Group=self.Group).exists():
-   				print "over writing previous function"
-   				cf=dtscmd.ComputeFunc.objects.get(Name=func.__name__,Group=self.Group)
-   			else:
-   				print "creating new func"
-   				cf=dtscmd.ComputeFunc(Name=func.__name__,Group=self.Group)
-   		else:
-   			print "creating new func"
-			cf=dtscmd.ComputeFunc(Name=func.__name__,Group=self.Group)
-
-   		cf.Info['doc']=func.__doc__
+	def save(self,cf,func):
+		cf.Info['doc']=func.__doc__
    		cf.PklCode=cldpkl.dumps(func)
    		cf.RequiredGroup['Group']=self.RequiredGroup
    		cf.RequiredImports['import']=self.RequiredImports
-
    		try:
    			cf.SrcCode=getsource(func)
    		except:
@@ -201,6 +187,31 @@ class register_compfunc(object):
 
    		cf.save()
    		print "saving function : ", cf.Name
+
+
+   	def __call__(self,func):
+   		func.id=None
+   		entryexists=dtscmd.ComputeFunc.objects.filter(Name=func.__name__,Group=self.Group).exists()
+   		if self.create_new_ifchanged and entryexists:
+   			if dtscmd.ComputeFunc.objects.filter(Name=func.__name__,Group=self.Group).exists():
+   				cf=dtscmd.ComputeFunc.objects.get(Name=func.__name__,Group=self.Group)
+   				if cf.SrcCode==getsource(func):
+   					print "no change in code"
+   				else:
+   					self.save(cf,func)
+   		else:
+   			if self.overwrite_if_exists:
+	   			if entryexists:
+	   				print "over writing previous function"
+	   				cf=dtscmd.ComputeFunc.objects.get(Name=func.__name__,Group=self.Group)
+	   			else:
+	   				print "creating new func"
+	   				cf=dtscmd.ComputeFunc(Name=func.__name__,Group=self.Group)
+	   		else:
+	   			print "creating new func"
+				cf=dtscmd.ComputeFunc(Name=func.__name__,Group=self.Group)
+
+	   		self.save(cf,func)
 
    		func.id=cf.id
  		print "function id = ",cf.id
