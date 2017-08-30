@@ -160,7 +160,14 @@ class registerfeature(object):
 
 
 class featuremodel(object):
-
+	"""
+	1. Compute features
+	2. Rerun mode: re run and overwrite
+	3. Non-rerun: find missing and fill them up
+	4. register the featuers
+		- if features were changed, remove them from db also
+	5. 
+	"""
 
 
 	def __init__(self,Symbolid,Trange):
