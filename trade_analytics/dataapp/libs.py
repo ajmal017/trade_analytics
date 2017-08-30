@@ -347,7 +347,11 @@ class DataManager(object):
 							TF=str2date( dfsymb.loc[ind,'TF'] )
 						if roundT2dfdate:
 							TFind=df.index[df.index<=TF][-1]
-							ds=df.iloc[TFind-width:TFind]
+							if np.abs( (TFind-TF).days )<=3:
+								ds=df.iloc[TFind-width:TFind]
+							else:
+								ds=pd.DataFrame()
+
 						else:
 							TFind=df.index[df.index==TF]
 							if len(TFind)==0:
@@ -367,7 +371,10 @@ class DataManager(object):
 							T0=str2date( dfsymb.loc[ind,'T0'] )
 						if roundT2dfdate:
 							T0ind=df.index[df.index>=T0][0]
-							ds=df.iloc[T0ind:T0ind+width]
+							if np.abs( (TFind-TF).days )<=3:
+								ds=df.iloc[T0ind:T0ind+width]
+							else:
+								ds=pd.DataFrame()
 						else:
 							T0ind=df.index[df.index==T0]
 							if len(T0ind)==0:

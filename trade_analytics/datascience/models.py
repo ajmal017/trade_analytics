@@ -237,6 +237,7 @@ class MLmodels(models.Model):
 	
 	Project=models.ForeignKey(Project,on_delete=models.SET_NULL,null=True)
 	Data=models.ForeignKey(Data,on_delete=models.SET_NULL,null=True)
+	ModelCode=models.ForeignKey(ModelCode,on_delete=models.CASCADE,null=True)
 
 	Deploy=models.BooleanField(default=False)
 
@@ -244,7 +245,7 @@ class MLmodels(models.Model):
 	Info=JSONField(default={})
 	
 	# Userfilename is same as username
-	Userfilename = models.CharField(max_length=150,help_text="User ID from database",blank=True)
+	# Userfilename = models.CharField(max_length=150,help_text="User ID from database",blank=True)
 
 	status_choices=[('Validated','Validated'),('Trained','Trained'),('UnTrained','UnTrained'),('Running','Running')]
 	Status=models.CharField(choices=status_choices,max_length=30)
@@ -271,6 +272,10 @@ class MLmodels(models.Model):
 		path=self.modeldir()
 		if not os.path.isdir(path):
 			os.makedirs(path)
+
+	def getmodelclass(self):
+		MC=ModelCode.objects.get(id=self.ModelCode.id)
+		return MC.importobject(self.Name)
 
 
 class ModelMetrics(models.Model):

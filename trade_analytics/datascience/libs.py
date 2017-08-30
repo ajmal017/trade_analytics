@@ -313,11 +313,8 @@ def GetTransformerList(dataid):
 	Transformers=list(reversed(Transformers))
 	return tuple(Transformers)
 
-def GetTransformedData(Xbase,Meta,dataid):
-	Transformers=GetTransformerList(dataid)
-	
-
-	for funcid in Transformers: 
+def ApplyTransformerList(Xbase,Meta,TransFList):
+	for funcid in TransFList: 
 		Func=dtscmd.ComputeFunc.objects.filter(id=funcid).last()
 		if Func.Group=='BaseDataSet':
 			pass
@@ -325,3 +322,13 @@ def GetTransformedData(Xbase,Meta,dataid):
 			Xbase,Meta=Func.getfunc()(Xbase,None,Meta)
 
 	return Xbase,Meta
+
+def GetTransformedData(Xbase,Meta,dataid):
+	Transformers=GetTransformerList(dataid)
+	return ApplyTransformerList(Xbase,Meta,Transformers)
+
+
+
+
+
+	

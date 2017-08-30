@@ -119,12 +119,50 @@ import datascience.libs as dtsclibs
 ####################   BASE MODELS  #####################################
 ###################################################################
 
+class BaseModel(object):
+	def __init__(self):
+		raise NotImplementedError('Needs to be implemented')
+	def loadmodel(self,model):
+		raise NotImplementedError('Needs to be implemented')
 
-class BaseClassificationModel(object):
-	name=None
+	def savemodel(self):
+		raise NotImplementedError('Needs to be implemented')
+
+	@classmethod
+	def GenModels(cls,Project,data):
+		raise NotImplementedError('Needs to be implemented')
+	def pre_processing_train(self,X,Y):
+		raise NotImplementedError('Needs to be implemented')
+	def pre_processing_validation(self,X,Y):
+		raise NotImplementedError('Needs to be implemented')
+	def pre_processing_test(self,X):
+		raise NotImplementedError('Needs to be implemented')
+	def post_process_model(self):
+		raise NotImplementedError('Needs to be implemented')
+	def loaddata(self):
+		raise NotImplementedError('Needs to be implemented')
+	def load_training_data(self):
+		raise NotImplementedError('Needs to be implemented')
+	def validation_shard_iter(self,validation_data):
+		raise NotImplementedError('Needs to be implemented')
+	def getfit_args_kwargs(self):
+		raise NotImplementedError('Needs to be implemented')
+	def train(self):
+		raise NotImplementedError('Needs to be implemented')
+	def Run_validation(self,validation_data):
+		raise NotImplementedError('Needs to be implemented')
+	def Run_validation_all(self):
+		raise NotImplementedError('Needs to be implemented')
+	def Run_validation_id(self,validationid):
+		raise NotImplementedError('Needs to be implemented')
+	def getmetrics(self,Ypred,Yvalid):
+		raise NotImplementedError('Needs to be implemented')
+	def predict(self,X):
+		raise NotImplementedError('Needs to be implemented')
+
+
+class BaseModel_loadsave(BaseModel):
 	savetype='joblib'
-	classification_type='binary'
-
 	def __init__(self):
 		pass
 
@@ -143,11 +181,29 @@ class BaseClassificationModel(object):
 
 		return self.clf
 
+	def savemodel(self):
+		if self.model.saveformat=='joblib':
+			joblib.dump(self.clf, self.model.modelpath())
+		elif self.model.saveformat=='keras':
+			self.clf.save(self.model.modelpath())
 
-	@classmethod
-	def GenModels(cls,Project,data):
+		self.model.save()
+
+class BaseModel_PrePostProcess(BaseModel_loadsave):
+	def pre_processing_train(self,X,Y):
+		return (X,Y)
+
+	def pre_processing_validation(self,X,Y):
+		return (X,Y)
+	def pre_processing_test(self,X):
+		"""
+		Carefull: do not change the state of X, just return a copy of the modified X
+		"""
+		return X
+	def post_process_model(self):
 		pass
 
+class BaseModel_data(BaseModel_PrePostProcess):
 	def loaddata(self):
 		if self.model.Data.Datatype!='Train':
 			raise Exception("Need Training Data For model")
@@ -155,24 +211,17 @@ class BaseClassificationModel(object):
 		self.validation_datasets=dtscmd.Data.objects.filter(ParentData=ParentData,Datatype='Validation')
 		self.train_data=dtscmd.Data.objects.get( id=self.model.Data.id) 
 
-	def pre_processing_train(self,X,Y):
-		return (X,Y)
-
-	def pre_processing_validation(self,X,Y):
-		return (X,Y)
-
 	def load_training_data(self):
 		X,Y,Meta=self.train_data.getdata()
 		return (X,Y)
-				
+
 	def validation_shard_iter(self,validation_data):
 		shards=dtscmd.DataShard.objects.filter(Data=validation_data)
 		for shard in shards:
 			X,Y,Meta=shard.getdata()
 			yield (X,Y)
 
-	def post_process_model(self):
-		pass
+class BaseModel_train(BaseModel_data):
 
 	def getfit_args_kwargs(self):
 		return ((),{})
@@ -205,9 +254,7 @@ class BaseClassificationModel(object):
 			self.model.Status='UnTrained'
 			self.model.save()
 
-	def predict(self,X):
-		return self.clf.predict(X)
-
+class BaseModel_valid(BaseModel_train):
 	def Run_validation(self,validation_data):
 		Ypred=None
 		Yvalid=None
@@ -243,8 +290,7 @@ class BaseClassificationModel(object):
 		validation_data = self.validation_datasets.get(id=validationid)
 		self.Run_validation(validation_data)
 
-
-
+class BaseModel_metrics(BaseModel_valid):
 	def getmetrics(self,Ypred,Yvalid):
 
 		logloss=log_loss(Yvalid ,Ypred, eps=1e-15, normalize=True)
@@ -257,32 +303,23 @@ class BaseClassificationModel(object):
 		return model_metrics
 
 
-	def savemodel(self):
-		if self.model.saveformat=='joblib':
-			joblib.dump(self.clf, self.model.modelpath())
-		elif self.model.saveformat=='keras':
-			self.clf.save(self.model.modelpath())
-
-		self.model.save()
-
-	def deploy_pre_processing(self):
-		pass
-	def deploy_post_processing(self):
-		pass
-
-	def deploy_predict(self,df,T):
+class BaseModel_predict(BaseModel_metrics):
+	def predict(self,X):
 		"""
-		df is dataframe with the whole time sereis 
-		df has to be standardized
+		Always return probabilities
 		"""
-		if T not in df.index:
-			return None
+		return self.clf.predict(X)
 
-		df=df.loc[:T,:]
-		X=self.deploy_pre_processing(df)
-		Y=self.predict(X)
-		Y=self.deploy_post_processing(Y)
-		return Y
+
+
+class BaseClassificationModel(BaseModel_predict):
+	name=None
+	classification_type='binary'
+
+	def __init__(self):
+		pass
+
+
 
 	
 
@@ -290,34 +327,52 @@ class ModelPredictionManager(object):
 	def __init__(self,ModelIds):
 		self.ModelIds=ModelIds
 		# we are going to group models by their transformer sequences
-		Transf={}
-		UniqTransf=set([])
+		
+	def load_Models_TransFuncs(self):
+		TransModels={}
 		for modelid in self.ModelIds:
 			model=dtscmd.MLmodels.objects.get(id=modelid)
-			Transf[modelid]=dtsclibs.GetTransformerList(model.Data.id)
-			UniqTransf=UniqTransf|Transf[modelid]
+			modelclass=model.getmodelclass()
+			modelobj=modelclass()
 			
+			Transf=dtsclibs.GetTransformerList(model.Data.id)
+			if Transf in TransModels.keys():
+				TransModels[Transf].append({'MLmodel':model,'modelobj':modelobj})
+			else:
+				TransModels[Transf]=[{'MLmodel':model,'modelobj':modelobj}]
+
+		self.TransModels=TransModels
+
+	def getpredictions_allmodels(self,Xbase,Metabase):
+		self.ModelPrediction={}
+		for TransFList in self.TransModels.keys():
+			X,Meta=dtsclibs.ApplyTransformerList(Xbase,Metabase,TransFList)
+			for modeldict in self.TransModels[TransFList]:
+				MLmodel=modeldict['MLmodel']
+				Mobj=modeldict['modelobj']
+				Mobj.loadmodel(  MLmodel )
+				Mobj.post_process_model()
+				Xm=Mobj.pre_processing_test(X)
+				self.ModelPrediction[MLmodel.id]=Mobj.predict(Xm)
+		
+		return self.ModelPrediction[MLmodel.id]
+
 	def getprediction_stocks_bySymbol(self,SymbolId,TFs):
 		"""
 		For a given symbol, get the predictions for all the time instants in TFs
 		"""
 		DataX=dtalibs.CreateStockData_base(SymbolId,TFs,'Predict')
-		X,Meta=DataX[0]
-
-		X,Meta=dtsclibs.GetTransformedData(X,Meta,self.model.Data.id)
-
-		return self.predict(X)
+		Xbase,Metabase=DataX[0]
+		self.getpredictions_allmodels(Xbase,Metabase)
 
 	def getprediction_stocks_byTF(self,Symbols,TF):
 		"""
 		For a given symbol, get the predictions for all the time instants in TFs
 		"""
 		DataX=dtalibs.CreateStockData_base_byTF(TF,'Predict')
-		X,Meta=DataX[0]
-
-		X,Meta=dtsclibs.GetTransformedData(X,Meta,self.model.Data.id)
-
-		return self.predict(X)
+		Xbase,Metabase=DataX[0]
+		self.getpredictions_allmodels(Xbase,Metabase)
+		
 
 
 ###################################################################

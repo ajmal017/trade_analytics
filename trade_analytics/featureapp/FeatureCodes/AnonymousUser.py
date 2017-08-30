@@ -3,7 +3,7 @@ from featureapp.libs import registerfeature, featuremodel
 import pandas as pd
 import numpy as np
 import json
-filename=__name__.split('.')[-1]
+filename=__name__.split('.')[0]
 
 
 # --------------  features has to be the name of the class ------------------
@@ -11,7 +11,6 @@ filename=__name__.split('.')[-1]
 
 
 class features(featuremodel):
-	
 
 	def preprocessing(self):
 		self.df=self.GetStockData(self.Symbolid)
@@ -23,6 +22,19 @@ class features(featuremodel):
 		self.df=self.addindicators(self.df,[  {'name':'CCI','timeperiod':50,'colname':'CCI50'} ] )
 
 
+	def ModelPredictions(self,Tvec):
+		import datascience.models as dtscmd
+		from datascience.ML import MLmodels as ML
+		models=dtscmd.MLmodels.objects.filter(Deploy=True)
+		ML.ModelPredictionManager(models.values_list('id',flat=True))
+		ML.load_Models_TransFuncs()
+		Y=ML.getprediction_stocks_bySymbol(self.Symbolid,self.Trange)
+
+		RF=registerfeature(filename=filename,category='MLpdictions',required=[],returntype=json,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		for model in models:
+			modelname=model.getmodelname()
+			RF(name=modelname,description=model.Info['description'])
+			self.df[modelname]=Y[modelname]
 
 	def applyrollingfunc(self,newcolname,applyfunc,window,edge='right'):
 		self.df[newcolname]=np.nan

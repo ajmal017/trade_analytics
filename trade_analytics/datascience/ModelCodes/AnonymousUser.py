@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import keras
 
-filename=__name__.split('.')[-1]
+filename=__name__.split('.')[0]
 
 
 ############################ Customize models here ###############################
@@ -41,7 +41,7 @@ class RandomForrrest_2(MLmodels.RandomForrestmodels):
 		Y[Y<5]=0
 		Y[Y>=5]=1
 		return (X,Y)
-
+	
 
 class SVC_1(MLmodels.LinearSVCmodels):
 	"""
