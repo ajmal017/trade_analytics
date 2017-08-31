@@ -1,11 +1,10 @@
 import cloudpickle as cldpkl
 from dill.source import getsource
 from datascience import models as dtscmd
-import dataapp.libs as dtalibs
+
 import h5py
 import functools
 import pandas as pd
-from utility import maintenance as mnt
 import logging
 import pdb
 import numpy as np
@@ -218,28 +217,6 @@ class register_compfunc(object):
    		return func
 
 
-
-
-@mnt.logperf('datascience',printit=True)
-def CreateStockData_ShardsBySymbol(T0TFSymbol_dict_X,T0TFSymbol_dict_Y,dataId):
-	"""
-	T0TFSymbol_dict= [{'T0':,'Tf':,'Symbol':},{}]
-	"""
-	dfinstants_X=pd.DataFrame(T0TFSymbol_dict_X)
-	dfinstants_Y=pd.DataFrame(T0TFSymbol_dict_Y)
-
-	BatchData=dtalibs.Getbatchdata([dfinstants_X,dfinstants_Y],padding=['OnTop','FromBottom'])
-
-	X,MetaX=BatchData[0]
-	Y,MetaY=BatchData[1]
-
-	
-	
-	data=dtscmd.Data.objects.get(id=dataId)	
-	shard=dtscmd.DataShard(Data=data)
-	shard.save()
-	print "starting to save"
-	shard.savedata(X=X,Y=Y,Meta={'MetaX':MetaX,'MetaY':MetaY})
 
 
 
