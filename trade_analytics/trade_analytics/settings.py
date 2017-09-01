@@ -56,7 +56,7 @@ INSTALLED_APPS = [
     'dataapp',
     'featureapp',
     'computeapp',
-
+    'stockpredict',
     'django_rq',
 ]
 
