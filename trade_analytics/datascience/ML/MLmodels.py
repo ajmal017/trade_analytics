@@ -1,5 +1,5 @@
 from __future__ import division
-
+import sys
 import numpy as np
 import pandas as pd
 import collections
@@ -107,6 +107,7 @@ import multiprocessing
 n_jobs=multiprocessing.cpu_count()-2
 n_jobs=max([n_jobs,2])
 
+import pdb
 
 ###################################################################
 ####################   BASE MODELS  #####################################
@@ -194,7 +195,12 @@ class BaseClassificationModel(object):
 			self.model.Status='Trained'
 			self.model.save()
 			print "Training done for ",self.model.id
-		except:
+			print self.name+' '+"trained"
+
+		except Exception as ex:
+			exc_type, exc_value, exc_traceback = sys.exc_info()
+			print ex
+			print exc_type, exc_value, exc_traceback
 			self.model.Status='UnTrained'
 			self.model.save()
 
@@ -411,7 +417,7 @@ class RandomForrestmodels(BaseClassificationModel):
 			raise Exception("Need Training Data For model")
 
 		N=0
-		for n_estimators in [10,100,250,300]:
+		for n_estimators in [10,100,250]:
 			for max_features in ['log2','auto']+[0.25,0.5,0.75,1]:
 				for max_depth in [5,10,15]:
 					for class_weight in ['balanced','balanced_subsample',None]:
@@ -439,7 +445,7 @@ class LinearSVCmodels(BaseClassificationModel):
 			raise Exception("Need Training Data For model")
 
 		N=0
-		for C in [1, 10, 100, 1000,10000]:
+		for C in [1, 100, 10000]:
 			clf=LinearSVC(C=C,class_weight='balanced',max_iter=100000)
 			modelparas={'C':C}
 			model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
@@ -462,7 +468,7 @@ class QDAmodels(BaseClassificationModel):
 			raise Exception("Need Training Data For model")
 
 		N=0
-		for reg_param in [1, 10, 100, 1000,10000]:
+		for reg_param in [1, 100, 10000]:
 			clf=QuadraticDiscriminantAnalysis(reg_param=reg_param)
 			modelparas={'reg_param':reg_param}
 			model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
