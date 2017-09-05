@@ -198,6 +198,7 @@ class BaseClassificationModel(object):
 			print self.name+' '+"trained"
 
 		except Exception as ex:
+			print "------------------------------------------"
 			exc_type, exc_value, exc_traceback = sys.exc_info()
 			print ex
 			print exc_type, exc_value, exc_traceback
@@ -420,7 +421,7 @@ class RandomForrestmodels(BaseClassificationModel):
 		for n_estimators in [10,100,250]:
 			for max_features in ['log2','auto']+[0.25,0.5,0.75,1]:
 				for max_depth in [5,10,15]:
-					for class_weight in ['balanced','balanced_subsample',None]:
+					for class_weight in ['balanced','balanced_subsample']:
 						clf=RandomForestClassifier(n_estimators=n_estimators,max_depth=max_depth,min_samples_split=500,min_samples_leaf=500, n_jobs=n_jobs,max_features=max_features,class_weight=class_weight)
 						modelparas={'n_estimators':n_estimators, 'max_features':max_features,'class_weight':class_weight,'max_depth':max_depth}
 						model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
@@ -456,6 +457,35 @@ class LinearSVCmodels(BaseClassificationModel):
 			N=N+1
 
 ###################################################################
+####################   SGDClassifier  #####################################
+###################################################################
+class LinearSGDmodels(BaseClassificationModel):
+	name='LinearSGD'
+	saveformat='joblib'
+
+
+	@classmethod
+	def GenModels(cls,Project,Data):
+		if Data.Datatype!='Train':
+			raise Exception("Need Training Data For model")
+
+		N=0
+		for C in [1, 100, 10000]:
+			for loss in ['hinge','log']:
+				for penalty in ['l2',None]:
+					for alpha in [0.0001,100,10000]:
+
+						clf=SGDClassifier(C=C,alpha=alpha,loss=loss,penalty=penalty,class_weight='balanced',max_iter=100000,n_jobs=n_jobs)
+						modelparas={'C':C}
+						model=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
+						model.save()
+						model.initialize()
+						filename=model.modelpath()
+						joblib.dump(clf, filename)
+						N=N+1
+
+
+###################################################################
 ####################   QuadraticDiscriminantAnalysis  ###############
 ###################################################################
 class QDAmodels(BaseClassificationModel):
@@ -487,7 +517,13 @@ class NNmodels_1layer(BaseClassificationModel):
 
 	def getfit_args_kwargs(self):
 		args=()
-		kwargs=self.model.modelparas['fit_kwargs']
+		kwargs=self.model.Info['modelparas']['fit_kwargs']
+		class_weight={}
+		if 'class_weight' in kwargs:
+			for key,value in kwargs['class_weight'].items():
+				class_weight[int(key)]=float(value)
+			kwargs['class_weight']=class_weight
+			
 		return (args,kwargs)
 
 	def getclassweights(self,Y):
@@ -502,6 +538,15 @@ class NNmodels_1layer(BaseClassificationModel):
 		for key in class_weights.keys():
 			class_weights[key]=class_weights[key]/ss
 		
+		ss=0
+		for key in class_weights.keys():
+			ss=ss+1/class_weights[key]
+			class_weights[key]=1/class_weights[key]
+
+		for key in class_weights.keys():
+			class_weights[key]=class_weights[key]/ss
+
+
 		return class_weights
 
 	@classmethod
@@ -530,10 +575,13 @@ class NNmodels_1layer(BaseClassificationModel):
 	@classmethod
 	def GenModels(cls,Project,Data):
 		N=1
-		X,Y,Meta=dtscmd.DataShard.objects.filter(Data=Data).first().getdata()
+		# X,Y,Meta=dtscmd.DataShard.objects.filter(Data=Data).first().getdata()
 		M=cls()
-		X,Y=M.pre_processing_train(X,Y)
-
+		# X,Y=M.pre_processing_train(X,Y)
+		X,Y,Meta=Data.getdata()
+		X,Y=M.pre_processing_train(X,Y)	
+		# X,Y=M.load_training_data()
+		class_weight=M.getclassweights(Y)
 		
 		input_dim=X.shape[1]
 		output_dim=len(np.unique(Y))
@@ -549,7 +597,7 @@ class NNmodels_1layer(BaseClassificationModel):
 								
 								modelparas={'batch_size':batch_size, 'nb_epoch':nb_epoch,'l2':l2,'dropout':dropout,'act':act,'Nneurons':Nneurons}
 								modelparas['fit_args']=()
-								modelparas['fit_kwargs']={'batch_size':batch_size, 'epochs':nb_epoch, 'verbose':1, 'validation_split':0.1,  'class_weight':None}
+								modelparas['fit_kwargs']={'batch_size':batch_size, 'epochs':nb_epoch, 'verbose':1, 'validation_split':0.1,  'class_weight':class_weight}
 
 								mlmodel=dtscmd.MLmodels(Project=Project,Data=Data,Userfilename=cls.filename,Name=cls.__name__,Info={'modelparas':modelparas,'description':cls.__doc__} ,Status='UnTrained' ,saveformat=cls.saveformat)
 								mlmodel.save()

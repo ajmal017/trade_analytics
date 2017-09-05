@@ -154,9 +154,17 @@ class Data(models.Model):
 		if not os.path.isdir(path):
 			os.makedirs(path)
 
+	def getfulldatapath(self):
+		return os.path.join(self.datapath(),'fulldata'+"."+self.Dataformat)
+
+	def deletefulldata(self):
+		filename=self.getfulldatapath()
+		import os
+		os.remove(filename)
+		
 	def getdata(self):
 
-		filename=os.path.join(self.datapath(),'fulldata'+"."+self.Dataformat)
+		filename=self.getfulldatapath()
 		if not os.path.isfile(filename):
 			import datascience.libs as dtsclibs
 			dtsclibs.combineshards(self.id,filename,self.Dataformat)
@@ -212,7 +220,7 @@ class DataShard(models.Model):
 		if self.Data.Dataformat=='npz':
 			data=np.load(path)
 			X=data['X']
-			Y=data['X']
+			Y=data['Y']
 			Meta=data['Meta'][()]
 		elif self.Data.Dataformat=='h5':
 			h5f = h5py.File(path, 'r')
