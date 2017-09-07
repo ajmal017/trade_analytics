@@ -116,11 +116,17 @@ class registerfeature(object):
 			featmeta.save()
 			# print "Saving feature ",featmeta
 
-	def __call__(self,func):
-		
-		self.name=func.__name__
-		self.doc=func.__doc__
-		
+
+
+	def __call__(self,*args,**kwargs):
+		if len(args)==1:
+			func=args[0]
+			self.name=func.__name__
+			self.doc=func.__doc__
+		else:
+			self.name=kwargs['name']
+			self.doc=kwargs['description']
+
 		# if self.name in self.registry:
 		# 	raise KeyError("label already there, please rename "+self.name)
 		
@@ -154,7 +160,14 @@ class registerfeature(object):
 
 
 class featuremodel(object):
-
+	"""
+	1. Compute features
+	2. Rerun mode: re run and overwrite
+	3. Non-rerun: find missing and fill them up
+	4. register the featuers
+		- if features were changed, remove them from db also
+	5. 
+	"""
 
 
 	def __init__(self,Symbolid,Trange):
@@ -175,6 +188,9 @@ class featuremodel(object):
 		if hasattr(self,'df'):
 			del self.df
 
+	def LoadFeatures(self):
+		self.df=GetFeature(Symbolids=[self.Symbolid],Trange=self.Trange,dfmain=self.df)
+
 	def GetStockData(self,*args,**kwargs):
 		return dtalibs.GetStockData(*args,**kwargs)
 
@@ -187,26 +203,7 @@ class featuremodel(object):
 		# print feat
 		return getattr(self,feat)
 
-	def LoadFeature(self,feat,Trange=None):
-		stkid=self.Symbolid
-		if Trange==None:
-			Trange=self.Trange
 
-
-		if str((stkid,Trange)) in self.featcache:
-			if feat in self.featcache[str((stkid,Trange))].columns: 
-				return self.featcache[str((stkid,Trange))][feat]
-			else:
-				cols=self.featcache[str((stkid,Trange))].columns
-				return self.featcache[str((stkid,Trange))][cols[0]]*np.nan
-		else:
-			df3=GetFeature([stkid],Trange)
-			self.featcache[str((stkid,Trange))]=df3
-			if feat in df3.columns:
-				return df3[feat]
-			else:
-				cols=self.featcache[str((stkid,Trange))].columns
-				return self.featcache[str((stkid,Trange))][cols[0]]*np.nan
 				
 	@classmethod
 	def getfeaturelist(cls):

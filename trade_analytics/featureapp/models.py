@@ -16,7 +16,8 @@ class FeatureComputeCode(utymd.ComputeCode):
 
 
 class FeaturesMeta(models.Model):
-	Userfilename = models.CharField(max_length=150,help_text="User ID from database",blank=True)
+	# Userfilename = models.CharField(max_length=150,help_text="User ID from database",blank=True)
+	FeatureCode=models.ForeignKey(FeatureComputeCode,on_delete=models.CASCADE)
 	Featurelabel=models.CharField(max_length=50,help_text="unique label",unique=True)
 	Featuredescription=models.CharField(max_length=100,null=True,blank=True,help_text="Company name")
 	Category=models.CharField(max_length=100,null=True,blank=True,help_text="Company name")

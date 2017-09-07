@@ -1,11 +1,13 @@
 from __future__ import division
 from datascience.ML import MLmodels
 import numpy as np
+import pandas as pd
 import keras
 
-filename=__name__.split('.')[-1]
+filename=__name__.split('.')[0]
 
 
+############################ Customize models here ###############################
 
 class RandomForrrest_1(MLmodels.RandomForrestmodels):
 	"""
@@ -14,8 +16,6 @@ class RandomForrrest_1(MLmodels.RandomForrestmodels):
 	@output: 0-1 class : profit/(profit+loss) 
 	"""
 	filename=filename
-	
-
 
 	def pre_processing_train(self,X,Y):
 		return (X,np.round(Y))
@@ -31,9 +31,7 @@ class RandomForrrest_2(MLmodels.RandomForrestmodels):
 	@output: 0-1 class : 1 is return >5% 
 	"""
 	filename=filename
-	
-
-
+	RequiredInputCols=['High','Low','SMA10','SMA20','SMA50','SMA100','SMA200','Volume','VolSMA10']
 	def pre_processing_train(self,X,Y):
 		Y[Y<5]=0
 		Y[Y>=5]=1
@@ -43,8 +41,7 @@ class RandomForrrest_2(MLmodels.RandomForrestmodels):
 		Y[Y<5]=0
 		Y[Y>=5]=1
 		return (X,Y)
-
-
+	
 
 class SVC_1(MLmodels.LinearSVCmodels):
 	"""
@@ -53,6 +50,7 @@ class SVC_1(MLmodels.LinearSVCmodels):
 	@output: 0-1 class : 1 is return >5%  
 	"""
 	filename=filename
+	RequiredInputCols=['High','Low','SMA10','SMA20','SMA50','SMA100','SMA200','Volume','VolSMA10']
 	def pre_processing_train(self,X,Y):
 		Y[Y<5]=0
 		Y[Y>=5]=1
@@ -71,6 +69,7 @@ class QDA_1(MLmodels.QDAmodels):
 	@output: 0-1 class : 1 is return >5%  
 	"""
 	filename=filename
+	RequiredInputCols=['High','Low','SMA10','SMA20','SMA50','SMA100','SMA200','Volume','VolSMA10']
 	def pre_processing_train(self,X,Y):
 		Y[Y<5]=0
 		Y[Y>=5]=1
@@ -90,6 +89,7 @@ class NN_1(MLmodels.NNmodels_1layer):
 	@output: 0-1 class : 1 is return >5% 
 	"""
 	filename=filename
+	RequiredInputCols=['High','Low','SMA10','SMA20','SMA50','SMA100','SMA200','Volume','VolSMA10']
 	def pre_processing_train(self,X,Y):
 		Y[Y<5]=0
 		Y[Y>=5]=1

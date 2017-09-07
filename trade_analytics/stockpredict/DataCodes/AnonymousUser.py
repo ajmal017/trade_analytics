@@ -1,6 +1,7 @@
 from __future__ import division
 from datascience.ML.MLmodels  import *
 import datascience.libs as dtsclibs
+import dataapp.libs as dtalibs
 import datascience.models as dtscmd
 import pdb
 
@@ -22,6 +23,23 @@ def DataShardMeta_1(DataShardId):
 
 
 	return (NXnans,NYnans,X.shape,Y.shape)
+
+################# --------------- Data Base creators ---------------- ###################################
+
+@dtsclibs.register_compfunc(Group='BaseDataSet',overwrite_if_exists=False,create_new_ifchanged=True)
+def Sometest(dataId):
+    """
+    fdgfgfgfgfg
+    """
+    print "ok"
+    return 3
+
+
+
+@dtsclibs.register_compfunc(Group='BaseDataSet',overwrite_if_exists=True)
+def CreateStockData_base_X1y_Y3m_TFMonday_from2010(SymbolId,Mode):
+	Trange=pd.date_range(start=pd.datetime(2010,1,1),end=pd.datetime.today(),freq='W-MON') 
+	return dtalibs.CreateStockData_base(SymbolId,Trange,Mode)
 
 #################### ------------ Some Data Transformers-------------- ##################################
 
@@ -626,9 +644,11 @@ def StandardizeData_Close01Volume01_X30_Y5prfbylss_interpcleaned_flatout(X,Y,Met
 ####################################################################################################
 
 @dtsclibs.register_compfunc(Group='Transformer',overwrite_if_exists=True)
-def StandardizeData_HLmeanVolumeSMA01_X30_Y5return_interpcleaned_flatout(X,Y,Meta):
+def StandardizeData_HLmeanVolumeSMA01_X30_Y5return_interpcleaned_flatout(X,Y=None,Meta):
 	"""
 	A transformer function has to take X,Y,Meta and return another modified X,Y,Meta
+	0. Implement contraints on input
+		1. fail on not satisfying constraint
 	1. Normalize all data as 
 		1. (High+Low)/2 last 23 days --> 0-1
 		2. Volume last 23 days --> 0-1
@@ -643,14 +663,18 @@ def StandardizeData_HLmeanVolumeSMA01_X30_Y5return_interpcleaned_flatout(X,Y,Met
 	
    
 	"""
+
+	
+	
 	import pandas as pd
 	import numpy as np
 
 	# next normalize the volume to 0-1
 	Nsamples=X.shape[0]
-	
 	Tsteps=X.shape[1]
 	Nfeat=X.shape[2]
+
+
 
 	volumecols=['Volume','VolSMA10']
 	pricecols=['HLmean','SMA10','SMA20','SMA50','SMA100','SMA200']
@@ -659,67 +683,42 @@ def StandardizeData_HLmeanVolumeSMA01_X30_Y5return_interpcleaned_flatout(X,Y,Met
 	FinalXcols = pricecols+volumecols
 	FinalYcols = ['MaxReturn5days']
 	
+
+
+	
 	Xn=None
 	Yn=None
 	Metan=None
 	for i in range(Nsamples):
 		dfX=pd.DataFrame(X[i,:,:],columns=colsX).iloc[-23:]
-		dfY=pd.DataFrame(Y[i,:,:],columns=colsY)
-		
 		dfX.index=range(len(dfX))
-		dfY.index=range(len(dfY))
 		
-		dfX['HLmean']=(dfX['High']+dfX['Low'])/2
-
-		if dfX['HLmean'].max()<=2:
+		if len(dfX)<23:
+			print "need 23 time steps of data, only :",len(dfX)," provided"
 			continue
 
-
-
-		# clean up Y
-		dfY.drop('Symbol',axis=1,inplace=True)
-
-		
-		Ydict={}
-		dfY['ZeroPerf']=0
-	
-#         dfY['FutProfit5days']=-100*self.df['Close'].diff(periods=-5)/self.df['Close']
-		if dfY['Close'].iloc[0]==0:
+		if len(set(['High','Low','Volume','VolSMA10']) & set(dfX.columns))==0:
+			print "required columns not there"
 			continue
 
-		dfY['Returns']=100*(dfY['Close']-dfY['Close'].iloc[0])/dfY['Close'].iloc[0]
-		ret=dfY['Returns'].iloc[0:5].max()
-
-		if ret==0:
-			Ydict['MaxReturn5days'] = 0
-		else:
-			Ydict['MaxReturn5days'] = ret
-
-		if pd.isnull(Ydict['MaxReturn5days']):
-			continue
-
-
-
-		# clean up X
-		dfX.drop('Symbol',axis=1,inplace=True)
-		
 		mxvol=dfX['Volume'].max()
 		if mxvol==0:
 			continue
-
-		dfX=dfX[FinalXcols]
-
 		dfX['Volume']=dfX['Volume']/mxvol
 		dfX['VolSMA10']=dfX['VolSMA10']/mxvol
+
+		dfX['HLmean']=(dfX['High']+dfX['Low'])/2
+		if dfX['HLmean'].max()<=2:
+			continue
+
 		
+		dfX=dfX[FinalXcols]
 		mn=dfX[pricecols].min(axis=1).min()
 		for cc in pricecols:
 			dfX[cc]=(dfX[cc]-mn)	
-		
 		mx=dfX[pricecols].max(axis=1).max()
 		if mx==0:
 			continue
-
 		for cc in pricecols:
 			dfX[cc]=dfX[cc]/mx
 
@@ -727,6 +726,7 @@ def StandardizeData_HLmeanVolumeSMA01_X30_Y5return_interpcleaned_flatout(X,Y,Met
 
 		NaNind=dfX[dfX.isnull().any(axis=1)].index
 		if len(NaNind)>=len(dfX)/2:
+			print "skipping too many NaNs"
 			continue
 
 		for cc in FinalXcols:
@@ -741,14 +741,48 @@ def StandardizeData_HLmeanVolumeSMA01_X30_Y5return_interpcleaned_flatout(X,Y,Met
 		# pdb.set_trace()
 
 		XX=np.expand_dims( dfX[FinalXcols].astype(float).values.flatten(order='F')   ,axis=0     )
-		YY=np.expand_dims( np.array(Ydict['MaxReturn5days']),axis=0 )
+		
 		if Xn is None:
 			Xn=XX
-			Yn=YY
 		else:
 			Xn=np.vstack((Xn,XX))
-			Yn=np.vstack((Yn,YY))
-	
+
+
+		if Y is not None:
+			dfY=pd.DataFrame(Y[i,:,:],columns=colsY)
+			dfY.index=range(len(dfY))
+			dfY.drop('Symbol',axis=1,inplace=True)
+			
+			Ydict={}
+			dfY['ZeroPerf']=0
+		
+	#         dfY['FutProfit5days']=-100*self.df['Close'].diff(periods=-5)/self.df['Close']
+			if dfY['Close'].iloc[0]==0:
+				continue
+
+			dfY['Returns']=100*(dfY['Close']-dfY['Close'].iloc[0])/dfY['Close'].iloc[0]
+			ret=dfY['Returns'].iloc[0:5].max()
+
+			if ret==0:
+				Ydict['MaxReturn5days'] = 0
+			else:
+				Ydict['MaxReturn5days'] = ret
+
+			if pd.isnull(Ydict['MaxReturn5days']):
+				continue
+
+			YY=np.expand_dims( np.array(Ydict['MaxReturn5days']),axis=0 )
+			
+			if Yn is None:
+				Yn=YY
+			else:
+				Yn=np.vstack((Yn,YY))
+		
+
+		
+	if Xn.shape[0]==0:
+		raise Exception('No data samples in this set')
+
 	Metan=Meta
 	Metan['MetaX']['columns']=FinalXcols
 	Metan['MetaY']['columns']=FinalYcols

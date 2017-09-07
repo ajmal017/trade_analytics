@@ -3,7 +3,15 @@ from __future__ import division
 from django.db import models
 
 
-# Create your models here.
+
+
+class TradingDates(models.Model):
+	"""
+	The trading dates saved for a god standard
+	"""
+	CheckWith=['AAPL','GE','F']
+	Date = models.DateField(db_index=True,null=False)
+	SymbolUsed=models.CharField(db_index=True,max_length=20,null=True,blank=True)	
 
 class Stockprice(models.Model):
 	_DATABASE='stockpricedata'

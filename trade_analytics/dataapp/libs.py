@@ -98,6 +98,9 @@ def StockDataFrame_sanitize(df,standardize=False):
 
 @mnt.logperf('dataapp',printit=True)
 def addindicators(df,cols):
+	if len(cols)==0:
+		return df
+
 	inputs = {
     'open': df['Open'].values,
     'high': df['High'].values,
@@ -133,7 +136,6 @@ def addindicators(df,cols):
 					print "Indicator not available"
 
 			except Exception as e:
-				df[cc['colname']]=np.nan
 				print "error adding indicator ",cc['colname']
 				logger.error("error adding indicator "+cc['colname']+" "+str(type(e))+" "+str(e))
 				logger.exception(e)
@@ -191,93 +193,32 @@ def GetStockData(Symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datet
 	elif format=='concat':
 		return df
 
-
-def Getbatchdata(dfinstants_req,padding=None,returnAs='StackedMatrix'):
-	"""
-	DataFrame input as
-	dfinstants= [ (Symbol, T0,TF), ... ]
-	return in same order
-	padding can be : ['OnTop','FromBottom']
-	"""
-	if type(dfinstants_req)!=list:
-		dfinstants_req=[dfinstants_req]
-
-	ReturnData=[]
-	ds={}
-	cols=None
-
-	addcols=[	{'name':'SMA','timeperiod':10,'colname':'SMA10'},
-        		{'name':'SMA','timeperiod':20,'colname':'SMA20'},
-        		{'name':'SMA','timeperiod':50,'colname':'SMA50'},
-        		{'name':'SMA','timeperiod':100,'colname':'SMA100'},
-        		{'name':'SMA','timeperiod':200,'colname':'SMA200'},
-        		{'name':'VolSMA','timeperiod':10,'colname':'VolSMA10'},
-        		{'name':'VolSMA','timeperiod':20,'colname':'VolSMA20'},
-        		{'name':'EMA','timeperiod':8,'colname':'EMA8'},
-        		{'name':'EMA','timeperiod':20,'colname':'EMA20'},
-        	]
+###########################  COmputing indicies  ######################################
 
 
-	for cnt in range(len(dfinstants_req)) :
-		dfinstants = dfinstants_req[cnt]
+def ComputeIndex(stk,Fromdate,Todate):
+	print "----------------------------------------"
+	print "Compute Index on ",stk.Symbol
+	print "----------------------------------------"
 
-		dfinstants.index=range(len(dfinstants))
-
-		D={}
-		
-		NT=0
-		for Symbol,dfsymb in dfinstants.groupby("Symbol"):
-			if Symbol not in ds.keys():
-				ds[Symbol]=GetStockData([Symbol])
-				ds[Symbol]=addindicators(ds[Symbol],addcols)
-
-			for ind in dfsymb.index:
-				T0=str2date( dfsymb.loc[ind,'T0'] )
-				TF=str2date( dfsymb.loc[ind,'TF'] )
-				
-				window=dfsymb.loc[ind,'window']
-				NT=max([NT,window])
-				
-				D[ind]=ds[Symbol][T0:TF]
-
-				if cols is None:
-					if len(D[ind].index)>0:
-						cols=D[ind].columns
-
-		# padding
-		for ind in dfinstants.index:
-			if len(D[ind])<NT:
-				d={}
-				Nd=NT-len(D[ind])
-				for cc in D[ind].columns:
-					d[cc]=[np.nan]*Nd
-
-				dummyfill=pd.DataFrame(d)
-				
-				if padding[cnt]=='OnTop':
-					D[ind]=pd.concat([ dummyfill[cols] , D[ind][cols] ])
-
-				elif padding[cnt]=='FromBottom':	
-					D[ind]=pd.concat([ D[ind][cols], dummyfill[cols] ])
+	stkgrpindex=stkmd.StockGroupIndex.objects.get(Symbol=stk)
+	stkgrp=stkgrpindex.StockGroup
+	stkind=stkgrpindex.Index
+	grpstks_ids=stkgrp.Symbol.all().values_list('id',flat=True)
+	try:
+		code=stkind.IndexComputeClass.IndexComputeCode.Code
+		ClassName=stkind.IndexComputeClass.ClassName
+		module,computeclass=utcdmng.import_computeindexclass(code,"indexmodule",membername=ClassName)
+		CC=computeclass()
+		CC.compute(Fromdate=Fromdate,Todate=Todate,grpstks_ids=grpstks_ids)
+		df=CC.getvalue(stkind.IndexLabel)
+		return {'df':df,'status':'Success'}
+	except:
+		print "error computing index ",stk, " for input dates ",Fromdate,Todate
+		return {'df':None,'status':'Fail'}
 
 
-		X=None
-		for ind in dfinstants.index:
-			Y=np.expand_dims(D[ind][cols].values,axis=0)
-			# print Y.shape
-
-			if X is None:
-				X=Y
-			else:
-				X=np.vstack((X,Y))
-
-		Meta={'shape':X.shape,'dfinstants':dfinstants,'columns':cols}
-		ReturnData.append( (X,Meta) )
-	
-	if len(ReturnData)==1:
-		return ReturnData[0]
-	else:
-		return ReturnData
+###########################  Download stock data  ######################################
 
 def predownloadcheck(stk):
 	Todate=pd.datetime.today().date()
@@ -315,26 +256,7 @@ def DownloadData(Symbol, Fromdate,Todate):
 		print "error downloading ",Symbol, " for input dates ",Fromdate,Todate
 		return {'df':None,'status':'Fail'}
 
-def ComputeIndex(stk,Fromdate,Todate):
-	print "----------------------------------------"
-	print "Compute Index on ",stk.Symbol
-	print "----------------------------------------"
 
-	stkgrpindex=stkmd.StockGroupIndex.objects.get(Symbol=stk)
-	stkgrp=stkgrpindex.StockGroup
-	stkind=stkgrpindex.Index
-	grpstks_ids=stkgrp.Symbol.all().values_list('id',flat=True)
-	try:
-		code=stkind.IndexComputeClass.IndexComputeCode.Code
-		ClassName=stkind.IndexComputeClass.ClassName
-		module,computeclass=utcdmng.import_computeindexclass(code,"indexmodule",membername=ClassName)
-		CC=computeclass()
-		CC.compute(Fromdate=Fromdate,Todate=Todate,grpstks_ids=grpstks_ids)
-		df=CC.getvalue(stkind.IndexLabel)
-		return {'df':df,'status':'Success'}
-	except:
-		print "error computing index ",stk, " for input dates ",Fromdate,Todate
-		return {'df':None,'status':'Fail'}
 
 def postdownloadcheck(stk,dfStartdate,dfLastdate):
 	if stk.Lastdate is not None:
@@ -456,3 +378,98 @@ def UpdatePriceData(Symbols_ids,*args,**kwargs):
 
 	if semaphore:
 		semaphore.release()
+
+
+
+
+
+
+########################   Deprecated ########################################33
+
+
+def Getbatchdata(dfinstants_req,padding=None,returnAs='StackedMatrix'):
+	"""
+	DataFrame input as
+	dfinstants= [ (Symbol, T0,TF), ... ]
+	return in same order
+	padding can be : ['OnTop','FromBottom']
+	"""
+	if type(dfinstants_req)!=list:
+		dfinstants_req=[dfinstants_req]
+
+	ReturnData=[]
+	ds={}
+	cols=None
+
+	addcols=[	{'name':'SMA','timeperiod':10,'colname':'SMA10'},
+        		{'name':'SMA','timeperiod':20,'colname':'SMA20'},
+        		{'name':'SMA','timeperiod':50,'colname':'SMA50'},
+        		{'name':'SMA','timeperiod':100,'colname':'SMA100'},
+        		{'name':'SMA','timeperiod':200,'colname':'SMA200'},
+        		{'name':'VolSMA','timeperiod':10,'colname':'VolSMA10'},
+        		{'name':'VolSMA','timeperiod':20,'colname':'VolSMA20'},
+        		{'name':'EMA','timeperiod':8,'colname':'EMA8'},
+        		{'name':'EMA','timeperiod':20,'colname':'EMA20'},
+        	]
+
+
+	for cnt in range(len(dfinstants_req)) :
+		dfinstants = dfinstants_req[cnt]
+
+		dfinstants.index=range(len(dfinstants))
+
+		D={}
+		
+		NT=0
+		for Symbol,dfsymb in dfinstants.groupby("Symbol"):
+			if Symbol not in ds.keys():
+				ds[Symbol]=GetStockData([Symbol])
+				ds[Symbol]=addindicators(ds[Symbol],addcols)
+
+			for ind in dfsymb.index:
+				T0=str2date( dfsymb.loc[ind,'T0'] )
+				TF=str2date( dfsymb.loc[ind,'TF'] )
+				
+				window=dfsymb.loc[ind,'window']
+				NT=max([NT,window])
+				
+				D[ind]=ds[Symbol][T0:TF]
+
+				if cols is None:
+					if len(D[ind].index)>0:
+						cols=D[ind].columns
+
+		# padding
+		for ind in dfinstants.index:
+			if len(D[ind])<NT:
+				d={}
+				Nd=NT-len(D[ind])
+				for cc in D[ind].columns:
+					d[cc]=[np.nan]*Nd
+
+				dummyfill=pd.DataFrame(d)
+				
+				if padding[cnt]=='OnTop':
+					D[ind]=pd.concat([ dummyfill[cols] , D[ind][cols] ])
+
+				elif padding[cnt]=='FromBottom':	
+					D[ind]=pd.concat([ D[ind][cols], dummyfill[cols] ])
+
+
+		X=None
+		for ind in dfinstants.index:
+			Y=np.expand_dims(D[ind][cols].values,axis=0)
+			# print Y.shape
+
+			if X is None:
+				X=Y
+			else:
+				X=np.vstack((X,Y))
+
+		Meta={'shape':X.shape,'dfinstants':dfinstants,'columns':cols}
+		ReturnData.append( (X,Meta) )
+	
+	if len(ReturnData)==1:
+		return ReturnData[0]
+	else:
+		return ReturnData

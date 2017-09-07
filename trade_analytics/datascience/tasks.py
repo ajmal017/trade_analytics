@@ -103,48 +103,6 @@ def applyfunc2data(funcId,dataId,wait=False):
 		return Mapper_nowait(funcId,shardIds)
 
 
-## Create Raw Stock Datasets ##################
-
-@shared_task
-def CreateStockData_ShardsBySymbol(T0TF_dict_X,T0TF_dict_Y,Symbol,dataId):
-	T0TFSymbol_dict_X=[]
-	for pp in T0TF_dict_X:
-		pp['Symbol']=Symbol
-		T0TFSymbol_dict_X.append(pp)
-
-	T0TFSymbol_dict_Y=[]
-	for pp in T0TF_dict_Y:
-		pp['Symbol']=Symbol
-		T0TFSymbol_dict_Y.append(pp)
-
-	return dtsclibs.CreateStockData_ShardsBySymbol(T0TFSymbol_dict_X,T0TFSymbol_dict_Y,dataId)
-
-@shared_task
-def CreateStockData_1(T0TF_dict_X,T0TF_dict_Y,dataId,Symbols):
-	if Symbols is None:
-		Symbols=stkmd.Stockmeta.objects.all().values_list('Symbol',flat=True)
-
-	for Symbol in Symbols:
-		CreateStockData_ShardsBySymbol.delay(T0TF_dict_X,T0TF_dict_Y,Symbol,dataId)
-
-@shared_task
-def CreateStockData_2(window,window_fut,dataId,Symbols):
-	if Symbols is None:
-		Symbols=stkmd.Stockmeta.objects.all().values_list('Symbol',flat=True)
-
-	T0TF_dict_X=map(lambda x: { 'T0':(x.date()-pd.DateOffset(window)).date(),'TF' :x.date(),'window':window },
-			pd.date_range(start=pd.datetime(2010,1,1),end=pd.datetime.today(),freq='W-MON') )
-
-	T0TF_dict_Y=map(lambda x: { 'T0':x.date(), 'TF' : (x.date()+pd.DateOffset(window_fut)).date(),'window':window_fut },
-			pd.date_range(start=pd.datetime(2010,1,1),end=pd.datetime.today(),freq='W-MON') )
-
-	# pdb.set_trace()
-
-	for Symbol in Symbols:
-		print "Working on Symbol ", Symbol
-		CreateStockData_ShardsBySymbol.delay(T0TF_dict_X,T0TF_dict_Y,Symbol,dataId)
-
-
 
 ### Do DataSet transformers to new Datasets ########################
 
