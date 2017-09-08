@@ -38,6 +38,7 @@ else:
 	# use dummy task
 	raise Exception('Unknown option for task distribution')
 
+@shared_task
 def computefeatuers(stkid,Trange):
 	featurecodes=ftmd.FeatureComputeCode.objects.all()
 	for computecode in featurecodes:
@@ -49,6 +50,8 @@ def computefeatuers(stkid,Trange):
 
 
 
+
+################################  Deprecated ######################################################
 def processfeatQ(Q):
 	while True:
 		try:

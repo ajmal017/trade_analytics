@@ -127,32 +127,13 @@ class registerfeature(object):
 			self.name=kwargs['name']
 			self.doc=kwargs['description']
 
-		# if self.name in self.registry:
-		# 	raise KeyError("label already there, please rename "+self.name)
-		
 		self.recordfeature()
-
 		self.registry[self.name]={'doc':self.doc}
 		
 		@functools.wraps(func)
 		def func2(*args,**kwargs):
-			
-
-			# if self.usecache:
-			# 	keyargs=[str(a) for a in args]
-			# 	keykwargs={}
-			# 	for k,v in kwargs.items():
-			# 		keykwargs[k]=str(v)
-			# 	key=json.dumps([keyargs,keykwargs])
-
-			# 	if key in self.cache:
-			# 		return self.cache[key]
-			# 	else:
-			# 		self.cache[key]=func(*args,**kwargs)
-			# 		return self.cache[key]
-			# else:
-
 			return func(*args,**kwargs)
+
 		func2.isfeature=True
 		
 		return func2
