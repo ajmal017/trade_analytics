@@ -54,13 +54,11 @@ class SVC_1(MLmodels.LinearSVCmodels):
 	def pre_processing_train(self,X,Y):
 		Y[Y<5]=0
 		Y[Y>=5]=1
-		Y=keras.utils.np_utils.to_categorical(Y)
 		return (X,Y)
 
 	def pre_processing_validation(self,X,Y):
 		Y[Y<5]=0
 		Y[Y>=5]=1
-		Y=keras.utils.np_utils.to_categorical(Y)
 		return (X,Y)
 
 
@@ -75,13 +73,11 @@ class QDA_1(MLmodels.QDAmodels):
 	def pre_processing_train(self,X,Y):
 		Y[Y<5]=0
 		Y[Y>=5]=1
-		Y=keras.utils.np_utils.to_categorical(Y)
 		return (X,Y)
 
 	def pre_processing_validation(self,X,Y):
 		Y[Y<5]=0
 		Y[Y>=5]=1
-		Y=keras.utils.np_utils.to_categorical(Y)
 		return (X,Y)
 
 
