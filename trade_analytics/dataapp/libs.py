@@ -19,6 +19,7 @@ logger=logging.getLogger('dataapp')
 
 import time
 
+
 def str2date(T):
 	"""
 	- Given a T, return the datetime object of type date

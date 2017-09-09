@@ -17,7 +17,7 @@ class FeatureComputeCode(utymd.ComputeCode):
 
 class FeaturesMeta(models.Model):
 	# Userfilename = models.CharField(max_length=150,help_text="User ID from database",blank=True)
-	FeatureCode=models.ForeignKey(FeatureComputeCode,on_delete=models.CASCADE)
+	FeatureCode=models.ForeignKey(FeatureComputeCode,on_delete=models.CASCADE,null=True)
 	Featurelabel=models.CharField(max_length=50,help_text="unique label",unique=True)
 	Featuredescription=models.CharField(max_length=100,null=True,blank=True,help_text="Company name")
 	Category=models.CharField(max_length=100,null=True,blank=True,help_text="Company name")
@@ -38,14 +38,14 @@ class FeaturesData(models.Model):
 	Symbol=models.CharField(db_index=True,max_length=20,null=True,blank=True)
 	Symbol_id=models.IntegerField(null=True,db_index=True)
 	
-	Featuredata = JSONField(default={})
+	Featuredata = JSONField(default={},db_index=True)
 
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
 
 	def __str__(self):
-		return str(self.Symbol.Symbol)+" "+str(self.T)+" "+str(len(self.Featuredata))
+		return str(self.Symbol)+" "+str(self.T)+" "+str(len(self.Featuredata))
 
 
 class ComputeStatus_Feature(models.Model):

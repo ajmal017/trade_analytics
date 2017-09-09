@@ -93,7 +93,7 @@ class ComputeCode(models.Model):
 				obj.File=obj.getfilepath()
 
 			if os.path.isfile(obj.File):
-				filetime=pd.to_datetime(time.ctime(os.path.getmtime(obj.File)))
+				filetime=pd.to_datetime(time.ctime(os.path.getmtime(obj.File)),utc=True)
 				print filetime,obj.updated_at
 				if obj.updated_at<filetime:
 					# first make a copy of that file and then copy dbfile to disk

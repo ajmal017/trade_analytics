@@ -44,7 +44,8 @@ def computefeatuers(stkid,Trange):
 	for computecode in featurecodes:
 		computeclass=computecode.importcomputeclass()
 		CC=computeclass(stkid,Trange)
-		CC.computeall(skipdone=True)
+		# CC.computeall(skipdone=True)
+		CC.computeonly(featurelist=['SMA10','SMA20','SMA50','SMA100','SMA200','SMAstd20','FutPROFIT10days','FutLOSS10days','FutPROFIT30days','FutLOSS30days','FutPROFIT90days','FutLOSS90days','CCI5','CCI50'])
 		CC.saveall()
 		del CC
 

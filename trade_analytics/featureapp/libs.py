@@ -12,6 +12,7 @@ import dataapp.models as dtamd
 import dataapp.libs as dtalibs
 import functools
 from utility import maintenance as mnt
+import pdb
 import logging
 logger = logging.getLogger('debug')
 
@@ -95,8 +96,10 @@ class registerfeature(object):
 		self.usecache=cache
 		self.cache={}
 		self.registry={}
-	
+		# pdb.set_trace()
+
 	def recordfeature(self):
+		FC=ftmd.FeatureComputeCode.objects.get(Username=self.filename)
 
 		if ftmd.FeaturesMeta.objects.filter(Featurelabel=self.name).exists():
 			featmeta=ftmd.FeaturesMeta.objects.get(Featurelabel=self.name)
@@ -105,14 +108,14 @@ class registerfeature(object):
 			featmeta.Returntype=self.returntype.__name__
 			featmeta.operators=self.operators
 			featmeta.Query=self.query
-			featmeta.Userfilename=self.filename
+			featmeta.FeatureCode=FC
 			featmeta.save()
 			# print "Updated feature ",featmeta
 
 		else:
 			featmeta=ftmd.FeaturesMeta(Featurelabel=self.name,Featuredescription=self.doc,
 									Category=self.category,Returntype=self.returntype.__name__,
-									operators=self.operators,Query=self.query,Userfilename=self.filename)
+									operators=self.operators,Query=self.query,FeatureCode=FC)
 			featmeta.save()
 			# print "Saving feature ",featmeta
 
@@ -193,17 +196,19 @@ class featuremodel(object):
 	@classmethod
 	def finalize(cls,filename):
 		featurelist=cls.getfeaturelist()
-		dbfeatures=list( ftmd.FeaturesMeta.objects.filter(Userfilename=filename).values_list('Featurelabel',flat=True) )
-		for ft in dbfeatures:
-			if ft not in featurelist:
-				print ft," is not there, so deleting it"
-				ftmd.FeaturesMeta.objects.filter(Featurelabel=ft).delete()
+		if ftmd.FeatureComputeCode.objects.filter(Username=filename).exists():
+			FC=ftmd.FeatureComputeCode.objects.get(Username=filename)
+			dbfeatures=list( ftmd.FeaturesMeta.objects.filter(FeatureCode=FC).values_list('Featurelabel',flat=True) )
+			for ft in dbfeatures:
+				if ft not in featurelist:
+					print ft," is not there, so deleting it"
+					ftmd.FeaturesMeta.objects.filter(Featurelabel=ft).delete()
 
 
 
 
-	@mnt.logexception('debug',appendmsg='featuremodel',printit=True)
-	@mnt.logperf('debug',appendmsg='featuremodel',printit=True)
+	# @mnt.logexception('debug',appendmsg='featuremodel',printit=True)
+	# @mnt.logperf('debug',appendmsg='featuremodel',printit=True)
 	def computefeature(self,ft,T):
 		return self.getfeaturefunc(ft)(T)
 
@@ -215,6 +220,11 @@ class featuremodel(object):
 
 		print "Done compute"
 
+	def computeonly(self,featurelist=[]):
+		for ft in featurelist:
+			self.computefeature(ft,self.Trange)
+
+		print "Done compute"		
 	
 
 	def postprocessing(self):
@@ -231,7 +241,7 @@ class featuremodel(object):
 				self.df[cc]=self.df[cc].astype(float)				
 
 		
-	@mnt.logperf('debug',appendmsg='saveallfeatures',printit=True)
+	# @mnt.logperf('debug',appendmsg='saveallfeatures',printit=True)
 	def saveall(self,mode='rerun'):
 		self.postprocessing()
 
@@ -241,10 +251,11 @@ class featuremodel(object):
 		featurelist=self.getfeaturelist()
 		for Tind in self.df.index:
 			if mode=='rerun':
-				featdata=ftmd.FeaturesData(Symbol=self.stk,T=Tind)
+				featdata=ftmd.FeaturesData(Symbol=self.stk,Symbol_id=self.stk.id,T=Tind)
 
 			for ft in featurelist:
-				featdata.Featuredata[ft]=mnt.replaceNaN2None( self.df.loc[Tind,ft] )
+				if ft in self.df.columns:
+					featdata.Featuredata[ft]=mnt.replaceNaN2None( self.df.loc[Tind,ft] )
 
 			featdata.save()
 
