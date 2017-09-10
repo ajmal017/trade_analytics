@@ -1,5 +1,24 @@
 # ToDo
+- Auto setup
+	- setup dbs
+	- initialize db2file codels
+	- restore dbs
+	- grant permissions
+	- restore db
+	- make migrations for all the databases
 
+- features:
+	- make better readability of features
+	- options to : 
+		- rerun
+		- do only missing
+		- 
+	- feature manager
+	
+
+
+
+- Sync Code to db and files, proper
 
 - Make charting better:
 	- May be I do not need tornado websocket, just create the charts and save with UUIDS, Jquery will keep reloading them till they receive the chart.
