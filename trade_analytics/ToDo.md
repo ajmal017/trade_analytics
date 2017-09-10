@@ -13,8 +13,14 @@
 		- rerun
 		- do only missing
 		- 
-	- feature manager
-	
+	- feature manager single entry to get features, meta etc
+	- register features directoy without decorator
+	- register values directly 
+
+- datamanager:
+	- datamanager is the main entry to all the data in the system
+	- feature manager and query manager are objects within datamanager
+	- datasets are created from only data manager: who can access: stock data, features, stock meta, queries and anythink else that might show up
 
 
 
