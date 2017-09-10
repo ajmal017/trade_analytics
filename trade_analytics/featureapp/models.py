@@ -38,7 +38,7 @@ class FeaturesData(models.Model):
 	Symbol=models.CharField(db_index=True,max_length=20,null=True,blank=True)
 	Symbol_id=models.IntegerField(null=True,db_index=True)
 	
-	Featuredata = JSONField(default={},db_index=True)
+	Featuredata = JSONField(default={})
 
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)

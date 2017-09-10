@@ -226,7 +226,7 @@ class featuremodel(object):
 
 		print "Done compute"		
 	
-
+	# @mnt.logperf('debug',appendmsg='featuremodel',printit=True)
 	def postprocessing(self):
 		self.df = self.df.where((pd.notnull(self.df)), None)
 		for cc in self.df.columns:
@@ -243,21 +243,28 @@ class featuremodel(object):
 		
 	# @mnt.logperf('debug',appendmsg='saveallfeatures',printit=True)
 	def saveall(self,mode='rerun'):
+
 		self.postprocessing()
 
 		if mode=='rerun':
-			ftmd.FeaturesData.objects.filter(Symbol=self.stk,T__in=self.Trange).delete()
+			ftmd.FeaturesData.objects.filter(Symbol=self.stk.Symbol,T__in=self.Trange).delete()
+
 
 		featurelist=self.getfeaturelist()
+		bulkfeats=[]
 		for Tind in self.df.index:
 			if mode=='rerun':
-				featdata=ftmd.FeaturesData(Symbol=self.stk,Symbol_id=self.stk.id,T=Tind)
+				featdata=ftmd.FeaturesData(Symbol=self.stk.Symbol,Symbol_id=self.stk.id,T=Tind)
+
 
 			for ft in featurelist:
 				if ft in self.df.columns:
 					featdata.Featuredata[ft]=mnt.replaceNaN2None( self.df.loc[Tind,ft] )
 
-			featdata.save()
+			bulkfeats.append(featdata)
+		
+		ftmd.FeaturesData.objects.bulk_create(bulkfeats)	
+		# featdata.save()
 
 
 		print "Done save"
