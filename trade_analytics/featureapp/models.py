@@ -3,6 +3,7 @@ from __future__ import unicode_literals,division
 from django.contrib.auth.models import User
 from django.db import models
 from django.contrib.postgres.fields import ArrayField,JSONField
+import computeapp.models as cmpmd
 import os
 import utility.models as utymd
 # Create your models here.
@@ -33,13 +34,14 @@ class FeaturesMeta(models.Model):
 	def __str__(self):
 		return str(self.Featurelabel)+" "+str(self.Category)+" "+str(self.Userfilename)
 
-class FeaturesData(models.Model):
+class FeaturesData(cmpmd.ComputeStatus):
 	T=models.DateField()
 	Symbol=models.CharField(db_index=True,max_length=20,null=True,blank=True)
 	Symbol_id=models.IntegerField(null=True,db_index=True)
 	
 	Featuredata = JSONField(default={})
 
+	
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
@@ -48,15 +50,3 @@ class FeaturesData(models.Model):
 		return str(self.Symbol)+" "+str(self.T)+" "+str(len(self.Featuredata))
 
 
-class ComputeStatus_Feature(models.Model):
-	status_choices=(('ToDo','ToDo'),('Run','Run'),('Fail','Fail'),('Success','Success'))
-	Status=models.CharField(choices=status_choices,max_length=10)
-	
-	Symbol=models.CharField(db_index=True,max_length=20,null=True,blank=True)
-	Symbol_id=models.IntegerField(null=True,db_index=True)
-
-	created_at = models.DateField(auto_now_add=True,null=True)
-	updated_at = models.DateTimeField(auto_now=True,null=True)
-
-	def __str__(self):
-		return ", ".join( [str(self.Symbol),str(self.Status),str(self.created_at),str(self.updated_at)] )
