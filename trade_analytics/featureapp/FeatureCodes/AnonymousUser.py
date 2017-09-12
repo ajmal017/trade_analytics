@@ -1,9 +1,7 @@
 from __future__ import division
-from featureapp.libs import registerfeature, featuremodel
-import pandas as pd
-import numpy as np
-import json
-filename=__name__.split('.')[0]
+from featureapp.featuremodel import featurefunc,registerfeature, featuremodel, pd, np, json
+filename=__name__.split('.')[-1]
+regfeature=registerfeature(filename=filename)
 
 
 # --------------  features has to be the name of the class ------------------
@@ -15,6 +13,12 @@ class features(featuremodel):
 	def preprocessing(self):
 		self.df=self.GetStockData(self.Symbolid)
 		self.df=self.addindicators(self.df,[ {'name':'SMA','timeperiod':20,'colname':'SMA20'} ] )
+		self.df=self.addindicators(self.df,[ {'name':'SMA','timeperiod':10,'colname':'SMA10'} ] )
+		self.df=self.addindicators(self.df,[ {'name':'SMA','timeperiod':50,'colname':'SMA50'} ] )
+		self.df=self.addindicators(self.df,[ {'name':'SMA','timeperiod':100,'colname':'SMA100'} ] )
+		self.df=self.addindicators(self.df,[ {'name':'SMA','timeperiod':200,'colname':'SMA200'} ] )
+
+
 		self.df=self.addindicators(self.df,[ {'name':'SMAstd','timeperiod':20,'colname':'SMAstd20'} ] )
 		self.df=self.addindicators(self.df,[ {'name':'EMA','timeperiod':8,'colname':'EMA8'} ]		 )
 		self.df=self.addindicators(self.df,[ {'name':'EMAstd','timeperiod':8,'colname':'EMAstd8'} ] )
@@ -30,10 +34,10 @@ class features(featuremodel):
 		ML.load_Models_TransFuncs()
 		Y=ML.getprediction_stocks_bySymbol(self.Symbolid,self.Trange)
 
-		RF=registerfeature(filename=filename,category='MLpdictions',required=[],returntype=json,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 		for model in models:
 			modelname=model.getmodelname()
-			RF(name=modelname,description=model.Info['description'])
+			regfeature(name=modelname,doc=model.Info['description'],category='MLpdictions',required=[],returntype=json,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+
 			self.df[modelname]=Y[modelname]
 
 	def applyrollingfunc(self,newcolname,applyfunc,window,edge='right'):
@@ -50,7 +54,7 @@ class features(featuremodel):
 			
 
 
-	@registerfeature(filename=filename,category='Momentum',required=[],returntype=json,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(['SMALowPoly2win4Fit'])
 	def SMALowPoly2win4Fit(self,Tvec):
 		"""
 		HasCherries
@@ -73,7 +77,7 @@ class features(featuremodel):
 
 		self.df.loc[Tvec,'SMALowPoly2win4Fit'] 
 		
-	@registerfeature(filename=filename,category='Momentum',required=[],returntype=json,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Momentum',required=[],returntype=json,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def EMALowPoly2win4Fit(self,Tvec):
 		"""
 		HasCherries
@@ -101,17 +105,24 @@ class features(featuremodel):
 		self.df.loc[Tvec,'EMALowPoly2win4Fit'] 
 
 
-	@registerfeature(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def SMA20(self,Tvec):
-		"""
-		HasCherries
-		"""
-
-
 		self.df.loc[Tvec,'SMA20'] 
+	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	def SMA10(self,Tvec):
+		self.df.loc[Tvec,'SMA10'] 
+	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	def SMA50(self,Tvec):
+		self.df.loc[Tvec,'SMA50'] 
+	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	def SMA100(self,Tvec):
+		self.df.loc[Tvec,'SMA100'] 
+	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	def SMA200(self,Tvec):
+		self.df.loc[Tvec,'SMA200'] 
 
 
-	@registerfeature(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def SMAstd20(self,Tvec):
 		"""
 		HasCherries
@@ -120,7 +131,7 @@ class features(featuremodel):
 		self.df.loc[Tvec,'SMAstd20'] 
 
 
-	@registerfeature(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def EMA8(self,Tvec):
 		"""
 		HasCherries
@@ -130,7 +141,7 @@ class features(featuremodel):
 		self.df.loc[Tvec,'EMA8'] 
 
 
-	@registerfeature(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def EMAstd8(self,Tvec):
 		"""
 		HasCherries
@@ -140,7 +151,7 @@ class features(featuremodel):
 
 
 
-	@registerfeature(filename=filename,category='Momentum',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Momentum',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def CCI5(self,Tvec):
 		"""
 		HasCherries
@@ -149,7 +160,7 @@ class features(featuremodel):
 		self.df.loc[Tvec,'CCI5'] 
 
 
-	@registerfeature(filename=filename,category='Momentum',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Momentum',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def CCI50(self,Tvec):
 		"""
 		HasCherries
@@ -160,7 +171,7 @@ class features(featuremodel):
 
 
 		
-	@registerfeature(filename=filename,category='Performance',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Performance',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def PastPROFIT10days(self,Tvec):
 
 
@@ -181,7 +192,7 @@ class features(featuremodel):
 
 
 
-	@registerfeature(filename=filename,category='Performance',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Performance',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def PastLOSS10days(self,Tvec):
 
 		if not hasattr(self,'DFpastperf10'):
@@ -196,7 +207,7 @@ class features(featuremodel):
 		self.df.loc[Tvec,'PastLOSS10days'] 
 
 
-	@registerfeature(filename=filename,category='Performance',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Performance',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def PastPROFIT30days(self,Tvec):
 
 
@@ -214,7 +225,7 @@ class features(featuremodel):
 
 
 
-	@registerfeature(filename=filename,category='Performance',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Performance',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def PastLOSS30days(self,Tvec):
 
 
@@ -233,7 +244,7 @@ class features(featuremodel):
 
 
 
-	@registerfeature(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def FutPROFIT10days(self,Tvec):
 
 
@@ -253,7 +264,7 @@ class features(featuremodel):
 
 
 
-	@registerfeature(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def FutLOSS10days(self,Tvec):
 
 
@@ -271,7 +282,7 @@ class features(featuremodel):
 
 
 
-	@registerfeature(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def FutPROFIT30days(self,Tvec):
 
 
@@ -288,7 +299,7 @@ class features(featuremodel):
 
 
 
-	@registerfeature(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def FutLOSS30days(self,Tvec):
 
 	
@@ -305,7 +316,7 @@ class features(featuremodel):
 
 
 
-	@registerfeature(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def FutPROFIT90days(self,Tvec):
 
 
@@ -322,7 +333,7 @@ class features(featuremodel):
 
 
 
-	@registerfeature(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+	@featurefunc(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 	def FutLOSS90days(self,Tvec):
 
 

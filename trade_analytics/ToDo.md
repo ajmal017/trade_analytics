@@ -1,5 +1,30 @@
 # ToDo
+- Auto setup
+	- setup dbs
+	- initialize db2file codels
+	- restore dbs
+	- grant permissions
+	- restore db
+	- make migrations for all the databases
 
+- features:
+	- make better readability of features
+	- options to : 
+		- rerun
+		- do only missing
+		- 
+	- feature manager single entry to get features, meta etc
+	- register features directoy without decorator
+	- register values directly 
+
+- datamanager:
+	- datamanager is the main entry to all the data in the system
+	- feature manager and query manager are objects within datamanager
+	- datasets are created from only data manager: who can access: stock data, features, stock meta, queries and anythink else that might show up
+
+
+
+- Sync Code to db and files, proper
 
 - Make charting better:
 	- May be I do not need tornado websocket, just create the charts and save with UUIDS, Jquery will keep reloading them till they receive the chart.

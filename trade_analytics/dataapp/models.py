@@ -11,7 +11,7 @@ class TradingDates(models.Model):
 	"""
 	CheckWith=['AAPL','GE','F']
 	Date = models.DateField(db_index=True,null=False)
-	SymbolUsed=models.CharField(db_index=True,max_length=20,null=True,blank=True)	
+	# SymbolUsed=models.CharField(db_index=True,max_length=20,null=True,blank=True)	
 
 class Stockprice(models.Model):
 	_DATABASE='stockpricedata'

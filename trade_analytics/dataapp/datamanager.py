@@ -1,4 +1,5 @@
 import dataapp.libs as dtalibs
+import dataapp.models as dtamd
 import stockapp.models as stkmd
 import pandas as pd
 import numpy as np
@@ -20,7 +21,7 @@ class DataManager(object):
 					}
 	max_cache=20 # maximum number of stocks for which to hold data
 
-	def __init__(self,SymbolIds,RequiredCols=None,Append2RequiredCols=[],DF=None):
+	def __init__(self,SymbolIds=[],RequiredCols=None,Append2RequiredCols=[],DF=None):
 		"""
 		DF is a dict with keys as ids and values as dataframes of the objects
 		"""
@@ -40,7 +41,7 @@ class DataManager(object):
 
 
 		# Symbols=stkmd.Stockmeta.objects.all().values()
-		for symbid in self.Symbolids:
+		for symbid in self.SymbolIds:
 			self.stks[symbid]=stkmd.Stockmeta.objects.get(id=symbid)
 			self.Symbols[symbid]=self.stks[symbid].Symbol
 			self.Symbols2Ids[ self.Symbols[symbid] ]=symbid
@@ -53,10 +54,29 @@ class DataManager(object):
 		else:
 			self.DF={}
 
+	@classmethod
+	def setTradingdates(cls):
+		symbolids=stkmd.Stockmeta.objects.filter(Symbol__in=dtamd.TradingDates.CheckWith).values_list('id',flat=True)
+		df=dtalibs.GetStockData(symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None)
+		Trange=list( df.index.unique() )
+		# Trange.sorted()
+		for TT in Trange:
+			if dtamd.TradingDates.objects.filter(Date=TT).exists()==False:
+				Td=dtamd.TradingDates(Date=TT)
+				Td.save()
+
+	@classmethod
+	def getTradingdates(cls):
+		return list( dtamd.TradingDates.objects.all().values_list('Date',flat=True).order_by('Date') )
+
 	@property
 	def Stockmeta(self):
 		return stkmd.Stockmeta
 	
+	@property
+	def GetStockData(self):
+		return dtalibs.GetStockData
+		
 	def IndicatorCols(self,cols):
 		IndicatorCols=[]
 		for cc in cols: 
