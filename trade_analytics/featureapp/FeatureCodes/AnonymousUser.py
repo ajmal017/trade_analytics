@@ -1,7 +1,7 @@
 from __future__ import division
-from featureapp.featuremodel import featurefunc,registerfeature, featuremodel, pd, np, json
+from featureapp.featuremodel import registerfeature, featuremodel, pd, np, json
 filename=__name__.split('.')[-1]
-regfeature=registerfeature(filename=filename)
+
 
 
 # --------------  features has to be the name of the class ------------------
@@ -9,22 +9,38 @@ regfeature=registerfeature(filename=filename)
 
 
 class features(featuremodel):
+	filename=filename
+
+
+	def RegisterFeatures(self):
+		features.recordfeature(name='CCICHERRIES',FeatureFunction='CCICHERRIES',doc='has cherries',category='Momentum',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='CCICHERRIES_CCI50',FeatureFunction=,doc='has cherries',category='Momentum',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+
+		features.recordfeature(name='CCI5',FeatureFunction='SMAs',doc='CCI',category='Momentum',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='CCI50',FeatureFunction='SMAs',doc='CCI',category='Momentum',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+
+		features.recordfeature(name='SMA10',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='SMA20',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='SMA50',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='SMA100',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='SMA200',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='SMAstd20',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='EMA8',FeatureFunction='SMAs',doc='EMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='EMAstd8',FeatureFunction='SMAs',doc='EMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+
+		features.recordfeature(name='PastPROFIT10days',FeatureFunction='PastProfit',doc='Performance',category='Performance',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='PastPROFIT30days',FeatureFunction='PastProfit',doc='Performance',category='Performance',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='PastLOSS10days',FeatureFunction='PastProfit',doc='Performance',category='Performance',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='PastLOSS30days',FeatureFunction='PastProfit',doc='Performance',category='Performance',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+
+		features.recordfeature(name='FutPROFIT10days',FeatureFunction='FutPROFIT',doc='Performance',category='Output',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='FutPROFIT30days',FeatureFunction='FutPROFIT',doc='Performance',category='Output',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='FutLOSS10days',FeatureFunction='FutPROFIT',doc='Performance',category='Output',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		features.recordfeature(name='FutLOSS30days',FeatureFunction='FutPROFIT',doc='Performance',category='Output',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+
 
 	def preprocessing(self):
-		self.df=self.GetStockData(self.Symbolid)
-		self.df=self.addindicators(self.df,[ {'name':'SMA','timeperiod':20,'colname':'SMA20'} ] )
-		self.df=self.addindicators(self.df,[ {'name':'SMA','timeperiod':10,'colname':'SMA10'} ] )
-		self.df=self.addindicators(self.df,[ {'name':'SMA','timeperiod':50,'colname':'SMA50'} ] )
-		self.df=self.addindicators(self.df,[ {'name':'SMA','timeperiod':100,'colname':'SMA100'} ] )
-		self.df=self.addindicators(self.df,[ {'name':'SMA','timeperiod':200,'colname':'SMA200'} ] )
-
-
-		self.df=self.addindicators(self.df,[ {'name':'SMAstd','timeperiod':20,'colname':'SMAstd20'} ] )
-		self.df=self.addindicators(self.df,[ {'name':'EMA','timeperiod':8,'colname':'EMA8'} ]		 )
-		self.df=self.addindicators(self.df,[ {'name':'EMAstd','timeperiod':8,'colname':'EMAstd8'} ] )
-		self.df=self.addindicators(self.df,[ {'name':'CCI','timeperiod':5,'colname':'CCI5'} ] )
-		self.df=self.addindicators(self.df,[  {'name':'CCI','timeperiod':50,'colname':'CCI50'} ] )
-
+		self.Addindicators(cols=['SMA10','SMA20','SMA50','SMA100','SMA200','SMAstd20','EMA8','EMAstd8','CCI5','CCI50'])
 
 	def ModelPredictions(self,Tvec):
 		import datascience.models as dtscmd
@@ -36,323 +52,64 @@ class features(featuremodel):
 
 		for model in models:
 			modelname=model.getmodelname()
-			regfeature(name=modelname,doc=model.Info['description'],category='MLpdictions',required=[],returntype=json,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+			features.recordfeature(name=modelname,doc=model.Info['description'],category='MLpdictions',required=[],returntype=json,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 
 			self.df[modelname]=Y[modelname]
 
-	def applyrollingfunc(self,newcolname,applyfunc,window,edge='right'):
-		self.df[newcolname]=np.nan
-		for i in range(1,len(self.df)-1):
-			if edge=='right':
-				dw=self.df.loc[ self.df.index[i-window:i],:  ]
-			elif edge=='left':
-				dw=self.df.loc[ self.df.index[i:i+window],:  ]
-			else:
-				dw=self.df.loc[ self.df.index[max(i-int(window/2),0):i+int(window/2)],:  ]
-			s=applyfunc(dw)
-			self.df.loc[self.df.index[i],newcolname]=s
-			
-
-
-	@featurefunc(['SMALowPoly2win4Fit'])
-	def SMALowPoly2win4Fit(self,Tvec):
+	def CCICHERRIES(self,Tvec):
 		"""
 		HasCherries
 		"""
 
 
-		def getbouncefeatures(dw):
-			err=(dw['Low']-dw['SMA20']).values
-			p=np.polyfit(np.arange(len(err)),err,2)
-			p=map(lambda x : None if np.isnan(x) else x,p)
-			return json.dumps({'poly':p,'err':map(lambda x : None if np.isnan(x) else x,list(err)),
-								'err_mean': np.mean(err),'err_max': max(err),'err_min': min(err),
-								'SMAstd20_mean': dw['SMAstd20'].mean(),'SMAstd20_max': dw['SMAstd20'].max(),'SMAstd20_min': dw['SMAstd20'].min(),
-								'SMA20_mean': dw['SMA20'].mean(),'SMA20_max': dw['SMA20'].max(),'SMA20_min': dw['SMA20'].min()
-								})
+		self.df['CCICHERRIES']=( (self.df['CCI50']-self.df['CCI5'])>180  )
+		self.df['CCICHERRIES']=self.df['CCICHERRIES'].apply(lambda x: int(x))
 		
-		self.applyrollingfunc('SMALowPoly2win4Fit',getbouncefeatures,4,edge='center')
-		self.df['SMALowPoly2win4Fit']=self.df['SMALowPoly2win4Fit'].apply(lambda x : json.loads(x) if not pd.isnull(x) else None).copy()
-
-
-		self.df.loc[Tvec,'SMALowPoly2win4Fit'] 
-		
-	@featurefunc(filename=filename,category='Momentum',required=[],returntype=json,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def EMALowPoly2win4Fit(self,Tvec):
-		"""
-		HasCherries
-		"""
-
-
-
-
-		def getbouncefeatures(dw):
-			err=(dw['Low']-dw['EMA8']).values
-			p=np.polyfit(np.arange(len(err)),err,2)
-			p=map(lambda x : None if np.isnan(x) else x,p)
-			return json.dumps({'poly':p,'err':map(lambda x : None if np.isnan(x) else x,list(err)),
-								'err_mean': np.mean(err),'err_max': max(err),'err_min': min(err),
-								'EMAstd8_mean': dw['EMAstd8'].mean(),'EMAstd8_max': dw['EMAstd8'].max(),'EMAstd8_min': dw['EMAstd8'].min(),
-								'EMA8_mean': dw['EMA8'].mean(),'EMA8_max': dw['EMA8'].max(),'EMA8_min': dw['EMA8'].min()
-								})
-		
-		self.applyrollingfunc('EMALowPoly2win4Fit',getbouncefeatures,4,edge='center')
-		self.df['EMALowPoly2win4Fit']=self.df['EMALowPoly2win4Fit'].apply(lambda x : json.loads(x) if not pd.isnull(x) else None).copy()
-
-
-
-
-		self.df.loc[Tvec,'EMALowPoly2win4Fit'] 
-
-
-	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def SMA20(self,Tvec):
-		self.df.loc[Tvec,'SMA20'] 
-	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def SMA10(self,Tvec):
-		self.df.loc[Tvec,'SMA10'] 
-	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def SMA50(self,Tvec):
-		self.df.loc[Tvec,'SMA50'] 
-	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def SMA100(self,Tvec):
-		self.df.loc[Tvec,'SMA100'] 
-	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def SMA200(self,Tvec):
-		self.df.loc[Tvec,'SMA200'] 
-
-
-	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def SMAstd20(self,Tvec):
-		"""
-		HasCherries
-		"""
-
-		self.df.loc[Tvec,'SMAstd20'] 
-
-
-	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def EMA8(self,Tvec):
-		"""
-		HasCherries
-		"""
+		self.df['CCICHERRIES_CCI50']=( (self.df['CCI50']-self.df['CCI5'])>180 & (self.df['CCI50']>100) )
+		self.df['CCICHERRIES_CCI50']=self.df['CCICHERRIES_CCI50'].apply(lambda x: int(x))
 		
 
-		self.df.loc[Tvec,'EMA8'] 
 
 
-	@featurefunc(filename=filename,category='Price',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def EMAstd8(self,Tvec):
-		"""
-		HasCherries
-		"""
-
-		self.df.loc[Tvec,'EMAstd8'] 
-
-
-
-	@featurefunc(filename=filename,category='Momentum',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def CCI5(self,Tvec):
-		"""
-		HasCherries
-		"""
-
-		self.df.loc[Tvec,'CCI5'] 
-
-
-	@featurefunc(filename=filename,category='Momentum',required=[],returntype=float,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def CCI50(self,Tvec):
-		"""
-		HasCherries
-		"""
-
-		self.df.loc[Tvec,'CCI50'] 
-
-
+	def SMAs(self,Tvec):
+		pass
 
 		
-	@featurefunc(filename=filename,category='Performance',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def PastPROFIT10days(self,Tvec):
+	def PastProfit(self,Tvec):
 
+		DFpastperf30=pd.DataFrame()
+		for i in range(1,30):
+			DFpastperf30[i]=100*self.df['Close'].diff(periods=i)/self.df['Close'].shift(periods=i)
+		DFpastperf30['Zeroperf']=0
 
+		self.df['PastPROFIT10days']=self.DFpastperf30[[range(1,11)]+['Zeroperf']].max(axis=1).round()
+		self.df['PastPROFIT30days']=self.DFpastperf30[[range(1,30)]+['Zeroperf']].max(axis=1).round()
 
-		if not hasattr(self,'DFpastperf10'):
-			self.DFpastperf10=pd.DataFrame()
-			for i in range(1,10):
-				self.DFpastperf10[i]=100*self.df['Close'].diff(periods=i)/self.df['Close'].shift(periods=i)
-			self.DFpastperf10['Zeroperf']=0
+		self.df['PastLOSS10days']=self.DFpastperf30[[range(1,11)]+['Zeroperf']].min(axis=1).round()
+		self.df['PastLOSS30days']=self.DFpastperf30[[range(1,30)]+['Zeroperf']].min(axis=1).round()
 
-		if 'PastPROFIT10days' not in self.df.columns:
-			self.df['PastPROFIT10days']=self.DFpastperf10.max(axis=1).round()
 
 
 
 
-		self.df.loc[Tvec,'PastPROFIT10days'] 
+	def FutPROFIT(self,Tvec):
+		DFperf30=pd.DataFrame()
+		for i in range(1,30):
+			DFperf30[i]=-100*self.df['Close'].diff(periods=-i)/self.df['Close']
+		DFperf30['Zeroperf']=0
 
+		self.df['FutPROFIT10days']=self.DFperf30[[range(1,11)]+['Zeroperf']].max(axis=1).round()
+		self.df['FutPROFIT30days']=self.DFperf30[[range(1,30)]+['Zeroperf']].max(axis=1).round()
 
+		self.df['FutLOSS10days']=self.DFperf30[[range(1,11)]+['Zeroperf']].min(axis=1).round()
+		self.df['FutLOSS30days']=self.DFperf30[[range(1,30)]+['Zeroperf']].min(axis=1).round()
 
-	@featurefunc(filename=filename,category='Performance',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def PastLOSS10days(self,Tvec):
 
-		if not hasattr(self,'DFpastperf10'):
-			self.DFpastperf10=pd.DataFrame()
-			for i in range(1,10):
-				self.DFpastperf10[i]=100*self.df['Close'].diff(periods=i)/self.df['Close'].shift(periods=i)
-			self.DFpastperf10['Zeroperf']=0
 
-		if 'PastLOSS10days' not in self.df.columns:
-			self.df['PastLOSS10days']=self.DFpastperf10.min(axis=1).round()
 
-		self.df.loc[Tvec,'PastLOSS10days'] 
 
 
-	@featurefunc(filename=filename,category='Performance',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def PastPROFIT30days(self,Tvec):
 
 
-
-		if not hasattr(self,'DFpastperf30'):
-			self.DFpastperf30=pd.DataFrame()
-			for i in range(1,30):
-				self.DFpastperf30[i]=100*self.df['Close'].diff(periods=i)/self.df['Close'].shift(periods=i)
-			self.DFpastperf30['Zeroperf']=0
-
-		if 'PastPROFIT30days' not in self.df.columns:
-			self.df['PastPROFIT30days']=self.DFpastperf30.max(axis=1).round()
-
-		self.df.loc[Tvec,'PastPROFIT30days'] 
-
-
-
-	@featurefunc(filename=filename,category='Performance',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def PastLOSS30days(self,Tvec):
-
-
-
-		if not hasattr(self,'DFpastperf30'):
-			self.DFpastperf30=pd.DataFrame()
-			for i in range(1,30):
-				self.DFpastperf30[i]=100*self.df['Close'].diff(periods=i)/self.df['Close'].shift(periods=i)
-			self.DFpastperf30['Zeroperf']=0
-
-		if 'PastLOSS30days' not in self.df.columns:
-			self.df['PastLOSS30days']=self.DFpastperf30.min(axis=1).round()
-
-		self.df.loc[Tvec,'PastLOSS30days'] 
-
-
-
-
-	@featurefunc(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def FutPROFIT10days(self,Tvec):
-
-
-
-		if not hasattr(self,'DFperf10'):
-			self.DFperf10=pd.DataFrame()
-			for i in range(1,10):
-				self.DFperf10[i]=-100*self.df['Close'].diff(periods=-i)/self.df['Close']
-			self.DFperf10['Zeroperf']=0
-
-		if 'FutPROFIT10days' not in self.df.columns:
-			self.df['FutPROFIT10days']=self.DFperf10.max(axis=1).round()
-
-
-
-		self.df.loc[Tvec,'FutPROFIT10days'] 
-
-
-
-	@featurefunc(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def FutLOSS10days(self,Tvec):
-
-
-		if not hasattr(self,'DFperf10'):
-			self.DFperf10=pd.DataFrame()
-			for i in range(1,10):
-				self.DFperf10[i]=-100*self.df['Close'].diff(periods=-i)/self.df['Close']
-			self.DFperf10['Zeroperf']=0
-			
-		if 'FutLOSS10days' not in self.df.columns:
-			self.df['FutLOSS10days']=self.DFperf10.min(axis=1).round()
-
-
-		self.df.loc[Tvec,'FutLOSS10days'] 
-
-
-
-	@featurefunc(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def FutPROFIT30days(self,Tvec):
-
-
-		if not hasattr(self,'DFperf30'):
-			self.DFperf30=pd.DataFrame()
-			for i in range(1,30):
-				self.DFperf30[i]=-100*self.df['Close'].diff(periods=-i)/self.df['Close']
-			self.DFperf30['Zeroperf']=0
-
-		if 'FutPROFIT30days' not in self.df.columns:
-			self.df['FutPROFIT30days']=self.DFperf30.max(axis=1).round()
-
-		self.df.loc[Tvec,'FutPROFIT30days'] 
-
-
-
-	@featurefunc(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def FutLOSS30days(self,Tvec):
-
-	
-		if not hasattr(self,'DFperf30'):
-			self.DFperf30=pd.DataFrame()
-			for i in range(1,30):
-				self.DFperf30[i]=-100*self.df['Close'].diff(periods=-i)/self.df['Close']
-			self.DFperf30['Zeroperf']=0
-			
-		if 'FutLOSS30days' not in self.df.columns:
-			self.df['FutLOSS30days']=self.DFperf30.min(axis=1).round()
-
-		self.df.loc[Tvec,'FutLOSS30days'] 
-
-
-
-	@featurefunc(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def FutPROFIT90days(self,Tvec):
-
-
-		if not hasattr(self,'DFperf90'):
-			self.DFperf90=pd.DataFrame()
-			for i in range(1,90):
-				self.DFperf90[i]=-100*self.df['Close'].diff(periods=-i)/self.df['Close']
-			self.DFperf90['Zeroperf']=0
-
-		if 'FutPROFIT90days' not in self.df.columns:
-			self.df['FutPROFIT90days']=self.DFperf90.max(axis=1).round()
-
-		self.df.loc[Tvec,'FutPROFIT90days'] 
-
-
-
-	@featurefunc(filename=filename,category='Outcome',required=[],returntype=float,query=False,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-	def FutLOSS90days(self,Tvec):
-
-
-		if not hasattr(self,'DFperf90'):
-			self.DFperf90=pd.DataFrame()
-			for i in range(1,90):
-				self.DFperf90[i]=-100*self.df['Close'].diff(periods=-i)/self.df['Close']
-			self.DFperf90['Zeroperf']=0
-			
-		if 'FutLOSS90days' not in self.df.columns:
-			self.df['FutLOSS90days']=self.DFperf90.min(axis=1).round()
-
-		self.df.loc[Tvec,'FutLOSS90days'] 
-
-
-
-
-
-
-
-# --------- This is required to sync the features to the database -------------
-features.finalize(filename)
+# # --------- This is required to sync the features to the database -------------
+# features.finalize(filename)

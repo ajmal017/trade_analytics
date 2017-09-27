@@ -8,30 +8,30 @@ import time
 import pandas as pd
 import copy
 
- def set_or_create(mdl,primary_fields={},secondary_fields={}):
- 	"""
+def set_or_create(mdl,primary_fields={},secondary_fields={}):
+	"""
 	chekc by primary and then update using all primary and secondary
- 	"""
- 	primary_fields=copy.deepcopy(primary_fields)
- 	secondary_fields=copy.deepcopy(secondary_fields)
+	"""
+	primary_fields=copy.deepcopy(primary_fields)
+	secondary_fields=copy.deepcopy(secondary_fields)
 
- 	fieldnames=[fld.name for fld in mdl._meta.get_fields()]
- 	pkeys=primary_fields.keys()
- 	for key in pkeys:
- 		if key not in fieldnames:
- 			del primary_fields[key]
- 	skeys=secondary_fields.keys()
- 	for key in skeys:
- 		if key not in fieldnames:
- 			del secondary_fields[key]
+	fieldnames=[fld.name for fld in mdl._meta.get_fields()]
+	pkeys=primary_fields.keys()
+	for key in pkeys:
+		if key not in fieldnames:
+			del primary_fields[key]
+	skeys=secondary_fields.keys()
+	for key in skeys:
+		if key not in fieldnames:
+			del secondary_fields[key]
 
 
- 	if mdl.objects.filter(**primary_fields).exists():
-			obj=mdl.objects.get(**primary_fields)
-			for key,value in secondary_fields:
-				setattr(obj,key,value)
-			obj.save()
-			# print "Updated feature ",featmeta
+	if mdl.objects.filter(**primary_fields).exists():
+		obj=mdl.objects.get(**primary_fields)
+		for key,value in secondary_fields:
+			setattr(obj,key,value)
+		obj.save()
+		# print "Updated feature ",featmeta
 
 	else:
 		primary_fields.update(secondary_fields)

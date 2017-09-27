@@ -1,9 +1,10 @@
 import dataapp.libs as dtalibs
 import dataapp.models as dtamd
+import featureapp.models as ftamd
 import stockapp.models as stkmd
 import pandas as pd
 import numpy as np
-
+from custommeta import cstmdata
 
 class DataManager(object):
 	"""
@@ -13,36 +14,33 @@ class DataManager(object):
 	4. Future if you get more fundamental data... join that too
 	 
 	"""
-	MasterColDict={'SMA10':{'name':'SMA','colname':'SMA10','timeperiod':10},'SMA20':{'name':'SMA','colname':'SMA20','timeperiod':20},'SMA50':{'name':'SMA','colname':'SMA50','timeperiod':50},'SMA100':{'name':'SMA','colname':'SMA100','timeperiod':100},'SMA200':{'name':'SMA','colname':'SMA200','timeperiod':200},
-					'CCI5':{'name':'CCI','colname':'CCI5','timeperiod':5},'CCI50':{'name':'CCI','colname':'CCI50','timeperiod':50},'CCI100':{'name':'CCI','colname':'CCI100','timeperiod':100},
-					'VolSMA10':{'name':'VolSMA','timeperiod':10,'colname':'VolSMA10'},'VolSMA20':{'name':'VolSMA','timeperiod':20,'colname':'VolSMA20'},
-	        		'EMA8':{'name':'EMA','timeperiod':8,'colname':'EMA8'},'EMA20':{'name':'EMA','timeperiod':20,'colname':'EMA20'},
-
-					}
+	
 	max_cache=20 # maximum number of stocks for which to hold data
 
-	def __init__(self,SymbolIds=[],RequiredCols=None,Append2RequiredCols=[],DF=None):
+	def __init__(self,SymbolIds=[],RequiredCols=None,DF=None):
 		"""
 		DF is a dict with keys as ids and values as dataframes of the objects
 		"""
-		if RequiredCols is None:
-			self.RequiredCols=['Close','Open','High','Low','Volume','VolSMA10','SMA10','SMA20','SMA50','SMA100','SMA200']
+		if RequiredCols is None: 
+			self.RequiredCols= cstmdata.RequiredCols
 		else:
 			self.RequiredCols=RequiredCols
 
-		self.RequiredCols=self.RequiredCols+Append2RequiredCols
-		self.RequiredCols=list( set(self.RequiredCols) )
 
 
 		self.SymbolIds=SymbolIds
 		self.stks={}
 		self.Symbols={}
-		self.Symbols2Ids={}
+		self.Symbols2Ids_dict={}
+		self.Ids2Symbols_dict={}
 
+		self.FeatureCols=[f for f in ftmd.FeaturesMeta.objects.all().values_list('Featurelabel',flat=True).distinct()]
+		self.StockCols=[f.name for f in  stkmd.Stockmeta._meta.get_fields()]
+		self.DataCols=[f.name for f in  dtamd.Stockprice._meta.get_fields()]
 
 		# Symbols=stkmd.Stockmeta.objects.all().values()
 		for symbid in self.SymbolIds:
-			self.stks[symbid]=stkmd.Stockmeta.objects.get(id=symbid)
+			self.stks[symbid]=self.Stockmeta.objects.get(id=symbid)
 			self.Symbols[symbid]=self.stks[symbid].Symbol
 			self.Symbols2Ids[ self.Symbols[symbid] ]=symbid
 
@@ -57,7 +55,7 @@ class DataManager(object):
 	@classmethod
 	def setTradingdates(cls):
 		symbolids=stkmd.Stockmeta.objects.filter(Symbol__in=dtamd.TradingDates.CheckWith).values_list('id',flat=True)
-		df=dtalibs.GetStockData(symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None)
+		df=self.GetStockData(symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None)
 		Trange=list( df.index.unique() )
 		# Trange.sorted()
 		for TT in Trange:
@@ -76,12 +74,25 @@ class DataManager(object):
 	@property
 	def GetStockData(self):
 		return dtalibs.GetStockData
-		
+	
+	@property
+	def GetFeatures(self):
+		return dtalibs.GetFeatures
+
+
+	def Addfeaturecols(self,featcols):
+		dffeats=self.GetFeatures(Symbolids=[self.Symbolid])
+		self.df=dtalibs.ConcatFeats2Stockdata(self.df,dffeats)
+		df['T']=df.index.copy()
+		dffeat['T']=dffeat.index.copy()
+
+		return df.merge(dffeat, how='inner', on=['T','Symbol'])
+	
 	def IndicatorCols(self,cols):
 		IndicatorCols=[]
 		for cc in cols: 
-			if cc in self.MasterColDict:	
-				IndicatorCols.append(self.MasterColDict[cc])
+			if cc in self.MasterColNameDict:	
+				IndicatorCols.append(self.MasterColNameDict[cc])
 		return IndicatorCols
 
 	def PullAllStockdata(self):
