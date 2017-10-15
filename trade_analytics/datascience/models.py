@@ -227,7 +227,9 @@ class DataShard(models.Model):
 			X = h5f['X'][:]
 			Y = h5f['Y'][:]
 			Meta = json.loads(h5f['Meta'][:][0])
+			h5f.close() 
 
+			
 		return ( X, Y, Meta )
 
 

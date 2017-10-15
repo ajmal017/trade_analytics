@@ -4,7 +4,11 @@ import featureapp.models as ftamd
 import stockapp.models as stkmd
 import pandas as pd
 import numpy as np
-from custommeta import cstmdata
+import dataapp.custommeta as cstmdata
+import pdb
+
+
+
 
 class DataManager(object):
 	"""
@@ -17,7 +21,7 @@ class DataManager(object):
 	
 	max_cache=20 # maximum number of stocks for which to hold data
 
-	def __init__(self,SymbolIds=[],RequiredCols=None,DF=None):
+	def __init__(self,SymbolIds=[],RequiredCols=None,Append2ReqCols=[],DF=None):
 		"""
 		DF is a dict with keys as ids and values as dataframes of the objects
 		"""
@@ -26,23 +30,25 @@ class DataManager(object):
 		else:
 			self.RequiredCols=RequiredCols
 
+		self.RequiredCols=self.RequiredCols+Append2ReqCols
 
-
-		self.SymbolIds=SymbolIds
+		self.SymbolIds=list( SymbolIds )
 		self.stks={}
-		self.Symbols={}
-		self.Symbols2Ids_dict={}
-		self.Ids2Symbols_dict={}
 
-		self.FeatureCols=[f for f in ftmd.FeaturesMeta.objects.all().values_list('Featurelabel',flat=True).distinct()]
-		self.StockCols=[f.name for f in  stkmd.Stockmeta._meta.get_fields()]
+
+		# trading dates
+		self.TradingDates=list(  dtalibs.getTradingdates() )
+
+		# available columns in database
+		self.FeatureCols=[f for f in ftamd.FeaturesMeta.objects.all().values_list('Featurelabel',flat=True).distinct()]
+		self.StockMetaCols=[f.name for f in  stkmd.Stockmeta._meta.get_fields()]
 		self.DataCols=[f.name for f in  dtamd.Stockprice._meta.get_fields()]
 
-		# Symbols=stkmd.Stockmeta.objects.all().values()
+
+
 		for symbid in self.SymbolIds:
 			self.stks[symbid]=self.Stockmeta.objects.get(id=symbid)
-			self.Symbols[symbid]=self.stks[symbid].Symbol
-			self.Symbols2Ids[ self.Symbols[symbid] ]=symbid
+
 
 		if DF is not None:
 			if set(DF.keys()) == set(SymbolIds):
@@ -52,120 +58,143 @@ class DataManager(object):
 		else:
 			self.DF={}
 
-	@classmethod
-	def setTradingdates(cls):
-		symbolids=stkmd.Stockmeta.objects.filter(Symbol__in=dtamd.TradingDates.CheckWith).values_list('id',flat=True)
-		df=self.GetStockData(symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None)
-		Trange=list( df.index.unique() )
-		# Trange.sorted()
-		for TT in Trange:
-			if dtamd.TradingDates.objects.filter(Date=TT).exists()==False:
-				Td=dtamd.TradingDates(Date=TT)
-				Td.save()
-
-	@classmethod
-	def getTradingdates(cls):
-		return list( dtamd.TradingDates.objects.all().values_list('Date',flat=True).order_by('Date') )
 
 	@property
 	def Stockmeta(self):
 		return stkmd.Stockmeta
 	
-	@property
-	def GetStockData(self):
-		return dtalibs.GetStockData
 	
-	@property
-	def GetFeatures(self):
-		return dtalibs.GetFeatures
-
-
-	def Addfeaturecols(self,featcols):
-		dffeats=self.GetFeatures(Symbolids=[self.Symbolid])
-		self.df=dtalibs.ConcatFeats2Stockdata(self.df,dffeats)
-		df['T']=df.index.copy()
-		dffeat['T']=dffeat.index.copy()
-
-		return df.merge(dffeat, how='inner', on=['T','Symbol'])
+	def GetStockData(self,*args,**kwargs):
+		return dtalibs.GetStockData(*args,**kwargs)
 	
-	def IndicatorCols(self,cols):
+	
+	def GetFeatures(self,*args,**kwargs):
+		return dtalibs.GetFeatures(*args,**kwargs)
+
+	def addindicators(self,*args,**kwargs):
+		return dtalibs.addindicators(*args,**kwargs)
+
+
+	def AddStockData(self):
+		for symbid in self.SymbolIds:
+			dd=self.GetStockData(Symbolids=[symbid])
+			self.stockdata_columns=dd.columns
+			self.DF[symbid]=dd
+
+	def AddStockMetacols(self):
+		self.stockmeta_columns=[]
+		for symbid in self.SymbolIds:
+			for reqcol in self.RequiredCols:
+				if reqcol in self.StockMetaCols:
+					val=getattr(self.Stockmeta.objects.get(id=symbid),reqcol )
+					self.DF[symbid][reqcol]=val
+					if reqcol=='Sector':
+						self.DF[symbid]['SectorId']=stkmd.Sector.objects.get(Name=val).id
+					if reqcol=='Industry':
+						self.DF[symbid]['IndustryId']=stkmd.Industry.objects.get(Name=val).id
+
+					self.stockmeta_columns.append(reqcol)
+
+	def Addfeaturecols(self):
+		featcols=list( set(self.RequiredCols) & set(self.FeatureCols) )
+		for symbid in self.SymbolIds:
+			dffeats=self.GetFeatures(Symbolids=[symbid])
+			self.feat_columns=dffeats.columns
+			self.DF[symbid]=dtalibs.merge_on_TSymbol(self.DF[symbid],dffeats)
+
+
+	def AddIndicatorCols(self):
 		IndicatorCols=[]
-		for cc in cols: 
-			if cc in self.MasterColNameDict:	
-				IndicatorCols.append(self.MasterColNameDict[cc])
-		return IndicatorCols
+		for reqcol in self.RequiredCols:
+			if reqcol in cstmdata.StdIndicatorCols.keys():
+				IndicatorCols.append( cstmdata.StdIndicatorCols[reqcol] )
 
-	def PullAllStockdata(self):
-		self.DF=dtalibs.GetStockData(self.SymbolIds,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='dict',standardize=True,addcols=None)
-	
-	def PullStockdata(self,SymbolId):
-		if len(self.DF)==self.max_cache:
-			del self.DF[self.DF.keys()[0]]
-
-		if SymbolId not in self.DF:
-			self.DF[SymbolId]=dtalibs.GetStockData(SymbolId,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None)
-		
-		return self.DF[SymbolId]
-
-
-	def Iterate_Stockdata_id(self):
-		for SymbolId in self.SymbolIds:
-			yield dtalibs.GetStockData(SymbolId,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None)
-
-	def AppendCols2df(self,SymbId,df):
-		"""
-		you can add any columns you want
-		"""
-
-		cols=self.RequiredCols
-		ToDoCols=list( set(cols)-set(df.columns) )
-		IndicatorCols=self.IndicatorCols(ToDoCols)
-		if len(IndicatorCols)>0:
-			df=dtalibs.addindicators(df,IndicatorCols)
-
+		for symbid in self.SymbolIds:
+			 if len(IndicatorCols)>0:
+			 	self.DF[symbid]=self.addindicators(self.DF[symbid],IndicatorCols)
 		
 
-		stk=self.stks[SymbId]
+	def AddReqCols(self):
+		self.AddStockData()
+		self.AddStockMetacols()
+		self.Addfeaturecols()
+		self.AddIndicatorCols()
 
-		if 'Sector' in ToDoCols:
-			df['Sector']=stk.Sector
-		if 'Industry' in ToDoCols:
-			df['Industry']=stk.Industry
-		if 'Marketcap' in ToDoCols:
-			df['Marketcap']=stk.Industry
 
-		if SymbId in self.DF.keys() and len(ToDoCols)>0:
-			self.DF[SymbId]=df
+	def CreateTrainingDataSet(self,col2write,TFs,width_back=360,width_front=180):
+		for symbid in self.SymbolIds:
+			L=np.arange(width_back)
+			R=np.arange(width_front);
+			X=None
+			Y=None
+			Xflat=None
+			Yflat=None
 
-		return df
+			Tadded=[]
+			colflatX=[]
+			colflatY=[]
+			colX=[]
+			colY=[]
+			for T in TFs:	
+				print T			
+				indT=np.argwhere(self.DF[symbid].index==T)
+				if len(indT)==0:
+					continue
+				else:
+					indT=indT[0][0]
+					Tadded.append(T)
 
-	def AppendCols2DF(self):
-		"""
-		you can add any columns you want
-		"""
-		for SymbId,df in self.DF.items() : 	
-			self.DF[SymbId]=self.AppendCols2df(SymbId,df)
+				dfX=self.DF[symbid].iloc[indT-width_back-1:indT+1][col2write].copy()
+				colX=dfX.columns
 
-	def postprocess(self,SymbId,df):
-		df=self.AppendCols2df(SymbId,df)
-		return df[self.RequiredCols]
+				if len(dfX)<width_back:
+					dd=pd.DataFrame(columns=dfX.columns,index=range(width_back-len(dfX)))
+					dfX=pd.concat([dd,dfX])
 
-	def GetProcessed_DF(self):
-		RetDF={}
-		for SymbId in self.DF.keys() : 	
-			RetDF[SymbId]=self.postprocess(SymbId,self.DF[SymbId])
-		return RetDF
+				# dfX=dfX[self.RequiredCols]
+				colflatX=[]
+				for cc in dfX.columns:
+					colflatX=colflatX+[cc+'_'+str(i) for i in range(len(dfX)) ]
 
-	def GetProcessed_df(self,Symbol):
-		for SymbId in self.DF.keys() : 	
-			if self.Symbols[SymbId]==Symbol:
-				return self.postprocess(SymbId,self.DF[SymbId])
-	
-	def Iterator_GetData_Process_df(self):
-		for SymbolId in self.SymbolIds:
-			df=dtalibs.GetStockData(SymbolId,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None)
-			df=self.postprocess(SymbolId,df)
-			yield (SymbolId,self.Symbols[SymbolId],df)
+
+				pX=np.expand_dims(dfX.astype(float).values,axis=0)
+				pXflat=np.expand_dims(dfX.astype(float).values.flatten(order='F') ,axis=0)  
+
+
+				dfY=self.DF[symbid].iloc[indT:indT+width_front][col2write].copy()
+				colY=dfY.columns
+
+				if len(dfY)<width_front:
+					dd=pd.DataFrame(columns=dfY.columns,index=range(width_front-len(dfY)))
+					dfY=pd.concat([dfY,dd])
+
+				
+				# dfY=dfY[self.RequiredCols]
+				colflatY=[]
+				for cc in dfY.columns:
+					colflatY=colflatY+[cc+'_'+str(i) for i in range(len(dfY)) ]
+
+				pY=np.expand_dims(dfY.astype(float).values,axis=0)
+				pYflat=np.expand_dims(dfY.astype(float).values.flatten(order='F') ,axis=0)  
+
+
+				if X is None: 
+					X=pX
+					Y=pY
+					Xflat=pXflat
+					Yflat=pYflat
+				else:
+					X=np.vstack((X,pX))
+					Y=np.vstack((Y,pY))
+					Xflat=np.vstack((Xflat,pXflat))
+					Yflat=np.vstack((Yflat,pYflat))
+
+
+
+
+			Metaflat={'T':Tadded,'colflatX':colflatX,'colflatY':colflatY}
+			Meta={'T':Tadded,'colX':colX,'colY':colY}
+			yield (X,Y,Xflat,Yflat,Meta,Metaflat)
 
 	def Iterbatchdata_Ordered(self,dfinstants_list,padding=None,roundT2dfdate=True):
 		"""

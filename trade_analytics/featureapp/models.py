@@ -33,9 +33,9 @@ class FeaturesMeta(models.Model):
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
 	def __str__(self):
-		return str(self.Featurelabel)+" "+str(self.Category)+" "+str(self.Userfilename)
+		return str(self.Featurelabel)+" "+str(self.Category)
 
-class FeaturesData(cmpmd.ComputeStatus):
+class FeaturesData(models.Model):
 	T=models.DateField()
 	Symbol=models.CharField(db_index=True,max_length=20,null=True,blank=True)
 	Symbol_id=models.IntegerField(null=True,db_index=True)

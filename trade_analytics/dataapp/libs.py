@@ -4,6 +4,7 @@ import pandas_datareader.data as web
 import stockapp.models as stkmd
 from django.db import connections
 from dataapp import models as dtamd
+import featureapp.models as ftamd
 import utility.codemanager as utcdmng
 import datetime
 import time
@@ -20,25 +21,75 @@ logger=logging.getLogger('dataapp')
 import time
 
 
-def str2date(T):
+
+
+
+def getdatearrays(From=pd.datetime(2010,1,1).date(),To=pd.datetime.today().date(),ondays='EveryMonday'):
+	D={}
+	D['EveryMonday']=pd.date_range(start=pd.datetime(2010,1,1).date(),end=pd.datetime.today().date(),periods=None, freq='W-MON')
+	D['EveryWednesday']=pd.date_range(start=pd.datetime(2010,1,1).date(),end=pd.datetime.today().date(),periods=None, freq='W-WED')
+	D['EveryFriday']=pd.date_range(start=pd.datetime(2010,1,1).date(),end=pd.datetime.today().date(),periods=None, freq='W-FRI')
+	D['EveryTueThu']=list(pd.date_range(start=pd.datetime(2010,1,1).date(),end=pd.datetime.today().date(),periods=None, freq='W-TUE'))+list(pd.date_range(start=pd.datetime(2010,1,1).date(),end=pd.datetime.today().date(),periods=None, freq='W-THU'))
+
+	return map(lambda x: x.date(),D[ondays])
+
+
+
+def merge_on_TSymbol(df1,df2):
+	if 'Symbol' not in df1.columns:
+		raise('df1 needs T and Symbol')
+
+	if 'Symbol' not in df2.columns:
+		raise('df2 needs T and Symbol')
+
+	df1['T']=df1.index
+	df2['T']=df2.index
+
+	df=df1.merge(df2, how='left', on=['T','Symbol'],suffixes=['1c1','2c2'])
+	df.index=df['T'].copy()
+	
+	df.drop('T', axis=1, inplace=True)
+
+	return df
+
+def Convert2date(T):
 	"""
 	- Given a T, return the datetime object of type date
 	- if T is string, first convert it
 	- if T is datetime, convert to date
 	"""
+	if isinstance(T,list)==True:
+		pass
+	elif isinstance(T,np.array)==True:
+		pass
+	else:
+		T=list(T)
+	else:
+		raise TypeError('scalar, list or array expected')
 
-	if isinstance(T,basestring):
-		try:
-			TT=pd.to_datetime(T).date()
-			return TT
-		except:
-			return T
-	
-	elif type(T)==datetime.datetime or type(T)==pd.datetime: 
-		return T.date()
 
-	elif type(T)==pd.datetime.date or type(T)==datetime.date:
+	for i in range(len(T)):
+		if isinstance(T[i],basestring):
+			try:
+				T[i]=pd.to_datetime(T[i]).date()
+			except:
+				pass
+		
+		elif type(T[i])==datetime.datetime or type(T[i])==pd.datetime: 
+			T[i]= T[i].date()
+
+		elif type(T)==pd.datetime.date or type(T)==datetime.date:
+			pass
+		else:
+			raise TypeError('No date found')
+
+
+	if len(T)==1:
+		return T[0]
+	else:
 		return T
+
+		
 
 def StockDataFrame_validate(df,columns=['Close','Open','High','Low','Volume']):
 	for cc in columns:
@@ -195,15 +246,28 @@ def GetStockData(Symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datet
 		return df
 
 
+def setTradingdates():
+	symbolids=stkmd.Stockmeta.objects.filter(Symbol__in=dtamd.TradingDates.CheckWith).values_list('id',flat=True)
+	df=GetStockData(symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None)
+	Trange=list( df.index.unique() )
+	# Trange.sorted()
+	for TT in Trange:
+		if dtamd.TradingDates.objects.filter(Date=TT).exists()==False:
+			Td=dtamd.TradingDates(Date=TT)
+			Td.save()
+
+def getTradingdates():
+	return dtamd.TradingDates.objects.all().values_list('Date',flat=True).order_by('Date') 
+
 #############################################  Features
 
 def standardizefeaturedata(df):
 	if df.empty:
 		return df
 
-	df.rename(columns={'Symbol__id':'Symbolid','Symbol__Symbol':'Symbol'},inplace=True)
+	# df.rename(columns={'Symbol__Symbol':'Symbol'},inplace=True)
 	df['Symbol']=df['Symbol'].astype(str)
-	df['Symbolid']=df['Symbolid'].astype(int)
+	df['Symbol_id']=df['Symbol_id'].astype(int)
 
 	df['T']=df['T'].apply(lambda x: pd.to_datetime(x).date())
 	df.index=df['T'].copy()
@@ -215,8 +279,8 @@ def standardizefeaturedata(df):
 	dffeat.index=df.index
 
 	for cc in dffeat.columns:
-		if ftmd.FeaturesMeta.objects.filter(Featurelabel=cc).exists():
-			rettype=ftmd.FeaturesMeta.objects.get(Featurelabel=cc).Returntype
+		if ftamd.FeaturesMeta.objects.filter(Featurelabel=cc).exists():
+			rettype=ftamd.FeaturesMeta.objects.get(Featurelabel=cc).Returntype
 			if rettype!='json':
 				dffeat[cc]=dffeat[cc].astype(eval(rettype))
 
@@ -236,7 +300,7 @@ def GetFeatures(Symbolids=None,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.d
 		Symbolids=list((Symbolids))
 
 	if format=='concat':
-		Qrysets=ftmd.FeaturesData.objects.filter(Symbol__id__in=Symbolids,T__gte=Fromdate,T__lte=Todate).values('T','Symbol__id','Symbol__Symbol','Featuredata')
+		Qrysets=ftamd.FeaturesData.objects.filter(Symbol_id__in=Symbolids,T__gte=Fromdate,T__lte=Todate).values('T','Symbol_id','Symbol','Featuredata')
 		df=pd.DataFrame( list(Qrysets ))
 		if standardize:
 			df=standardizefeaturedata(df)
@@ -245,7 +309,7 @@ def GetFeatures(Symbolids=None,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.d
 	elif format=='dict':
 		DF={}
 		for Symbolid in Symbolids:
-			Qrysets=ftmd.FeaturesData.objects.filter(Symbol__id=Symbolid,T__gte=Fromdate,T__lte=Todate).values('T','Symbol__id','Symbol__Symbol','Featuredata')
+			Qrysets=ftamd.FeaturesData.objects.filter(Symbol_id=Symbolid,T__gte=Fromdate,T__lte=Todate).values('T','Symbol_id','Symbol','Featuredata')
 			DF[Symbolid]=pd.DataFrame( list(Qrysets ))
 			if standardize:
 				DF[Symbolid]=standardizefeaturedata(DF[Symbolid])
@@ -491,8 +555,8 @@ def Getbatchdata(dfinstants_req,padding=None,returnAs='StackedMatrix'):
 				ds[Symbol]=addindicators(ds[Symbol],addcols)
 
 			for ind in dfsymb.index:
-				T0=str2date( dfsymb.loc[ind,'T0'] )
-				TF=str2date( dfsymb.loc[ind,'TF'] )
+				T0=Convert2date( dfsymb.loc[ind,'T0'] )
+				TF=Convert2date( dfsymb.loc[ind,'TF'] )
 				
 				window=dfsymb.loc[ind,'window']
 				NT=max([NT,window])

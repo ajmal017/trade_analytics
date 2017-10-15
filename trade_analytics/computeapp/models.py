@@ -36,22 +36,20 @@ class ComputeSession(models.Model):
 
 
 class ComputeStatus(models.Model):
-	ComputeSession=models.ForeignKey(ComputeSession,on_delete=models.CASCADE,null=True)
+	ComputeSession_id=models.IntegerField(null=True,db_index=True)
 
 	Compute_status_choices=[('Fail','Fail'),('ToDo','ToDo'),('Success','Success'),('Running','Running')]
-	ComputeStatus=models.CharField(choices=Compute_status_choices,max_length=30)
+	ComputeStatus=models.CharField(choices=Compute_status_choices,max_length=30,null=True)
 
 	Msg=models.TextField(null=True,blank=True) # any message to give more info
 
 	ComputeStarttime = models.DateTimeField(null=True)
 	ComputeEndtime = models.DateTimeField(null=True)
 
-	class Meta:
-		abstract = True
 
 	@classmethod
-	def make_newcompute(cls,ComputeSession):
-		obj=cls(ComputeStarttime=getnowtime,ComputeSession=ComputeSession,ComputeStatus='ToDo')
+	def make_newcompute(cls,ComputeSession_id):
+		obj=cls(ComputeStarttime=getnowtime,ComputeSession_id=ComputeSession_id,ComputeStatus='ToDo')
 		obj.save()
 		return obj
 

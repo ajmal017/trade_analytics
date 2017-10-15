@@ -53,6 +53,13 @@ class StockMetaManager(models.Manager):
 	def get_queryset(self):
 		return StockMetaQuerySet(self.model, using=self._db)
 
+
+class Sector(models.Model):
+	Name = models.CharField(max_length=100,null=True,blank=True,db_index=True,help_text="Stock Sector")
+
+class Industry(models.Model):
+	Name = models.CharField(max_length=100,null=True,blank=True,db_index=True,help_text="Stock Sector")
+
 class Stockmeta(models.Model):
 	"""Model for stock meta data
 

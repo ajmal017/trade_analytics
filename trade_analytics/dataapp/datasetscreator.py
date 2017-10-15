@@ -1,8 +1,8 @@
 
 from dataapp import DataManager
 
-def CreateStockData_base(SymbolId,TFs,Mode):
-	DM=DataManager(SymbolId)
+def CreateStockData_base_bySymbol(SymbolId,TFs,Mode):
+	DM=DataManager(SymbolIds=[SymbolId])
 	Symbol=DM.Stockmeta.objects.get(id=SymbolId)
 	DM=DataManager(SymbolId,RequiredCols=None,Append2RequiredCols=[],DF=None)
 	Data=[]
@@ -23,7 +23,7 @@ def CreateStockData_base(SymbolId,TFs,Mode):
 	return Data
 
 def CreateStockData_base_byTF(TF,Mode):
-	DM=DataManager(None)
+	DM=DataManager()
 	Symbols=DM.Stockmeta.objects.all()
 	DM=DataManager(list(Symbols.values_list('id',flat=True)),RequiredCols=None,Append2RequiredCols=[],DF=None)
 	Data=[]
