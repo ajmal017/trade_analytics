@@ -7,8 +7,8 @@ import json
 import utility.models as utymd
 import numpy as np
 import pandas as pd
-
-
+import collections as clct
+from utility import maintenance as mnt
 
 
 class featuremodel(object):
@@ -20,65 +20,96 @@ class featuremodel(object):
 		- if features were changed, remove them from db also
 	5. 
 	"""
-	def __new__(cls):
-		cls.recordedfeatures=set([])
+	# def __new__(cls):
+	# 	cls.recordedfeatures=set([])
 
 	def __init__(self,Symbolid,Fromdate,Todate):
 		self.Symbolid=Symbolid
-		self.Fromdate=Fromdate
-		self.Todate=Todate
+		self.Fromdate=dtalibs.Convert2date( Fromdate )
+		self.Todate=dtalibs.Convert2date( Todate )
+
+
+		self.label2func={}
+		self.func2label=clct.defaultdict(list)
+
+		self.stk=stkmd.Stockmeta.objects.get(id=Symbolid)
+		
+
+		self.FC=None
+		
+		
+		
+
+
+	
+
+
+	def Initialize(self):
+		self.FC=ftmd.FeatureComputeCode.objects.get(Username=self.filename)
+
 
 		# first register the features and the functions that call them
 		self.RegisterFeatures()
 
-		
-		
-		
-		self.stk=stkmd.Stockmeta.objects.get(id=Symbolid)
-		self.DM=DataManager(SymbolIds=[Symbolid])
+		self.DM=DataManager(SymbolIds=[self.Symbolid])
+		self.Trange=filter(lambda x: x>=self.Fromdate and x<=self.Todate,self.DM.TradingDates)
 		self.DM.AddStockData()
 
 		# get the feature compute code
-		self.FC=ftmd.FeatureComputeCode.objects.get(Username=self.filename)
+		
 
 		# load the features from db
 		self.DM.Addfeaturecols()
 
 
-		self.LoadStockData()
-		self.LoadFeatureData()
 
-		self.preprocessing()
+	def RegisterFeatures(self):
+		pass
 
 
-	def recordfeature(cls,name=None,FeatureFunction=None,doc=None,category=None,required=None,returntype=None,query=True,operators=None,null=False):
+
+	@property
+	def df(self):
+		return self.DM.DF[self.Symbolid ]
+
+	def recordfeature(self,name=None,FeatureFunction=None,doc=None,category=None,required=None,returntype=None,query=True,operators=None,null=False,cache=False):
 		if name is None or FeatureFunction is None or doc is None or category is None or returntype is None or query is None or operators is None:
 			raise Exception('Fields missing in kwargs recordfeature')
 
+		returntype=str(returntype)
 		info={'name':name,'FeatureFunction':FeatureFunction,'doc':doc,'Category':category,'Query':query,'Returntype':returntype,'operators':operators,'null':null,'filename':self.filename}
-		cls.recordedfeatures.add(name)
 
 		secondary_fields={	'Featuredescription':doc,'FeatureCode':self.FC,} 
-		secondary_fields.update(self.info)
+		secondary_fields.update(info)
 
 		utymd.set_or_create(ftmd.FeaturesMeta,primary_fields={'Featurelabel':name},secondary_fields=secondary_fields)
 
+		self.label2func.update({name:FeatureFunction})
+		self.func2label[FeatureFunction].append(name)
 
-	def preprocessing(self):
-		pass
+
+
+
+
+	def Getfunc(self,featfuncname):
+		return getattr(self,featfuncname)
+
+	def Getfeaturefunc(self,ftname):
+		return Getfunc(self.label2func[ftname])
+
 
 
 	# @mnt.logexception('debug',appendmsg='featuremodel',printit=True)
 	# @mnt.logperf('debug',appendmsg='featuremodel',printit=True)
-	def computefeature(self,ft,Tvec):
-		func=self.getfeaturefunc(ft)
-		func(Tvec)
+	def ComputeFeature(self,ft):
+		func=self.Getfeaturefunc(ft)
+		func(self.Trange)
 
-	def computeallfeatures(self):
-		featurelist=self.dffeatfuncs['Featurelabel'].unique()	
-		# print featurelist
-		for ft in featurelist:
-			self.computefeatureTrange(ft,self.Trange)
+	def ComputeAllFeatures(self):
+		featurefuncs=self.func2label.keys()
+		for ftfunc in featurefuncs:
+			func=self.Getfunc(ftfunc)
+			func(self.Trange)
 
 		print "Done compute"
 
@@ -89,7 +120,7 @@ class featuremodel(object):
 		"""
 		clean up formatting before saving
 		"""
-		self.df = self.df.where((pd.notnull(self.df)), None)
+		self.DM.DF[self.Symbolid] = self.df.where((pd.notnull(self.df)), None)
 		for cc in self.df.columns:
 			if ftmd.FeaturesMeta.objects.filter(Featurelabel=cc).exists():
 				rettype=ftmd.FeaturesMeta.objects.get(Featurelabel=cc).Returntype
@@ -102,20 +133,6 @@ class featuremodel(object):
 				self.df[cc]=self.df[cc].astype(float)				
 
 	
-	def saveonly_overwrite(self,featurelist=[]):
-		self.postprocessing()
-		for Tind in self.df.index:
-			if ftmd.FeaturesData.objects.filter(Symbol=self.stk.Symbol,T=Tind).exists():
-				featdata=ftmd.FeaturesData.objects.get(Symbol=self.stk.Symbol,T=Tind)
-			else:
-				featdata=ftmd.FeaturesData(Symbol=self.stk.Symbol,Symbol_id=self.stk.id,T=Tind)
-
-			for ft in featurelist:
-				if ft in self.df.columns:
-					featdata.Featuredata[ft]=mnt.replaceNaN2None( self.df.loc[Tind,ft] )
-			featdata.save()
-
-		print "Done save"
 
 
 	# @mnt.logperf('debug',appendmsg='saveallfeatures',printit=True)
@@ -125,9 +142,9 @@ class featuremodel(object):
 
 		ftmd.FeaturesData.objects.filter(Symbol=self.stk.Symbol,T__in=self.Trange).delete()
 
-		featurelist=self.getfeaturelist()
+		featurelist=self.label2func.keys()
 		bulkfeats=[]
-		for Tind in self.df.index:
+		for Tind in self.Trange:
 			featdata=ftmd.FeaturesData(Symbol=self.stk.Symbol,Symbol_id=self.stk.id,T=Tind)
 			for ft in featurelist:
 				if ft in self.df.columns:

@@ -14,34 +14,32 @@ class features(featuremodel):
 
 
 	def RegisterFeatures(self):
-		self.recordfeature(name='CCICHERRIES',FeatureFunction='CCICHERRIES',doc='has cherries',category='Momentum',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='CCICHERRIES_CCI50',FeatureFunction='CCICHERRIES',doc='has cherries',category='Momentum',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='CCICHERRIES',FeatureFunction='CCICHERRIES',doc='has cherries',category='Momentum',required=[],returntype='int',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='CCICHERRIES_CCI50',FeatureFunction='CCICHERRIES',doc='has cherries',category='Momentum',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 
-		self.recordfeature(name='CCI5',FeatureFunction='SMAs',doc='CCI',category='Momentum',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='CCI50',FeatureFunction='SMAs',doc='CCI',category='Momentum',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='CCI5',FeatureFunction='SMAs',doc='CCI',category='Momentum',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='CCI50',FeatureFunction='SMAs',doc='CCI',category='Momentum',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 
-		self.recordfeature(name='SMA10',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='SMA20',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='SMA50',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='SMA100',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='SMA200',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='SMAstd20',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='EMA8',FeatureFunction='SMAs',doc='EMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='EMAstd8',FeatureFunction='SMAs',doc='EMA',category='Price',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='SMA10',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='SMA20',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='SMA50',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='SMA100',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='SMA200',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='SMAstd20',FeatureFunction='SMAs',doc='SMA',category='Price',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='EMA8',FeatureFunction='SMAs',doc='EMA',category='Price',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='EMAstd8',FeatureFunction='SMAs',doc='EMA',category='Price',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 
-		self.recordfeature(name='PastPROFIT10days',FeatureFunction='PastProfit',doc='Performance',category='Performance',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='PastPROFIT30days',FeatureFunction='PastProfit',doc='Performance',category='Performance',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='PastLOSS10days',FeatureFunction='PastProfit',doc='Performance',category='Performance',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='PastLOSS30days',FeatureFunction='PastProfit',doc='Performance',category='Performance',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='PastPROFIT10days',FeatureFunction='PastProfit',doc='Performance',category='Performance',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='PastPROFIT30days',FeatureFunction='PastProfit',doc='Performance',category='Performance',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='PastLOSS10days',FeatureFunction='PastProfit',doc='Performance',category='Performance',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='PastLOSS30days',FeatureFunction='PastProfit',doc='Performance',category='Performance',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 
-		self.recordfeature(name='FutPROFIT10days',FeatureFunction='FutPROFIT',doc='Performance',category='Output',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='FutPROFIT30days',FeatureFunction='FutPROFIT',doc='Performance',category='Output',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='FutLOSS10days',FeatureFunction='FutPROFIT',doc='Performance',category='Output',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
-		self.recordfeature(name='FutLOSS30days',FeatureFunction='FutPROFIT',doc='Performance',category='Output',required=[],returntype=int,query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='FutPROFIT10days',FeatureFunction='FutPROFIT',doc='Performance',category='Output',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='FutPROFIT30days',FeatureFunction='FutPROFIT',doc='Performance',category='Output',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='FutLOSS10days',FeatureFunction='FutPROFIT',doc='Performance',category='Output',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
+		self.recordfeature(name='FutLOSS30days',FeatureFunction='FutPROFIT',doc='Performance',category='Output',required=[],returntype='float',query=True,operators=['<','>','<=','>=','inrange','!=','!inrange'],null=False,cache=False)
 
 
-	def preprocessing(self):
-		self.Addindicators(cols=['SMA10','SMA20','SMA50','SMA100','SMA200','SMAstd20','EMA8','EMAstd8','CCI5','CCI50'])
 
 	def ModelPredictions(self,Tvec):
 		import datascience.models as dtscmd
@@ -62,6 +60,8 @@ class features(featuremodel):
 		HasCherries
 		"""
 
+		if 'CCI50' not in self.df.columns or 'CCI5' not in self.df.columns:
+			self.SMAs(Tvec)
 
 		self.df['CCICHERRIES']=( (self.df['CCI50']-self.df['CCI5'])>180  )
 		self.df['CCICHERRIES']=self.df['CCICHERRIES'].apply(lambda x: int(x))
@@ -73,21 +73,21 @@ class features(featuremodel):
 
 
 	def SMAs(self,Tvec):
-		pass
-
+		self.DM.AddIndicatorCols(cols=['SMA10','SMA20','SMA50','SMA100','SMA200','SMAstd20','EMA8','EMAstd8','CCI5','CCI50'])
 		
 	def PastProfit(self,Tvec):
 
+		
 		DFpastperf30=pd.DataFrame()
 		for i in range(1,30):
 			DFpastperf30[i]=100*self.df['Close'].diff(periods=i)/self.df['Close'].shift(periods=i)
 		DFpastperf30['Zeroperf']=0
 
-		self.df['PastPROFIT10days']=self.DFpastperf30[[range(1,11)]+['Zeroperf']].max(axis=1).round()
-		self.df['PastPROFIT30days']=self.DFpastperf30[[range(1,30)]+['Zeroperf']].max(axis=1).round()
+		self.df['PastPROFIT10days']=DFpastperf30[range(1,11)+['Zeroperf']].max(axis=1).round()
+		self.df['PastPROFIT30days']=DFpastperf30[range(1,30)+['Zeroperf']].max(axis=1).round()
 
-		self.df['PastLOSS10days']=self.DFpastperf30[[range(1,11)]+['Zeroperf']].min(axis=1).round()
-		self.df['PastLOSS30days']=self.DFpastperf30[[range(1,30)]+['Zeroperf']].min(axis=1).round()
+		self.df['PastLOSS10days']=DFpastperf30[range(1,11)+['Zeroperf']].min(axis=1).round()
+		self.df['PastLOSS30days']=DFpastperf30[range(1,30)+['Zeroperf']].min(axis=1).round()
 
 
 
@@ -99,11 +99,11 @@ class features(featuremodel):
 			DFperf30[i]=-100*self.df['Close'].diff(periods=-i)/self.df['Close']
 		DFperf30['Zeroperf']=0
 
-		self.df['FutPROFIT10days']=self.DFperf30[[range(1,11)]+['Zeroperf']].max(axis=1).round()
-		self.df['FutPROFIT30days']=self.DFperf30[[range(1,30)]+['Zeroperf']].max(axis=1).round()
+		self.df['FutPROFIT10days']=DFperf30[range(1,11)+['Zeroperf']].max(axis=1).round()
+		self.df['FutPROFIT30days']=DFperf30[range(1,30)+['Zeroperf']].max(axis=1).round()
 
-		self.df['FutLOSS10days']=self.DFperf30[[range(1,11)]+['Zeroperf']].min(axis=1).round()
-		self.df['FutLOSS30days']=self.DFperf30[[range(1,30)]+['Zeroperf']].min(axis=1).round()
+		self.df['FutLOSS10days']=DFperf30[range(1,11)+['Zeroperf']].min(axis=1).round()
+		self.df['FutLOSS30days']=DFperf30[range(1,30)+['Zeroperf']].min(axis=1).round()
 
 
 

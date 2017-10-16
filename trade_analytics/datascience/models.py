@@ -88,7 +88,7 @@ class Project(models.Model):
 		return self.Name
 
 	def bigdatapath(self):
-		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Name)
+		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',str(self.id)+'_'+self.Name)
 
 
 	def initialize(self):
@@ -146,7 +146,7 @@ class Data(models.Model):
 		return " ".join( map(lambda x: str(x),[self.Project, self.GroupName,self.tag, self.Modeltype, self.Datatype, self.Dataformat ]) )
 
 	def datapath(self):
-		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Project.Name,"Data",self.Datatype,self.GroupName+"_"+self.tag)
+		return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Project.Name,"Data",self.Datatype,str(self.id)+'_'+self.GroupName+"_"+self.tag)
 
 	def initialize(self):
 		# make the data path
@@ -196,7 +196,7 @@ class DataShard(models.Model):
 
 	def shardpath(self,extratag=''):
 		# return os.path.join(settings.BIGDATA_DIR,'datascience','Projects',self.Project.Name,"Data",self.Datatype,self.GroupName+"_"+self.tag)
-		name='shard'+"_"+self.Data.tag+extratag+"_"+str(self.id)
+		name=str(self.id)+'_'+'shard'+"_"+self.Data.tag+extratag
 		path=os.path.join(self.Data.datapath(),name+"."+self.Data.Dataformat)
 		return (name,path)
 

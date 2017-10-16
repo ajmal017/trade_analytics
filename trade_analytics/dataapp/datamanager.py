@@ -30,7 +30,7 @@ class DataManager(object):
 		else:
 			self.RequiredCols=RequiredCols
 
-		self.RequiredCols=self.RequiredCols+Append2ReqCols
+		self.RequiredCols=list(set(self.RequiredCols+Append2ReqCols))
 
 		self.SymbolIds=list( SymbolIds )
 		self.stks={}
@@ -103,9 +103,9 @@ class DataManager(object):
 			self.DF[symbid]=dtalibs.merge_on_TSymbol(self.DF[symbid],dffeats)
 
 
-	def AddIndicatorCols(self):
+	def AddIndicatorCols(self,cols=[]):
 		IndicatorCols=[]
-		for reqcol in self.RequiredCols:
+		for reqcol in self.RequiredCols+cols:
 			if reqcol in cstmdata.StdIndicatorCols.keys():
 				IndicatorCols.append( cstmdata.StdIndicatorCols[reqcol] )
 

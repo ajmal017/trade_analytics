@@ -37,10 +37,10 @@ def getdatearrays(From=pd.datetime(2010,1,1).date(),To=pd.datetime.today().date(
 
 def merge_on_TSymbol(df1,df2):
 	if 'Symbol' not in df1.columns:
-		raise('df1 needs T and Symbol')
+		raise KeyError('df1 needs T and Symbol')
 
 	if 'Symbol' not in df2.columns:
-		raise('df2 needs T and Symbol')
+		raise KeyError('df2 needs T and Symbol')
 
 	df1['T']=df1.index
 	df2['T']=df2.index
@@ -60,12 +60,12 @@ def Convert2date(T):
 	"""
 	if isinstance(T,list)==True:
 		pass
-	elif isinstance(T,np.array)==True:
+	elif isinstance(T,np.ndarray)==True:
 		pass
 	else:
-		T=list(T)
-	else:
-		raise TypeError('scalar, list or array expected')
+		T=[T]
+	# else:
+	# 	raise TypeError('scalar, list or array expected')
 
 
 	for i in range(len(T)):
@@ -78,7 +78,7 @@ def Convert2date(T):
 		elif type(T[i])==datetime.datetime or type(T[i])==pd.datetime: 
 			T[i]= T[i].date()
 
-		elif type(T)==pd.datetime.date or type(T)==datetime.date:
+		elif type(T[i])==pd.datetime.date or type(T[i])==datetime.date:
 			pass
 		else:
 			raise TypeError('No date found')
@@ -89,7 +89,7 @@ def Convert2date(T):
 	else:
 		return T
 
-		
+
 
 def StockDataFrame_validate(df,columns=['Close','Open','High','Low','Volume']):
 	for cc in columns:
@@ -263,7 +263,7 @@ def getTradingdates():
 
 def standardizefeaturedata(df):
 	if df.empty:
-		return df
+		return pd.DataFrame(columns=['T','Symbol_id','Symbol'])
 
 	# df.rename(columns={'Symbol__Symbol':'Symbol'},inplace=True)
 	df['Symbol']=df['Symbol'].astype(str)
@@ -279,11 +279,13 @@ def standardizefeaturedata(df):
 	dffeat.index=df.index
 
 	for cc in dffeat.columns:
-		if ftamd.FeaturesMeta.objects.filter(Featurelabel=cc).exists():
-			rettype=ftamd.FeaturesMeta.objects.get(Featurelabel=cc).Returntype
-			if rettype!='json':
-				dffeat[cc]=dffeat[cc].astype(eval(rettype))
-
+		try:
+			if ftamd.FeaturesMeta.objects.filter(Featurelabel=cc).exists():
+				rettype=ftamd.FeaturesMeta.objects.get(Featurelabel=cc).Returntype
+				if rettype!='json':
+					dffeat[cc]=dffeat[cc].astype(eval(rettype))
+		except:
+			pdb.set_trace()
 
 
 	df=pd.concat([df, dffeat], axis=1)
