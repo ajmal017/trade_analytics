@@ -74,7 +74,7 @@ class ComputeFunc(models.Model):
 
 	def getfunc(self,getlatest=True):
 		import cloudpickle as cldpkl
-		return cldpkl.loads(self.PklCode)
+		return (cldpkl.loads(self.PklCode),self.Info['defaultargs'])
 
 
 

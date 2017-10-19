@@ -4,51 +4,27 @@ import datascience.libs as dtsclibs
 import dataapp.libs as dtalibs
 import datascience.models as dtscmd
 import pdb
-
+import pandas as pd
+import numpy as np
+	
 filename=__name__.split('.')[-1]
 
-#################### ------------ Some Data Statistics-------------- ##################################
+####################################################################################################
+#################### ------------ Base Creators-------------- ##################################
+####################################################################################################
 
-@dtsclibs.register_compfunc(Group='Meta',overwrite_if_exists=True)
-def DataShardMeta_1(DataShardId):
-	"""
-	Get meta data from shards
-	- Get Nans in X and Y
-	- Get shapes of X and Y
-	"""
-	shard=dtscmd.DataShard.objects.get(id=DataShardId)
-	X,Y,Meta=shard.getdata()
-	NXnans=np.count_nonzero(np.isnan(X))
-	NYnans=np.count_nonzero(np.isnan(Y))
-
-
-	return (NXnans,NYnans,X.shape,Y.shape)
-
-################# --------------- Data Base creators ---------------- ###################################
-
-@dtsclibs.register_compfunc(Group='BaseDataSet',overwrite_if_exists=False,create_new_ifchanged=True)
-def Sometest(dataId):
-    """
-    fdgfgfgfgfg
-    """
-    print "ok"
-    return 3
-
-
-
-@dtsclibs.register_compfunc(Group='BaseDataSet',overwrite_if_exists=True)
 def CreateStockData_base_X1y_Y3m_TFMonday_from2010(SymbolId,Mode):
 	Trange=pd.date_range(start=pd.datetime(2010,1,1),end=pd.datetime.today(),freq='W-MON') 
 	return dtalibs.CreateStockData_base(SymbolId,Trange,Mode)
 
+
+
+
+####################################################################################################
 #################### ------------ Some Data Transformers-------------- ##################################
-
-
-####################################################################################################
-###########################                                #########################################
 ####################################################################################################
 
-@dtsclibs.register_compfunc(Group='Transformer',overwrite_if_exists=True)
+
 def StandardizeData_HLmeanVolumeSMA01_X30_Y5return_interpcleaned_flatout(X,Y=None,Meta):
 	"""
 	A transformer function has to take X,Y,Meta and return another modified X,Y,Meta
@@ -71,8 +47,7 @@ def StandardizeData_HLmeanVolumeSMA01_X30_Y5return_interpcleaned_flatout(X,Y=Non
 
 	
 	
-	import pandas as pd
-	import numpy as np
+	
 
 	# next normalize the volume to 0-1
 	Nsamples=X.shape[0]
