@@ -1,7 +1,7 @@
 import cloudpickle as cldpkl
 from dill.source import getsource
 from datascience import models as dtscmd
-
+import copy
 import h5py
 import functools
 import pandas as pd
@@ -11,6 +11,93 @@ import numpy as np
 import json
 
 logger = logging.getLogger('datascience')
+
+
+class _Dataset(object):
+	def __init__():
+		self.data=None
+		self.X=None
+		self.Y=None
+		self.Meta=None
+
+	def setdataID(dataID):
+		self.data=dtscmd.Data.objects.get(id=dataID)
+		return self
+
+	@classmethod
+	def make_from_dataID(cls,dataID):
+		dataset=cls()
+		dataset.data=dtscmd.Data.objects.get(id=dataID)
+		return dataset
+
+	@classmethod
+	def make_dataset(cls,X,Y,Meta):
+		dataset=cls()
+		dataset.X=X
+		dataset.Y=Y
+		dataset.Meta=Meta
+
+		return dataset
+
+	@classmethod
+	def make_from_function(cls,Func,args,kwargs):
+		dataset=cls()
+		dataset.X,dataset.Y,dataset.Meta= Func(*args,**kwargs)	
+		return dataset	
+
+	def pipeline_transform(self,pipelinefuns=[]):
+		"""
+		assuming the dataset has already been created and is in X,Y,Meta forms
+
+		"""
+		Xt=self.X.copy()
+		Yt=self.Y.copy()
+		Metat=copy.deepcopy( self.Meta )
+
+		for func,kwargs in pipelinefuns:
+			Xt,Yt,Metat=func(Xt,Yt,Metat,**kwargs)
+
+		return (Xt,Yt,Metat)
+
+
+	def get_single_df(self):
+		shards=dtscmd.DataShard.objects.filter(Data=self.data)
+		Xm=None
+		Ym=None
+		Metam=None
+		for shard in shards:
+			X,Y,Meta=shard.getdata()
+			if Xm is None:
+				Xm=X
+				Ym=Y
+				Metam=Meta
+			else:
+				Xm=np.vstack((Xm,X))
+				Ym=np.vstack((Ym,Y))
+				Metam.update(Metam)
+
+		return (Xm,Ym,Metam)
+
+
+
+	def saveas_h5(self):
+		data=dtscmd.Data.objects.get(id=dataID)
+		shard=dtscmd.DataShard(Data=data)
+		shard.save()
+
+		name,path=shard.shardpath()
+
+		h5f = h5py.File(path, 'w')
+		string_dt = h5py.special_dtype(vlen=str)
+		h5f.create_dataset('Meta', data=np.array([json.dumps(self.Meta)]), dtype=string_dt)
+		h5f.create_dataset('X', data=self.X,compression="gzip")
+		h5f.create_dataset('Y', data=self.Y,compression="gzip")
+		h5f.close() 
+
+
+
+# class FlatDataset(_Dataset):
+
 
 def register_project(project_Name,project_Info):
 	if dtscmd.Project.objects.filter(Name=project_Name).exists()==True:
@@ -77,77 +164,11 @@ def register_compute_function(func,Group,defaultargs={}):
 	Info={}
 	Info['doc']=func.__doc__
 	Info['defaultargs']=defaultargs
-	
+
 	cf=dtscmd.ComputeFunc(Name=func.__name__,Group=self.Group,PklCode=PklCode,Info=Info,SrcCode=SrcCode)
 	cf.save()
 	return cf
 
-
-
-
-def shardTransformer(shardId_from,dataId_to):
-	"""
-	Transform shardId0 to a new shard under dataId1
-	using the transformner function saved in dataId1
-	"""
-	data1=dtscmd.Data.objects.get(id=dataId_to)
-	
-	
-	shard0=dtscmd.DataShard.objects.get(id=shardId_from)
-	X,Y,Meta=shard0.getdata()
-	
-	func=data1.TransfomerFunc.getfunc()	
-
-	X1,Y1,Meta1=func(X,Y,Meta)
-
-	shard1=dtscmd.DataShard(Data=data1)
-	shard1.save()
-	shard1.savedata(X=X1,Y=Y1,Meta=Meta1)
-	print "done transforming shardId0 ",shardId0," to new shardid = ",shard1.id
-
-
-def combineshards(dataID,filename):
-	data=dtscmd.Data.objects.get(id=dataID)
-	shards=dtscmd.DataShard.objects.filter(Data=data)
-	Xm=None
-	Ym=None
-	Metam=None
-	for shard in shards:
-		X,Y,Meta=shard.getdata()
-		if Xm is None:
-			Xm=X
-			Ym=Y
-			Metam=Meta
-		else:
-			Xm=np.vstack((Xm,X))
-			Ym=np.vstack((Ym,Y))
-
-
-
-
-def GetTransformerList(dataid):
-	data=dtscmd.Data.objects.get( id=dataid) 
-	Transformers=[]
-	while data.TransfomerFunc is not None:
-		Transformers.append(data.TransfomerFunc.id)
-		data=dtscmd.Data.objects.get( id=data.ParentData.id) 
-
-	Transformers=list(reversed(Transformers))
-	return tuple(Transformers)
-
-def ApplyTransformerList(Xbase,Meta,TransFList):
-	for funcid in TransFList: 
-		Func=dtscmd.ComputeFunc.objects.filter(id=funcid).last()
-		if Func.Group=='BaseDataSet':
-			pass
-		elif Func.Group=='Transformer':
-			Xbase,Meta=Func.getfunc()(Xbase,None,Meta)
-
-	return Xbase,Meta
-
-def GetTransformedData(Xbase,Meta,dataid):
-	Transformers=GetTransformerList(dataid)
-	return ApplyTransformerList(Xbase,Meta,Transformers)
 
 
 

@@ -120,8 +120,33 @@ class DataManager(object):
 		self.Addfeaturecols()
 		self.AddIndicatorCols()
 
+	def CreateTrainingDataSet(self,col2write,TFs,width_back=360,width_front=180)
+		Xcat=None
+		Ycat=None
+		Xflatcat=None
+		Yflatcat=None
+		Metacat={}
+		Metaflatcat={}
+		for (X,Y,Xflat,Yflat,Meta,Metaflat) in self.CreateTrainingDataSet(col2write,TFs,width_back=360,width_front=180):	
+			if Xcat is None:
+				Xcat=X
+				Ycat=Y
+				Xflatcat=Xflat
+				Yflatcat=Yflat
+				
+			else:
+				Xcat=np.vstack((Xcat,X))
+				Ycat=np.vstack((Ycat,Y))
+				Xflatcat=np.vstack((Xflatcat,Xflat))
+				Yflatcat=np.vstack((Yflatcat,Yflat))
 
-	def CreateTrainingDataSet(self,col2write,TFs,width_back=360,width_front=180):
+			Metacat.update(Meta)
+			Metaflatcat.update(Metaflat)
+
+		return (Xcat,Ycat,Xflatcat,Yflatcat,Metacat,Metaflatcat)
+		
+
+	def CreateTrainingDataSet_iterator(self,col2write,TFs,width_back=360,width_front=180):
 		for symbid in self.SymbolIds:
 			L=np.arange(width_back)
 			R=np.arange(width_front);

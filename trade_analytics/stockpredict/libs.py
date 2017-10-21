@@ -19,11 +19,11 @@ col2write_std=['Close',u'Open', u'High',u'Low','Volume',u'SectorId',
 
 
 
-def CreateStockData_directfrom_DM(SymbolIds,TFs,dataId=None,col2write=col2write_std,width_back=360,width_front=180):
+def CreateStockData_directfrom_DM(SymbolIds,TFs,col2write=col2write_std,width_back=360,width_front=180):
 	"""
 	T0TFSymbol_dict= [{'T0':,'Tf':,'Symbol':},{}]
 	"""
-	data=dtscmd.Data.objects.get(id=dataId)	if dataId is not None else None
+	# data=dtscmd.Data.objects.get(id=dataId)	if dataId is not None else None
 
 	# TFs=dtalibs.getdatearrays(ondays='EveryMonday')
 
