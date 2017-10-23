@@ -57,11 +57,11 @@ def Get_pipeline_transform(dataid):
 	data=dtscmd.Data.objects.get( id=dataid) 
 	pipeline=[]
 	while data.TransfomerFunc is not None:
-		Transformers.append(data.TransfomerFunc.id)
+		pipeline.append((data.TransfomerFunc.getfunc(), data.TransfomerFunc.Info['kwargs'] ) )
 		data=dtscmd.Data.objects.get( id=data.ParentData.id) 
 
-	Transformers=list(reversed(Transformers))
-	return tuple(Transformers)
+	pipeline=list(reversed(pipeline))
+	return tuple(pipeline)
 
 
 
@@ -107,6 +107,9 @@ class _Dataset(object):
 		dataset.X,dataset.Y,dataset.Meta= Func(*args,**kwargs)	
 		return dataset	
 
+	@classmethod
+	def make_to_data_pipeline(cls):
+		
 
 	def pipeline_transform(self,pipelinefuns=[]):
 		"""
