@@ -148,7 +148,7 @@ def register_dataset_transformed_from_parent(ParentData,TransfomerFunc,GroupName
 		data.initialize()
 
 	else:
-		data=dtscmd.Data(TransfomerFunc=TransfomerFuncProject=parentdata.project,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype,ouput_type=ouput_type)
+		data=dtscmd.Data(TransfomerFunc=TransfomerFunc,Project=parentdata.project,GroupName=GroupName,tag=tag,Datatype=Datatype,Dataformat=data_format,Modeltype=Modeltype,ouput_type=ouput_type)
 		data.save()
 		data.initialize()
 

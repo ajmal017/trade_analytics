@@ -120,14 +120,14 @@ class DataManager(object):
 		self.Addfeaturecols()
 		self.AddIndicatorCols()
 
-	def CreateTrainingDataSet(self,col2write,TFs,width_back=360,width_front=180)
+	def CreateTrainingDataSet(self,col2write,TFs,width_back=360,width_front=180):
 		Xcat=None
 		Ycat=None
 		Xflatcat=None
 		Yflatcat=None
-		Metacat={}
-		Metaflatcat={}
-		for (X,Y,Xflat,Yflat,Meta,Metaflat) in self.CreateTrainingDataSet(col2write,TFs,width_back=360,width_front=180):	
+		Metacat=[]
+		Metaflatcat=[]
+		for (X,Y,Xflat,Yflat,Meta,Metaflat) in self.CreateTrainingDataSet_iterator(col2write,TFs,width_back=360,width_front=180):	
 			if Xcat is None:
 				Xcat=X
 				Ycat=Y
@@ -140,14 +140,17 @@ class DataManager(object):
 				Xflatcat=np.vstack((Xflatcat,Xflat))
 				Yflatcat=np.vstack((Yflatcat,Yflat))
 
-			Metacat.update(Meta)
-			Metaflatcat.update(Metaflat)
+			Metacat.apppend(Meta)
+			Metaflatcat.append(Metaflat)
 
 		return (Xcat,Ycat,Xflatcat,Yflatcat,Metacat,Metaflatcat)
 		
 
 	def CreateTrainingDataSet_iterator(self,col2write,TFs,width_back=360,width_front=180):
 		for symbid in self.SymbolIds:
+			if len(self.DF[symbid])<width_back:
+				continue
+
 			L=np.arange(width_back)
 			R=np.arange(width_front);
 			X=None
@@ -161,7 +164,7 @@ class DataManager(object):
 			colX=[]
 			colY=[]
 			for T in TFs:	
-				print T			
+				# print T			
 				indT=np.argwhere(self.DF[symbid].index==T)
 				if len(indT)==0:
 					continue
@@ -169,7 +172,7 @@ class DataManager(object):
 					indT=indT[0][0]
 					Tadded.append(T)
 
-				dfX=self.DF[symbid].iloc[indT-width_back-1:indT+1][col2write].copy()
+				dfX=self.DF[symbid].iloc[indT-width_back+1:indT+1][col2write].copy()
 				colX=dfX.columns
 
 				if len(dfX)<width_back:
@@ -209,6 +212,7 @@ class DataManager(object):
 					Xflat=pXflat
 					Yflat=pYflat
 				else:
+					# print X.shape,pX.shape,dfX.shape
 					X=np.vstack((X,pX))
 					Y=np.vstack((Y,pY))
 					Xflat=np.vstack((Xflat,pXflat))
@@ -217,8 +221,8 @@ class DataManager(object):
 
 
 
-			Metaflat={'T':Tadded,'colflatX':colflatX,'colflatY':colflatY}
-			Meta={'T':Tadded,'colX':colX,'colY':colY}
+			Metaflat={'T':Tadded,'colflatX':list(colflatX),'colflatY':list(colflatY),'symbid':symbid}
+			Meta={'T':Tadded,'colX':list(colX),'colY':list(colY),'symbid':symbid}
 			yield (X,Y,Xflat,Yflat,Meta,Metaflat)
 
 	def Iterbatchdata_Ordered(self,dfinstants_list,padding=None,roundT2dfdate=True):

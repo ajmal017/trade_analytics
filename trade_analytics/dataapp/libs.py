@@ -12,17 +12,56 @@ import pdb
 from talib import abstract
 import numpy as np
 from utility import maintenance as mnt
-
-
-
+import json
+import h5py
+import pickle as pkl
 import logging
 logger=logging.getLogger('dataapp')
 
 import time
 
+import json
 
 
 
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
+
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.strftime("%Y-%m-%d")
+    raise TypeError ("Type %s not serializable" % type(obj))
+    
+def saveas_h5(filepath,**kwargs):
+    h5f = h5py.File(filepath, 'w')
+    for key,value in kwargs.items():
+        if isinstance(value,(dict,list)):
+            string_dt = h5py.special_dtype(vlen=str)
+            h5f.create_dataset(key, data=np.array([pkl.dumps(value)]), dtype=string_dt)
+        else:
+            h5f.create_dataset(key, data=value,compression="gzip")
+    h5f.close()
+
+def append_h5(filepath,**kwargs):
+    h5f = h5py.File(filepath, 'w')
+    for key,value in kwargs.items():
+        if isinstance(value,(dict,list)):
+            string_dt = h5py.special_dtype(vlen=str)
+            h5f.create_dataset(key, data=np.array([pkl.dumps(value)]), dtype=string_dt)
+        else:
+            h5f.create_dataset(key, data=value,compression="gzip")
+    h5f.close()
+
+def load_h5(filepath,keys):
+	data={}
+	h5f = h5py.File(filepath, 'r')
+	for ky in keys:
+		data[ky] = h5f[ky][:]
+		if len(data[ky])==1 and isinstance(data[ky][0],basestring):
+			data[ky]=pkl.loads(data[ky][0])
+		# Meta = json.loads(h5f['Meta'][:][0])
+	h5f.close() 
+
+	return data
 
 def getdatearrays(From=pd.datetime(2010,1,1).date(),To=pd.datetime.today().date(),ondays='EveryMonday'):
 	D={}
@@ -30,7 +69,9 @@ def getdatearrays(From=pd.datetime(2010,1,1).date(),To=pd.datetime.today().date(
 	D['EveryWednesday']=pd.date_range(start=pd.datetime(2010,1,1).date(),end=pd.datetime.today().date(),periods=None, freq='W-WED')
 	D['EveryFriday']=pd.date_range(start=pd.datetime(2010,1,1).date(),end=pd.datetime.today().date(),periods=None, freq='W-FRI')
 	D['EveryTueThu']=list(pd.date_range(start=pd.datetime(2010,1,1).date(),end=pd.datetime.today().date(),periods=None, freq='W-TUE'))+list(pd.date_range(start=pd.datetime(2010,1,1).date(),end=pd.datetime.today().date(),periods=None, freq='W-THU'))
-
+	
+	D['EveryMonWedFri']=list(set(list(D['EveryMonday'])+list(D['EveryWednesday'])+list(D['EveryFriday'])))
+	D['EveryMonWedFri']=sorted(D['EveryMonWedFri'])
 	return map(lambda x: x.date(),D[ondays])
 
 
@@ -115,6 +156,7 @@ def StockDataFrame_sanitize(df,standardize=False):
 			return pd.to_datetime(x).date()
 		if type(x)==datetime.datetime or type(x)==pd.datetime or type(x)==pd.Timestamp:
 			return x.date()
+
 		return x
 
 	if 'Date' in df.columns:
@@ -148,7 +190,7 @@ def StockDataFrame_sanitize(df,standardize=False):
 
 	return df
 
-@mnt.logperf('dataapp',printit=True)
+# @mnt.logperf('dataapp',printit=True)
 def addindicators(df,cols):
 	if len(cols)==0:
 		return df
@@ -195,7 +237,7 @@ def addindicators(df,cols):
 	return df
 
 
-@mnt.logperf('dataapp',printit=True)
+# @mnt.logperf('dataapp',printit=True)
 def GetStockData(Symbolids,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True,addcols=None):
 	if type(Symbolids)==list:
 		Symbolids=list(Symbolids)
@@ -295,7 +337,7 @@ def standardizefeaturedata(df):
 
 	return df
 
-@mnt.logperf('debug',printit=True)
+# @mnt.logperf('debug',printit=True)
 def GetFeatures(Symbolids=None,Fromdate=pd.datetime(2002,1,1).date(),Todate=pd.datetime.today().date(),format='concat',standardize=True):
 
 	if type(Symbolids)!=list and type(Symbolids)!=tuple:

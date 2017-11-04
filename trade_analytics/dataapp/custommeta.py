@@ -13,6 +13,9 @@ StdIndicatorCols={
 	        		'EMA8':{'name':'EMA','timeperiod':8,'colname':'EMA8'},
 	        		'EMA20':{'name':'EMA','timeperiod':20,'colname':'EMA20'},
 
+	        		'EMAstd8':{'name':'EMAstd','timeperiod':8,'colname':'EMAstd8'},
+	        		'SMAstd20':{'name':'SMAstd','timeperiod':20,'colname':'SMAstd20'},
+
 					}
 
 
