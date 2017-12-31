@@ -24,44 +24,7 @@ import json
 
 
 
-def json_serial(obj):
-    """JSON serializer for objects not serializable by default json code"""
 
-    if isinstance(obj, (datetime.datetime, datetime.date)):
-        return obj.strftime("%Y-%m-%d")
-    raise TypeError ("Type %s not serializable" % type(obj))
-    
-def saveas_h5(filepath,**kwargs):
-    h5f = h5py.File(filepath, 'w')
-    for key,value in kwargs.items():
-        if isinstance(value,(dict,list)):
-            string_dt = h5py.special_dtype(vlen=str)
-            h5f.create_dataset(key, data=np.array([pkl.dumps(value)]), dtype=string_dt)
-        else:
-            h5f.create_dataset(key, data=value,compression="gzip")
-    h5f.close()
-
-def append_h5(filepath,**kwargs):
-    h5f = h5py.File(filepath, 'w')
-    for key,value in kwargs.items():
-        if isinstance(value,(dict,list)):
-            string_dt = h5py.special_dtype(vlen=str)
-            h5f.create_dataset(key, data=np.array([pkl.dumps(value)]), dtype=string_dt)
-        else:
-            h5f.create_dataset(key, data=value,compression="gzip")
-    h5f.close()
-
-def load_h5(filepath,keys):
-	data={}
-	h5f = h5py.File(filepath, 'r')
-	for ky in keys:
-		data[ky] = h5f[ky][:]
-		if len(data[ky])==1 and isinstance(data[ky][0],basestring):
-			data[ky]=pkl.loads(data[ky][0])
-		# Meta = json.loads(h5f['Meta'][:][0])
-	h5f.close() 
-
-	return data
 
 def getdatearrays(From=pd.datetime(2010,1,1).date(),To=pd.datetime.today().date(),ondays='EveryMonday'):
 	D={}

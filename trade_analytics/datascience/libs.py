@@ -13,88 +13,44 @@ import json
 logger = logging.getLogger('datascience')
 
 
-class _Dataset(object):
-	def __init__():
-		self.data=None
-		self.X=None
-		self.Y=None
-		self.Meta=None
+def json_serial(obj):
+    """JSON serializer for objects not serializable by default json code"""
 
-	def setdataID(dataID):
-		self.data=dtscmd.Data.objects.get(id=dataID)
-		return self
+    if isinstance(obj, (datetime.datetime, datetime.date)):
+        return obj.strftime("%Y-%m-%d")
+    raise TypeError ("Type %s not serializable" % type(obj))
+    
+def saveas_h5(filepath,**kwargs):
+    h5f = h5py.File(filepath, 'w')
+    for key,value in kwargs.items():
+        if isinstance(value,(dict,list)):
+            string_dt = h5py.special_dtype(vlen=str)
+            h5f.create_dataset(key, data=np.array([pkl.dumps(value)]), dtype=string_dt)
+        else:
+            h5f.create_dataset(key, data=value,compression="gzip")
+    h5f.close()
 
-	@classmethod
-	def make_from_dataID(cls,dataID):
-		dataset=cls()
-		dataset.data=dtscmd.Data.objects.get(id=dataID)
-		return dataset
+def append_h5(filepath,**kwargs):
+    h5f = h5py.File(filepath, 'w')
+    for key,value in kwargs.items():
+        if isinstance(value,(dict,list)):
+            string_dt = h5py.special_dtype(vlen=str)
+            h5f.create_dataset(key, data=np.array([pkl.dumps(value)]), dtype=string_dt)
+        else:
+            h5f.create_dataset(key, data=value,compression="gzip")
+    h5f.close()
 
-	@classmethod
-	def make_dataset(cls,X,Y,Meta):
-		dataset=cls()
-		dataset.X=X
-		dataset.Y=Y
-		dataset.Meta=Meta
+def load_h5(filepath,keys):
+	data={}
+	h5f = h5py.File(filepath, 'r')
+	for ky in keys:
+		data[ky] = h5f[ky][:]
+		if len(data[ky])==1 and isinstance(data[ky][0],basestring):
+			data[ky]=pkl.loads(data[ky][0])
+		# Meta = json.loads(h5f['Meta'][:][0])
+	h5f.close() 
 
-		return dataset
-
-	@classmethod
-	def make_from_function(cls,Func,args,kwargs):
-		dataset=cls()
-		dataset.X,dataset.Y,dataset.Meta= Func(*args,**kwargs)	
-		return dataset	
-
-	def pipeline_transform(self,pipelinefuns=[]):
-		"""
-		assuming the dataset has already been created and is in X,Y,Meta forms
-
-		"""
-		Xt=self.X.copy()
-		Yt=self.Y.copy()
-		Metat=copy.deepcopy( self.Meta )
-
-		for func,kwargs in pipelinefuns:
-			Xt,Yt,Metat=func(Xt,Yt,Metat,**kwargs)
-
-		return (Xt,Yt,Metat)
-
-
-	def get_single_df(self):
-		shards=dtscmd.DataShard.objects.filter(Data=self.data)
-		Xm=None
-		Ym=None
-		Metam=None
-		for shard in shards:
-			X,Y,Meta=shard.getdata()
-			if Xm is None:
-				Xm=X
-				Ym=Y
-				Metam=Meta
-			else:
-				Xm=np.vstack((Xm,X))
-				Ym=np.vstack((Ym,Y))
-				Metam.update(Metam)
-
-		return (Xm,Ym,Metam)
-
-
-
-	def saveas_h5(self):
-		data=dtscmd.Data.objects.get(id=dataID)
-		shard=dtscmd.DataShard(Data=data)
-		shard.save()
-
-		name,path=shard.shardpath()
-
-		h5f = h5py.File(path, 'w')
-		string_dt = h5py.special_dtype(vlen=str)
-		h5f.create_dataset('Meta', data=np.array([json.dumps(self.Meta)]), dtype=string_dt)
-		h5f.create_dataset('X', data=self.X,compression="gzip")
-		h5f.create_dataset('Y', data=self.Y,compression="gzip")
-		h5f.close() 
-
-
+	return data
 
 # class FlatDataset(_Dataset):
 
