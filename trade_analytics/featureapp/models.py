@@ -22,7 +22,6 @@ class FeaturesMeta(models.Model):
 
 	Query=models.BooleanField(help_text='Use it in query',default=True)
 
-
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 
@@ -36,7 +35,6 @@ class FeaturesData(models.Model):
 	
 	Featuredata = JSONField(default={})
 
-	
 	created_at = models.DateTimeField(auto_now_add=True,null=True)
 	updated_at = models.DateTimeField(auto_now=True,null=True)
 

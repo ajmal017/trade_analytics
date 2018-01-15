@@ -43,5 +43,3 @@ class Stockprice(models.Model):
 							['Date', 'Symbol_id'],
 						]
 
-# TODO: Pymongo model
-# TODO: save features in mongodb
