@@ -9,16 +9,10 @@ import utility.models as utymd
 # Create your models here.
 
 
-class FeatureComputeCode(utymd.ComputeCode):
-
-	module='featureapp'
-	codesfolder='FeatureCodes'
-	computeclassname='features'
-
 
 class FeaturesMeta(models.Model):
 	# Userfilename = models.CharField(max_length=150,help_text="User ID from database",blank=True)
-	FeatureCode=models.ForeignKey(FeatureComputeCode,on_delete=models.CASCADE,null=True)
+	# FeatureCode=models.ForeignKey(FeatureComputeCode,on_delete=models.CASCADE,null=True)
 	Featurelabel=models.CharField(max_length=50,help_text="unique label",unique=True)
 	FeatureFunction=models.CharField(max_length=50,null=True,help_text="function to compute the featurelabel")
 	Featuredescription=models.CharField(max_length=100,null=True,blank=True,help_text="Company name")
