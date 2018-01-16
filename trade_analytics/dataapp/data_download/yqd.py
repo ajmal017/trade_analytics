@@ -7,7 +7,7 @@ Created on Thu May 18 22:58:12 2017
 
 # To make print working for Python2/3
 from __future__ import print_function
-
+import pandas as pd
 # Use six to import urllib so it is working for Python2/3
 from six.moves import urllib
 # If you don't want to use six, please comment out the line above
@@ -107,4 +107,19 @@ def load_yahoo_quote(ticker, begindate, enddate, info = 'quote'):
 	f = urllib.request.urlopen(req)
 	alines = f.read().decode('utf-8')
 	#print(alines)
-	return alines.split('\n')
+	F=alines.split('\n')
+	G=filter(lambda x: len(x)>0,F)
+	H=map(lambda x: x.split(','),G)
+
+	df=pd.DataFrame.from_records(H[1:],columns=H[0])
+	df['Date']=df['Date'].apply(lambda x: pd.to_datetime(x,format='%Y-%m-%d').date() )
+	df.index=df['Date']
+	df['Volume']=df['Volume'].astype(int)
+	df['Open']=df['Open'].astype(float)
+	df['Close']=df['Close'].astype(float)
+	df['High']=df['High'].astype(float)
+	df['Low']=df['Low'].astype(float)
+
+	return df[['Close','Open','High','Low','Volume']]
+
+

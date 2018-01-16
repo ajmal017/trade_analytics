@@ -49,22 +49,47 @@ class ComputeStatus(models.Model):
 
 	@classmethod
 	def make_newcompute(cls,ComputeSession_id):
-		obj=cls(ComputeStarttime=getnowtime,ComputeSession_id=ComputeSession_id,ComputeStatus='ToDo')
+		obj=cls(ComputeStarttime=getnowtime(),ComputeSession_id=ComputeSession_id,ComputeStatus='ToDo')
 		obj.save()
 		return obj
 
-	@classmethod
+	
 	def save_compute_byId(cls,Id,Status,Msg=''):
 		obj=cls.objects.get(id=Id)
-		obj.ComputeEndtime=getnowtime
+		obj.ComputeEndtime=getnowtime()
 		obj.ComputeStatus=Status
 		obj.Msg=Msg
 		obj.save()
 		return obj
 
 	@classmethod
+	def save_running_byId(cls,Id,Msg=''):
+		obj=cls.objects.get(id=Id)
+		obj.ComputeEndtime=getnowtime()
+		obj.ComputeStatus='Running'
+		obj.Msg=Msg
+		obj.save()
+		return obj
+	@classmethod
+	def save_success_byId(cls,Id,Msg=''):
+		obj=cls.objects.get(id=Id)
+		obj.ComputeEndtime=getnowtime()
+		obj.ComputeStatus='Success'
+		obj.Msg=Msg
+		obj.save()
+		return obj
+	@classmethod
+	def save_fail_byId(cls,Id,Msg=''):
+		obj=cls.objects.get(id=Id)
+		obj.ComputeEndtime=getnowtime()
+		obj.ComputeStatus='Fail'
+		obj.Msg=Msg
+		obj.save()
+		return obj
+
+	@classmethod
 	def save_compute_byobj(cls,obj,Status,Msg=''):
-		obj.ComputeEndtime=getnowtime
+		obj.ComputeEndtime=getnowtime()
 		obj.ComputeStatus=Status
 		obj.Msg=Msg
 		obj.save()

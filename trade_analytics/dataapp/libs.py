@@ -24,33 +24,10 @@ import json
 from dataapp import stdcolumns as dtastdcols
 
 import dataapp.dataapp_manager_impl as dtamang_impl
-import dataapp.data_download.dataapp_downloadmanager_impl as dta_dwnld_mang_impl
+# import dataapp.data_download.data_download.dataapp_downloadmanager_impl as dta_dwnld_mang_impl
 
 def get_trading_dates():
 	return dtamd.TradingDates.objects.all().values_list('Date',flat=True).distinct()
-
-
-class DataDownloadManager(dta_dwnld_mang_impl):
-	def check_integrity_indb(self):
-		"""
-		- check for missing dates in DB
-		- check for null values in price, vol
-		- check for duplicate date rows
-		"""
-		pass
-
-	def get_missing_stocks_indb(self):
-		pass
-
-	def update_incomplete_stocks_indb(self):
-		pass
-
-	def update_all_stocks_indb(self):
-		pass
-
-	def get_inactive_stocks_indb(self):
-		pass
-
 
 
 
@@ -58,6 +35,9 @@ class DataManager(dtamang_impl):
 	def __init__(self,collist):
 		self.collist=collist
 
+	def getdf(self):
+		pass
+		
 	def addindicators(df,cols):
 		pass
 

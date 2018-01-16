@@ -1,6 +1,13 @@
 
+StdDataCols={
+		'Close':{'colname':'Close'},
+		'Open':{'colname':'Open'},
+		'High':{'colname':'High'},
+		'Low':{'colname':'Low'},
+		'Volume':{'colname':'Volume'},
+}
 
-StdCols={	
+StdIndicatorCols={	
 					'SMA10':{'name':'SMA','colname':'SMA10','timeperiod':10},
 					'SMA20':{'name':'SMA','colname':'SMA20','timeperiod':20},
 					'SMA50':{'name':'SMA','colname':'SMA50','timeperiod':50},

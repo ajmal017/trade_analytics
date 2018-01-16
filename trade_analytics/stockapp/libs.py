@@ -9,6 +9,13 @@ import shutil
 import pandas as pd
 import time
 
-def allsectors():
-	pass
+
+
+class DataMetaManager(object):
+	def __init__(self,collist):
+		self.collist=collist
+
+	def getdf(self):
+		pass
+		
 	

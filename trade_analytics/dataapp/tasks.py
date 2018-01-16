@@ -6,6 +6,9 @@ import dataapp.models as dtamd
 import utility.parallelcomputations as utpc
 import itertools as itt
 import dataapp.libs as dtalibs
+import dataapp.data_download.datadownloadmanager as dtadwnmang
+import pandas as pd
+import computeapp.models as cmpmd
 
 # make the function shared
 from django.conf import settings
@@ -31,30 +34,21 @@ else:
 
 
 @shared_task
-def UpdatePriceData(Symbols_ids,*args,**kwargs):
-	dtalibs.UpdatePriceData(Symbols_ids,*args,**kwargs)
+def UpdatePriceData(Symbols_id,compute_session_id):
+	stk=stkmd.Stockmeta.objects.get(id=Symbols_id)
+	compute_status_obj=cmpmd.ComputeStatus.make_newcompute(compute_session_id)
+	ddm=dtadwnmang.DataDownloadManager(stk,compute_status_obj)
+	ddm.update_data()
 
 
-def RunDataDownload():
-	# get chumks of ids to work on. This is a iterable of lists
-	stkmd.ComputeStatus_Stockdownload.objects.filter(Status='Success').delete()
-	stkmd.ComputeStatus_Stockdownload.objects.filter(Status='Run').delete()
-	stkmd.ComputeStatus_Stockdownload.objects.filter(Status='ToDo').delete()
-	objs=[]
-	for stk in stkmd.Stockmeta.objects.all():
-		objs.append( stkmd.ComputeStatus_Stockdownload(Status='ToDo',Symbol=stk) )
-	stkmd.ComputeStatus_Stockdownload.objects.bulk_create(objs)
 
-	#append the additional arg of 'id'
-	# computeargs_iter=itt.imap(lambda x: itt.izip([x],['id']) , stocksiter)
 
-	# run in parallel
-	stocksiter=list(stkmd.Stockmeta.objects.filter(Derived=False).values_list('id',flat=True))+list(stkmd.Stockmeta.objects.filter(Derived=True).values_list('id',flat=True))
-	PllCmpt=utpc.ParallelCompute( stocksiter, UpdatePriceData )
-	from django import db
-	db.connections.close_all()
-	# PllCmpt.ParallelRun(chunkby=100,Lock=False,Semaphore=True)
-	PllCmpt.ConsumerQueuerun(chunkby=100,Lock=False)
-	# PllCmpt.SingleRun()
+
+
+
+
+
+
+
 
 
