@@ -112,6 +112,9 @@ def load_yahoo_quote(ticker, begindate, enddate, info = 'quote'):
 	H=map(lambda x: x.split(','),G)
 
 	df=pd.DataFrame.from_records(H[1:],columns=H[0])
+	ind=df[df['Volume']=='null'].index
+	df.drop(ind,inplace=True)
+	df.fillna(method='bfill',inplace=True)
 	df['Date']=df['Date'].apply(lambda x: pd.to_datetime(x,format='%Y-%m-%d').date() )
 	df.index=df['Date']
 	df['Volume']=df['Volume'].astype(int)

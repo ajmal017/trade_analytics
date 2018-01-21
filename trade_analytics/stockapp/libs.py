@@ -11,11 +11,6 @@ import time
 
 
 
-class DataMetaManager(object):
-	def __init__(self,collist):
-		self.collist=collist
 
-	def getdf(self):
-		pass
 		
 	
