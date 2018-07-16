@@ -61,13 +61,13 @@ INSTALLED_APPS = [
 ]
 
 
-## --------------------- WHICH TASK DISTRIBUTION YOU LIKE TO USE ---------------------------------------------------------------##
-## ---------------------------------------------------------------------------------------------##
-USE_REDIS= False
-USE_CELERY= True
+# --------------------- WHICH TASK DISTRIBUTION YOU LIKE TO USE -------------##
+# ---------------------------------------------------------------------------##
+USE_REDIS = True
+USE_CELERY = False
 
-## --------------------- MIDDLEWARE ---------------------------------------------------------------##
-## ---------------------------------------------------------------------------------------------##
+# --------------------- MIDDLEWARE -----------------------------------------##
+# --------------------------------------------------------------------------##
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -79,14 +79,14 @@ MIDDLEWARE = [
 ]
 
 
-## --------------------- ROOT_URLCONF ---------------------------------------------------------------##
-## ---------------------------------------------------------------------------------------------##
+# --------------------- ROOT_URLCONF ---------------------------------------##
+# --------------------------------------------------------------------------##
 
 ROOT_URLCONF = 'trade_analytics.urls'
 
 
-## --------------------- TEMPLATES ---------------------------------------------------------------##
-## ---------------------------------------------------------------------------------------------##
+# --------------------- TEMPLATES -----------------------------------------##
+# -------------------------------------------------------------------------##
 
 TEMPLATES = [
     {
@@ -152,9 +152,9 @@ if os.path.isdir(BIGDATA_DIR)==False:
 # }
 
 
-    #--------------------------POSTGRES --------------
-IP='192.168.1.103'
-PORT='5432'
+# --------------------------POSTGRES --------------
+IP = '192.168.2.103'
+PORT = '5432'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
@@ -168,7 +168,8 @@ DATABASES = {
     'initialization': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'databases', 'initialize.sqlite3'),
-        'DESCRIPTION': "This is an initial data base for initialization (to upload to github)",
+        'DESCRIPTION': "This is an initial data base for initialization \
+                                                (to upload to github)",
 
     },
     'stockpricedata': {
@@ -244,13 +245,13 @@ AUTH_PASSWORD_VALIDATORS = [
 ## ---------------------------------------------------------------------------------------------##
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'US/Eastern'
+TIME_ZONE = 'US/Central'
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = True
+USE_TZ = False
 
 ## --------------------- STATIC AND MEDIA ---------------------------------------------------------------##
 # Static files (CSS, JavaScript, Images)
@@ -399,14 +400,14 @@ CELERYBEAT_SCHEDULE = {}
 
 RQ_QUEUES = {
     'default': {
-        'HOST': '172.18.65.75',
+        'HOST': '192.168.2.103',
         'PORT': 6379,
         'DB': 0,
         # 'PASSWORD': 'some-password',
         'DEFAULT_TIMEOUT': 360,
     },
     'ML': {
-        'HOST': '172.18.65.75',
+        'HOST': '192.168.2.103',
         'PORT': 6379,
         'DB': 0,
     }

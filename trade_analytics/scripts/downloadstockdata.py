@@ -9,7 +9,7 @@ def RunDataDownload():
 	# run in parallel
 	stocks=stkmd.Stockmeta.objects.filter(Derived=False).values_list('id',flat=True)
 	for stk in stocks:
-		dtatks.UpdatePriceData.delay(stk.id,compute_session.id)
+		dtatks.UpdatePriceData.delay(stk,compute_session.id)
 
 
 

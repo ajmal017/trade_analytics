@@ -44,10 +44,10 @@ class Label(models.Model):
 
 
 
-class DataCode(utymd.ComputeCode):
+# class DataCode(utymd.ComputeCode):
 
-	module='datascience'
-	codesfolder='DataCodes'
+# 	module='datascience'
+# 	codesfolder='DataCodes'
 
 
 class ComputeFunc(models.Model):
@@ -233,7 +233,7 @@ class DataShard(models.Model):
 		return ( X, Y, Meta )
 
 
-class ModelCode(utymd.ComputeCode):
+class ModelCode(models.Model):
 
 	module='datascience'
 	codesfolder='ModelCodes'

@@ -11,7 +11,7 @@ def getnowtime():
 # Create your models here.
 class ComputeSession(models.Model):
 	Starttime=models.DateTimeField()
-	Endtime=models.DateTimeField()
+	Endtime=models.DateTimeField(null=True)
 	Name = models.CharField(max_length=200,null=True,blank=True)
 	Description = models.CharField(max_length=500,null=True,blank=True)
 
