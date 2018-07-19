@@ -46,7 +46,6 @@ INSTALLED_APPS = [
     'django_celery_results',
     'rest_framework',
 
-
     'home',
     'datascience',
     'charts',
@@ -178,30 +177,6 @@ DATABASES = {
         'DESCRIPTION': "Save the large stock price data separately",
 
     },
-    'featuredata': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'featuredata',
-        'USER': os.getenv('DBUSER'),
-        'PASSWORD': os.getenv('DBPASS'),
-        'HOST': IP,
-        'PORT': PORT,
-        'DESCRIPTION': "Save Feature Data separately",
-    },
-    'querydata': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'querydata',
-        'USER': os.getenv('DBUSER'),
-        'PASSWORD': os.getenv('DBPASS'),
-        'HOST': IP,
-        'PORT': PORT,
-        'DESCRIPTION': "Save Query Data separately",
-    },
-
-    # 'datascience': {
-    #     'ENGINE': 'django.db.backends.sqlite3',
-    #     'NAME': os.path.join(BASE_DIR, 'databases' ,'datascience.sqlite3'),
-    #     'DESCRIPTION': "Independent Data sets for machine learning",
-    # }
 }
 
 
@@ -426,10 +401,7 @@ NOTEBOOK_ARGUMENTS = [
     # '--notebook-dir' , 'notebooks' ,
     '--debug',
 ]
-SHELL_PLUS_PRE_IMPORTS = [
-    ('datascience.models', 'DataShard'),
-    ('datascience', (('models', 'dtscmd'))),
-]
+SHELL_PLUS_PRE_IMPORTS = []
 
 # --------------------------------------------------------------------#
 # REST API SETTINGS
