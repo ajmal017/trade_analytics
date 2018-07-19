@@ -1,7 +1,9 @@
 from django.test import TestCase
 from . import models as md
 
+
 class StockmetaTestCase(TestCase):
+
     def setUp(self):
         md.Stockmeta.objects.create(name="lion", sound="roar")
         md.Stockmeta.objects.create(name="cat", sound="meow")

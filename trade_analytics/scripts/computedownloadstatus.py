@@ -1,16 +1,21 @@
 
 
+import computeapp.models as cmpmd
 
-from stockapp import models as stkmd
+
 def run():
-	# Download all data
-	print "ToDo = ",stkmd.ComputeStatus_Stockdownload.objects.filter(Status='ToDo').count()
-	print "Success = ",stkmd.ComputeStatus_Stockdownload.objects.filter(Status='Success').count()
-	print "Fail = ",stkmd.ComputeStatus_Stockdownload.objects.filter(Status='Fail').count()
-	print "Run = ",stkmd.ComputeStatus_Stockdownload.objects.filter(Status='Run').count()
-	
+    # Download all data
+    for compsess in cmpmd.ComputeSession.objects.all():
 
+        # cmpmd.ComputeStatus.objects.filter(ComputeSession_id=compsess.id)
+        D = {}
+        for status in cmpmd.ComputeStatus.Compute_status_choices:
+            D[status[0]] = cmpmd.ComputeStatus.objects.filter(
+                ComputeSession_id=compsess.id, ComputeStatus=status[0]).count()
 
-
-
-
+        ss = compsess.Name + " " +\
+            str(compsess.Starttime) + " " +\
+            str(compsess.Endtime)
+        for key, value in D.items():
+            ss = ss + " " + key + " : " + str(value)
+        print ss

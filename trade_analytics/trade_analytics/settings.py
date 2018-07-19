@@ -50,13 +50,9 @@ INSTALLED_APPS = [
     'home',
     'datascience',
     'charts',
-    'cta',
     'stockapp',
-    'queryapp',
     'dataapp',
-    'featureapp',
     'computeapp',
-    'stockpredict',
     'django_rq',
 ]
 
@@ -110,8 +106,8 @@ WSGI_APPLICATION = 'trade_analytics.wsgi.application'
 ## --------------------- BIGDATA_DIR ---------------------------------------------------------------##
 ## ---------------------------------------------------------------------------------------------##
 
-BIGDATA_DIR=os.path.join(BASE_DIR,'bigdata')
-if os.path.isdir(BIGDATA_DIR)==False:
+BIGDATA_DIR = os.path.join(BASE_DIR, 'bigdata')
+if os.path.isdir(BIGDATA_DIR) == False:
     os.mkdir(BIGDATA_DIR)
 
 ## --------------------- DATABSE ---------------------------------------------------------------##
@@ -209,7 +205,6 @@ DATABASES = {
 }
 
 
-
 DATABASE_ROUTERS = ['trade_analytics.db_routers.StockPriceRouter',
                     'trade_analytics.db_routers.FeatureDataRouter',
                     'trade_analytics.db_routers.QueryDataRouter']
@@ -260,8 +255,6 @@ USE_TZ = False
 STATIC_URL = '/static/'
 
 
-
-
 ## --------------------- LOGGING ---------------------------------------------------------------##
 # Log to console and to file
 ## ---------------------------------------------------------------------------------------------##
@@ -296,35 +289,35 @@ LOGGING = {
         'debugfile': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join('logs','debug_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
+            'filename': os.path.join('logs', 'debug_' + datetime.datetime.today().strftime("%Y-%m-%d") + '.log'),
             'formatter': 'verbose',
         },
 
         'errorfile': {
             'level': 'ERROR',
             'class': 'logging.FileHandler',
-            'filename': os.path.join('logs','error_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
+            'filename': os.path.join('logs', 'error_' + datetime.datetime.today().strftime("%Y-%m-%d") + '.log'),
             'formatter': 'verbose',
         },
 
         'featureappfile': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join('logs','featureapp_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
+            'filename': os.path.join('logs', 'featureapp_' + datetime.datetime.today().strftime("%Y-%m-%d") + '.log'),
             'formatter': 'verbose',
         },
 
         'datasciencefile': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join('logs','datascience_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
+            'filename': os.path.join('logs', 'datascience_' + datetime.datetime.today().strftime("%Y-%m-%d") + '.log'),
             'formatter': 'verbose',
         },
 
         'dataappfile': {
             'level': 'DEBUG',
             'class': 'logging.FileHandler',
-            'filename': os.path.join('logs','dataapp_'+datetime.datetime.today().strftime("%Y-%m-%d")+'.log'),
+            'filename': os.path.join('logs', 'dataapp_' + datetime.datetime.today().strftime("%Y-%m-%d") + '.log'),
             'formatter': 'verbose',
         },
         "rq_console": {
@@ -338,30 +331,30 @@ LOGGING = {
 
     'loggers': {
         'django': {
-            'handlers': ['console','debugfile','errorfile'],
+            'handlers': ['console', 'debugfile', 'errorfile'],
             'propagate': True,
         },
 
         'debug': {
-            'handlers': ['console','debugfile','errorfile'],
+            'handlers': ['console', 'debugfile', 'errorfile'],
             'level': 'DEBUG',
             'propagate': True,
         },
 
         'featureapp': {
-            'handlers': ['console','featureappfile','errorfile'],
+            'handlers': ['console', 'featureappfile', 'errorfile'],
             'level': 'DEBUG',
             'propagate': True,
         },
 
         'datascience': {
-            'handlers': ['console','datasciencefile','errorfile'],
+            'handlers': ['console', 'datasciencefile', 'errorfile'],
             'level': 'DEBUG',
             'propagate': True,
         },
 
         'dataapp': {
-            'handlers': ['console','dataappfile','errorfile'],
+            'handlers': ['console', 'dataappfile', 'errorfile'],
             'level': 'DEBUG',
             'propagate': True,
         },
@@ -384,9 +377,9 @@ CELERY_ACCEPT_CONTENT = ['pickle']
 CELERY_TASK_SERIALIZER = 'pickle'
 CELERY_RESULT_SERIALIZER = 'pickle'
 CELERY_RESULT_BACKEND = 'django-db'
-CELERY_TIMEZONE='US/Eastern'
-CELERY_ENABLE_UTC=True,
-CELERYD_MAX_TASKS_PER_CHILD=20
+CELERY_TIMEZONE = 'US/Eastern'
+CELERY_ENABLE_UTC = True,
+CELERYD_MAX_TASKS_PER_CHILD = 20
 
 CELERYBEAT_SCHEDULE = {}
 
@@ -434,8 +427,8 @@ NOTEBOOK_ARGUMENTS = [
     '--debug',
 ]
 SHELL_PLUS_PRE_IMPORTS = [
-('datascience.models', 'DataShard'),
-    ('datascience', (('models','dtscmd')) ),
+    ('datascience.models', 'DataShard'),
+    ('datascience', (('models', 'dtscmd'))),
 ]
 
 # --------------------------------------------------------------------#
